@@ -13,4 +13,6 @@ public class SaleItem : BaseEntity
     public decimal? Discount { get; set; }
     public bool IsCancelled { get; set; }
     public DateTime? CancelledAt { get; set; }
+
+    public virtual Product? Product { get; set; }
 }
