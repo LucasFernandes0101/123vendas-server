@@ -1,6 +1,5 @@
-﻿namespace _123vendas.Application.Configurations
+﻿namespace _123vendas.Application.Configurations;
+
+public class DependencyResolver
 {
-    public class DependencyResolver
-    {
-    }
 }
