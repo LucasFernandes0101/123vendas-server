@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.33414.496
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "123vendas-server", "123vendas-server\123vendas-server.csproj", "{431CAF17-8A88-47EA-B57F-E8F4F9A9498A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "123vendas.Api", "src\123vendas.Api\123vendas.Api.csproj", "{431CAF17-8A88-47EA-B57F-E8F4F9A9498A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
