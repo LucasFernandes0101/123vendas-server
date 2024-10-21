@@ -7,4 +7,11 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="Configurations\Builders\" />
+    <Folder Include="Contexts\" />
+    <Folder Include="Clients\" />
+    <Folder Include="Repositories\" />
+  </ItemGroup>
+
 </Project>

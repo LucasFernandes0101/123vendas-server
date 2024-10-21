@@ -12,7 +12,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
+    <Folder Include="v1\Controllers\" />
+    <Folder Include="v1\Middlewares\" />
   </ItemGroup>
 
 </Project>
