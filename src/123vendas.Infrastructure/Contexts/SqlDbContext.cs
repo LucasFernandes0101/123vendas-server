@@ -1,5 +1,7 @@
-﻿using _123vendas.Domain.Entities;
+﻿using _123vendas.Domain.Base.Interfaces;
+using _123vendas.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 using System.Reflection;
 
 namespace _123vendas.Infrastructure.Contexts;
@@ -20,8 +22,22 @@ public class SqlDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
+        EnsureIsNotDeletedFilter(builder);
+
         builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
         base.OnModelCreating(builder);
+    }
+
+    private void EnsureIsNotDeletedFilter(ModelBuilder builder)
+    {
+        foreach (var entityType in builder.Model.GetEntityTypes())
+        {
+            if (typeof(IBaseEntity).IsAssignableFrom(entityType.ClrType))
+            {
+                builder.Entity(entityType.ClrType).HasQueryFilter(
+                    (Expression<Func<IBaseEntity, bool>>)(e => !e.IsDeleted));
+            }
+        }
     }
 }
