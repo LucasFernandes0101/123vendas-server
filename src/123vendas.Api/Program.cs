@@ -1,14 +1,21 @@
 using _123vendas.Application.Configurations;
+using _123vendas_server.v1.Configurations;
 using Serilog;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(x =>
+                x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
+
+builder.Services.AddSwaggerConfig();
 
 builder.Services.AddLoggingSerilog(new LoggerConfiguration());
 
 builder.Services.AddLogging(c => c.ClearProviders());
+
+builder.Services.AddCustomApiVersioning();
 
 builder.Services.AddEndpointsApiExplorer();
 

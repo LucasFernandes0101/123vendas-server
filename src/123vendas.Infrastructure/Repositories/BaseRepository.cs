@@ -33,9 +33,9 @@ public class BaseRepository<T> : IBaseRepository<T> where T : class, IBaseEntity
         return new PagedResult<T>(await query.CountAsync(), await query.Skip(count).Take(maxResults).ToListAsync());
     }
 
-    public async Task<T?> GetByIdAsync(Guid Id)
+    public async Task<T?> GetByIdAsync(int id)
     {
-        return await _dbContext.Set<T>().FirstOrDefaultAsync(x => x.Id == Id);
+        return await _dbContext.Set<T>().FirstOrDefaultAsync(x => x.Id == id);
     }
 
     public async Task AddAsync(T entity)
