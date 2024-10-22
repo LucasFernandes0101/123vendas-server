@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using _123vendas.Domain.Base.Interfaces;
+using _123vendas.Domain.Entities;
 
-namespace _123vendas.Domain.Interfaces.Repositories
+namespace _123vendas.Domain.Interfaces.Repositories;
+
+public interface IBranchProductRepository : IBaseRepository<BranchProduct>
 {
-    internal class IBranchProductRepository
-    {
-    }
 }
