@@ -16,4 +16,9 @@
     <Folder Include="v1\Middlewares\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\123vendas.Application\123vendas.Application.csproj" />
+    <ProjectReference Include="..\123vendas.Domain\123vendas.Domain.csproj" />
+  </ItemGroup>
+
 </Project>

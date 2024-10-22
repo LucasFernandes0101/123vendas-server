@@ -5,7 +5,6 @@ namespace _123vendas.Domain.Entities;
 
 public class Sale : BaseEntity
 {
-    public string? Code { get; set; }
     public SaleStatus Status { get; set; }
     public DateTime Date { get; set; }
     public Guid CustomerId { get; set; }
