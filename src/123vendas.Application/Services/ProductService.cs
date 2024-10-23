@@ -11,14 +11,17 @@ namespace _123vendas.Application.Services;
 public class ProductService : IProductService
 {
     private readonly IProductRepository _repository;
+    private readonly IBranchProductRepository _branchProductRepository;
     private readonly IValidator<Product> _validator;
     private readonly ILogger<ProductService> _logger;
 
     public ProductService(IProductRepository repository,
-                         IValidator<Product> validator,
-                         ILogger<ProductService> logger)
+                          IBranchProductRepository branchProductRepository,   
+                          IValidator<Product> validator,
+                          ILogger<ProductService> logger)
     {
         _repository = repository;
+        _branchProductRepository = branchProductRepository;
         _validator = validator;
         _logger = logger;
     }
@@ -101,12 +104,22 @@ public class ProductService : IProductService
     public async Task<Product> UpdateAsync(int id, Product request)
     {
         try
-        {   
-            var product = await UpdateProductAsync(id, request);
+        {
+            var existingProduct = await FindProductOrThrowAsync(id);
 
-            await ValidateProductAsync(request);
+            var oldName = existingProduct.Name;
+            var oldCategory = existingProduct.Category;
 
-            return await _repository.UpdateAsync(product);
+            var product = await UpdateProductAsync(existingProduct, request);
+
+            await ValidateProductAsync(product);
+
+            var updatedProduct = await _repository.UpdateAsync(product);
+
+            if (!oldName.Equals(updatedProduct.Name) || oldCategory != updatedProduct.Category)
+                await _branchProductRepository.UpdateByProductIdAsync(updatedProduct.Id, updatedProduct.Name, updatedProduct.Category);
+
+            return updatedProduct;
         }
         catch (Exception ex) when (ex is ValidationException || ex is NotFoundException)
         {
@@ -118,10 +131,8 @@ public class ProductService : IProductService
         }
     }
 
-    private async Task<Product> UpdateProductAsync(int id, Product request)
+    private async Task<Product> UpdateProductAsync(Product existingProduct, Product request)
     {
-        var existingProduct = await FindProductOrThrowAsync(id);
-
         existingProduct.Name = request.Name;
         existingProduct.Description = request.Description;
         existingProduct.Category = request.Category;

@@ -103,6 +103,7 @@ public class BranchService : IBranchService
         try
         {
             var branch = await UpdateBranchAsync(id, request);
+
             await ValidateBranchAsync(branch);
 
             return await _repository.UpdateAsync(branch);
