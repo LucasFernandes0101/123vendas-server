@@ -67,12 +67,23 @@ public class BranchProductService : IBranchProductService
         int page = 1,
         int maxResults = 10)
     {
-        if (page <= 0 || maxResults <= 0)
-            throw new InvalidPaginationParametersException("Page number and max results must be greater than zero.");
+        try
+        {
+            if (page <= 0 || maxResults <= 0)
+                throw new InvalidPaginationParametersException("Page number and max results must be greater than zero.");
 
-        var criteria = BuildCriteria(id, branchId, productId, isActive, startDate, endDate);
-        var result = await _repository.GetAsync(page, maxResults, criteria);
-        return result.Items;
+            var criteria = BuildCriteria(id, branchId, productId, isActive, startDate, endDate);
+            var result = await _repository.GetAsync(page, maxResults, criteria);
+            return result.Items;
+        }
+        catch (Exception ex) when (ex is InvalidPaginationParametersException)
+        {
+            throw;
+        }
+        catch (Exception ex)
+        {
+            throw new ServiceException("An error occurred while retrieving branch products.", ex);
+        }
     }
 
     public async Task<BranchProduct?> GetByIdAsync(int id)

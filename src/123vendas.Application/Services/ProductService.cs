@@ -27,10 +27,7 @@ public class ProductService : IProductService
     {
         try
         {
-            var validationResult = await _validator.ValidateAsync(request);
-
-            if (!validationResult.IsValid)
-                throw new ValidationException(validationResult.Errors);
+            await ValidateProductAsync(request);
 
             return await _repository.AddAsync(request);
         }
@@ -107,10 +104,7 @@ public class ProductService : IProductService
         {   
             var product = await UpdateProductAsync(id, request);
 
-            var validationResult = await _validator.ValidateAsync(product);
-
-            if (!validationResult.IsValid)
-                throw new ValidationException(validationResult.Errors);
+            await ValidateProductAsync(request);
 
             return await _repository.UpdateAsync(product);
         }
@@ -159,5 +153,13 @@ public class ProductService : IProductService
             throw new NotFoundException($"Product with ID {id} not found.");
 
         return product;
+    }
+
+    private async Task ValidateProductAsync(Product request)
+    {
+        var validationResult = await _validator.ValidateAsync(request);
+
+        if (!validationResult.IsValid)
+            throw new ValidationException(validationResult.Errors);
     }
 }

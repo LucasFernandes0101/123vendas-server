@@ -27,10 +27,7 @@ public class BranchService : IBranchService
     {
         try
         {
-            var validationResult = await _validator.ValidateAsync(request);
-
-            if (!validationResult.IsValid)
-                throw new ValidationException(validationResult.Errors);
+            await ValidateBranchAsync(request);
 
             return await _repository.AddAsync(request);
         }
@@ -106,11 +103,7 @@ public class BranchService : IBranchService
         try
         {
             var branch = await UpdateBranchAsync(id, request);
-
-            var validationResult = await _validator.ValidateAsync(branch);
-
-            if (!validationResult.IsValid)
-                throw new ValidationException(validationResult.Errors);
+            await ValidateBranchAsync(branch);
 
             return await _repository.UpdateAsync(branch);
         }
@@ -158,5 +151,13 @@ public class BranchService : IBranchService
             throw new NotFoundException($"Branch with ID {id} not found.");
 
         return branch;
+    }
+
+    private async Task ValidateBranchAsync(Branch branch)
+    {
+        var validationResult = await _validator.ValidateAsync(branch);
+
+        if (!validationResult.IsValid)
+            throw new ValidationException(validationResult.Errors);
     }
 }

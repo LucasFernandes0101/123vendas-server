@@ -1,7 +1,7 @@
 ﻿using _123vendas.Domain.Entities;
 using FluentValidation;
 
-namespace _123vendas.Application.Validations;
+namespace _123vendas.Application.Validators;
 
 public class BranchValidator : AbstractValidator<Branch>
 {
