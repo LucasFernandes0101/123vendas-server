@@ -34,11 +34,11 @@ public class CustomerConfiguration : IEntityTypeConfiguration<Customer>
             .IsRequired();
 
         builder.Property(c => c.CreatedAt)
-            .HasColumnType("datetime")
+            .HasColumnType("datetime2")
             .ValueGeneratedOnAdd();
 
         builder.Property(c => c.UpdatedAt)
-            .HasColumnType("datetime")
+            .HasColumnType("datetime2")
             .ValueGeneratedOnUpdate();
 
         builder.HasIndex(c => c.Document).IsUnique();

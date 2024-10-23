@@ -1,5 +1,6 @@
 using _123vendas.Application.Configurations;
 using _123vendas_server.v1.Configurations;
+using _123vendas_server.v1.Middlewares;
 using Serilog;
 using System.Text.Json.Serialization;
 
@@ -32,6 +33,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseMiddleware(typeof(ExceptionMiddleware));
 
 app.UseAuthorization();
 

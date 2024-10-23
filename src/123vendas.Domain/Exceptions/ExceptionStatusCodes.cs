@@ -8,6 +8,8 @@ public static class ExceptionStatusCodes
         {
             {typeof(ServiceException), HttpStatusCode.InternalServerError},
             {typeof(NotFoundException), HttpStatusCode.NotFound},
+            {typeof(EntityAlreadyDeletedException), HttpStatusCode.Conflict},
+            {typeof(InvalidPaginationParametersException), HttpStatusCode.BadRequest},
         };
 
     public static HttpStatusCode GetExceptionStatusCode(Exception exception)

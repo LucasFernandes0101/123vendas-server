@@ -7,8 +7,8 @@ public class Sale : BaseEntity
 {
     public SaleStatus Status { get; set; }
     public DateTime Date { get; set; }
-    public Guid CustomerId { get; set; }
-    public Guid BranchId { get; set; }
+    public int CustomerId { get; set; }
+    public int BranchId { get; set; }
     public decimal TotalAmount { get; set; }
     public DateTime? CancelledAt { get; set; }
 

@@ -31,12 +31,12 @@ public class BranchConfiguration : IEntityTypeConfiguration<Branch>
 
         builder.Property(x => x.CreatedAt)
             .IsRequired()
-            .HasColumnType("datetime")
+            .HasColumnType("datetime2")
             .ValueGeneratedOnAdd();
 
         builder.Property(x => x.UpdatedAt)
             .IsRequired()
-            .HasColumnType("datetime")
+            .HasColumnType("datetime2")
             .ValueGeneratedOnUpdate();
 
         builder.Property(x => x.IsDeleted)

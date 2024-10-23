@@ -5,8 +5,8 @@ namespace _123vendas.Domain.Entities;
 
 public class BranchProduct : BaseEntity
 {
-    public Guid BranchId { get; set; }
-    public Guid ProductId { get; set; }
+    public int BranchId { get; set; }
+    public int ProductId { get; set; }
     public string? ProductName { get; set; }
     public ProductCategory ProductCategory { get; set; }
     public decimal Price { get; set; } 

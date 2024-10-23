@@ -1,5 +1,4 @@
-﻿using _123vendas.Application.Configurations;
-using _123vendas.Domain.Base;
+﻿using _123vendas.Domain.Base;
 using _123vendas.Domain.Entities;
 using _123vendas.Domain.Exceptions;
 using _123vendas.Domain.Interfaces.Repositories;
@@ -16,7 +15,9 @@ namespace _123vendas.Application.Services
         private readonly IValidator<Branch> _validator;
         private readonly ILogger<BranchService> _logger;
 
-        public BranchService(IBranchRepository repository, IValidator<Branch> validator, ILogger<BranchService> logger)
+        public BranchService(IBranchRepository repository,
+                             IValidator<Branch> validator,
+                             ILogger<BranchService> logger)
         {
             _repository = repository;
             _validator = validator;
@@ -28,14 +29,13 @@ namespace _123vendas.Application.Services
             try
             {
                 var validationResult = await _validator.ValidateAsync(request);
+
                 if (!validationResult.IsValid)
-                {
                     throw new ValidationException(validationResult.Errors);
-                }
 
                 return await _repository.AddAsync(request);
             }
-            catch (Exception ex)
+            catch (Exception ex) when (ex is not ValidationException)
             {
                 throw new ServiceException("An error occurred while creating a branch.", ex);
             }
@@ -45,11 +45,13 @@ namespace _123vendas.Application.Services
         {
             try
             {
-                var branch = await _repository.GetByIdAsync(id);
-                if (branch is null)
-                    throw new NotFoundException($"Branch with ID {id} not found.");
+                var branch = await FindBranchOrThrowAsync(id);
 
                 await _repository.DeleteAsync(branch);
+            }
+            catch (Exception ex) when (ex is NotFoundException || ex is EntityAlreadyDeletedException)
+            {
+                throw;
             }
             catch (Exception ex)
             {
@@ -57,30 +59,28 @@ namespace _123vendas.Application.Services
             }
         }
 
-        public async Task<List<Branch>> GetAllAsync(int? id, bool? isActive, string? name)
+        public async Task<List<Branch>> GetAllAsync(int? id,
+                                                    bool? isActive,
+                                                    string? name,
+                                                    DateTime? startDate,
+                                                    DateTime? endDate,
+                                                    int page = 1,
+                                                    int maxResults = 10)
         {
             try
             {
-                Expression<Func<Branch, bool>> criteria = b => true;
+                if (page <= 0 || maxResults <= 0)
+                    throw new InvalidPaginationParametersException("Page number and max results must be greater than zero.");
 
-                if (id.HasValue && id.Value > 0)
-                {
-                    criteria = criteria.And(b => b.Id == id.Value);
-                }
+                var criteria = BuildCriteria(id, isActive, name, startDate, endDate);
 
-                if (isActive.HasValue)
-                {
-                    criteria = criteria.And(b => b.IsActive == isActive.Value);
-                }
-
-                if (!string.IsNullOrWhiteSpace(name))
-                {
-                    criteria = criteria.And(b => b.Name.Contains(name));
-                }
-
-                var result = await _repository.GetAsync(criteria);
+                var result = await _repository.GetAsync(criteria, page, maxResults);
 
                 return result.Items;
+            }
+            catch (Exception ex) when (ex is InvalidPaginationParametersException)
+            {
+                throw;
             }
             catch (Exception ex)
             {
@@ -88,18 +88,15 @@ namespace _123vendas.Application.Services
             }
         }
 
-
         public async Task<Branch> GetByIdAsync(int id)
         {
             try
             {
-                var branch = await _repository.GetByIdAsync(id);
-                if (branch == null)
-                {
-                    throw new NotFoundException($"Branch with ID {id} not found.");
-                }
-
-                return branch;
+                return await FindBranchOrThrowAsync(id);
+            }
+            catch (Exception ex) when (ex is NotFoundException)
+            {
+                throw;
             }
             catch (Exception ex)
             {
@@ -111,41 +108,59 @@ namespace _123vendas.Application.Services
         {
             try
             {
-                // Validação da entidade
                 var validationResult = await _validator.ValidateAsync(request);
+
                 if (!validationResult.IsValid)
-                {
                     throw new ValidationException(validationResult.Errors);
-                }
 
-                var existingBranch = await _repository.GetByIdAsync(id);
-                if (existingBranch == null)
-                {
-                    throw new NotFoundException($"Branch with ID {id} not found.");
-                }
+                var branch = await UpdateBranchAsync(id, request);
 
-                // Atualizar propriedades da branch existente
-                existingBranch.Name = request.Name;
-                existingBranch.Address = request.Address;
-                existingBranch.Phone = request.Phone;
-                existingBranch.IsActive = request.IsActive;
-
-                return await _repository.UpdateAsync(existingBranch);
+                return await _repository.UpdateAsync(branch);
             }
-            catch (ValidationException ex)
+            catch (Exception ex) when (ex is ValidationException || ex is NotFoundException)
             {
-                throw ex;
-            }
-            catch (NotFoundException ex)
-            {
-                _logger.LogWarning(ex, ex.Message);
-                throw; // Re-lançar a exceção
+                throw;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An error occurred while updating the branch.");
-                throw new BaseException("An error occurred while updating the branch.", ex);
+                throw new ServiceException("An error occurred while updating the branch.", ex);
             }
+        }
+
+        private async Task<Branch> UpdateBranchAsync(int id, Branch request)
+        {
+            var existingBranch = await FindBranchOrThrowAsync(id);
+
+            existingBranch.Name = request.Name;
+            existingBranch.Address = request.Address;
+            existingBranch.Phone = request.Phone;
+            existingBranch.IsActive = request.IsActive;
+
+            return existingBranch;
+        }
+
+        private Expression<Func<Branch, bool>> BuildCriteria(int? id,
+                                                             bool? isActive,
+                                                             string? name,
+                                                             DateTime? startDate,
+                                                             DateTime? endDate)
+        {
+            return b =>
+                (!id.HasValue || b.Id == id.Value) &&
+                (!isActive.HasValue || b.IsActive == isActive.Value) &&
+                (string.IsNullOrEmpty(name) || b.Name.Contains(name)) &&
+                (!startDate.HasValue || b.CreatedAt >= startDate.Value) &&
+                (!endDate.HasValue || b.CreatedAt <= endDate.Value);
+        }
+
+        private async Task<Branch> FindBranchOrThrowAsync(int id)
+        {
+            var branch = await _repository.GetByIdAsync(id);
+
+            if (branch is null)
+                throw new NotFoundException($"Branch with ID {id} not found.");
+
+            return branch;
         }
     }
 }

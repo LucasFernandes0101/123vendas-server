@@ -9,9 +9,9 @@ public static class BranchMappers
     private static readonly IMapper _mapper = new MapperConfiguration(cfg =>
         cfg.AddProfile<BranchMapperProfile>()).CreateMapper();
 
-    public static List<BranchGetRequestDTO> ToDTO(this List<Branch> entities)
+    public static List<BranchGetResponseDTO> ToDTO(this List<Branch> entities)
     {
-        return _mapper.Map<List<BranchGetRequestDTO>>(entities);
+        return _mapper.Map<List<BranchGetResponseDTO>>(entities);
     }
 
     public static BranchGetDetailResponseDTO ToDetailDTO(this Branch entity)
@@ -27,5 +27,15 @@ public static class BranchMappers
     public static BranchPutResponseDTO ToPutResponseDTO(this Branch entity)
     {
         return entity is not null ? _mapper.Map<BranchPutResponseDTO>(entity) : new BranchPutResponseDTO();
+    }
+
+    public static Branch ToEntity(this BranchPostRequestDTO dto)
+    {
+        return dto is not null ? _mapper.Map<Branch>(dto) : new Branch();
+    }
+
+    public static Branch ToEntity(this BranchPutRequestDTO dto)
+    {
+        return dto is not null ? _mapper.Map<Branch>(dto) : new Branch();
     }
 }

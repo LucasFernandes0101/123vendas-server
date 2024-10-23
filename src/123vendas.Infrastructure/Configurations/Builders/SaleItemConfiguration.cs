@@ -12,12 +12,6 @@ public class SaleItemConfiguration : IEntityTypeConfiguration<SaleItem>
 
         builder.HasKey(si => si.Id);
 
-        builder.Property(si => si.SaleId)
-            .IsRequired();
-
-        builder.Property(si => si.ProductId)
-            .IsRequired();
-
         builder.Property(si => si.ProductName)
             .IsRequired()
             .HasColumnType("varchar(150)");
@@ -41,15 +35,15 @@ public class SaleItemConfiguration : IEntityTypeConfiguration<SaleItem>
             .IsRequired();
 
         builder.Property(si => si.CancelledAt)
-            .HasColumnType("datetime")
+            .HasColumnType("datetime2")
             .IsRequired(false);
 
         builder.Property(si => si.CreatedAt)
-            .HasColumnType("datetime")
+            .HasColumnType("datetime2")
             .ValueGeneratedOnAdd();
 
         builder.Property(si => si.UpdatedAt)
-            .HasColumnType("datetime")
+            .HasColumnType("datetime2")
             .ValueGeneratedOnUpdate();
 
         builder.Property(si => si.IsDeleted)
@@ -62,8 +56,8 @@ public class SaleItemConfiguration : IEntityTypeConfiguration<SaleItem>
             .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasOne(si => si.Sale)
-            .WithMany()
+            .WithMany(s => s.Items)
             .HasForeignKey(si => si.SaleId)
-            .OnDelete(DeleteBehavior.Restrict);
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

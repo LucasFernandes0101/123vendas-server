@@ -1,6 +1,7 @@
 ﻿using _123vendas.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.Reflection.Emit;
 
 namespace _123vendas.Infrastructure.Configurations.Builders;
 
@@ -17,13 +18,7 @@ public class SaleConfiguration : IEntityTypeConfiguration<Sale>
             .IsRequired();
 
         builder.Property(s => s.Date)
-            .HasColumnType("datetime")
-            .IsRequired();
-
-        builder.Property(s => s.CustomerId)
-            .IsRequired();
-
-        builder.Property(s => s.BranchId)
+            .HasColumnType("datetime2")
             .IsRequired();
 
         builder.Property(s => s.TotalAmount)
@@ -44,15 +39,20 @@ public class SaleConfiguration : IEntityTypeConfiguration<Sale>
             .OnDelete(DeleteBehavior.Restrict);
 
         builder.Property(s => s.CreatedAt)
-            .HasColumnType("datetime")
+            .HasColumnType("datetime2")
             .ValueGeneratedOnAdd();
 
         builder.Property(s => s.UpdatedAt)
-            .HasColumnType("datetime")
+            .HasColumnType("datetime2")
             .ValueGeneratedOnUpdate();
 
         builder.Property(x => x.IsDeleted)
             .HasColumnType("bit")
-            .HasDefaultValue(false);
+        .HasDefaultValue(false);
+
+        builder.HasMany(s => s.Items)
+               .WithOne(i => i.Sale)
+               .HasForeignKey(i => i.SaleId)
+               .OnDelete(DeleteBehavior.Cascade);
     }
 }

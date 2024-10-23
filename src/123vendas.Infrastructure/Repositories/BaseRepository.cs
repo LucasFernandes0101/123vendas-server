@@ -4,6 +4,7 @@ using _123vendas.Infrastructure.Contexts;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 using AspNetCore.IQueryable.Extensions.Filter;
+using _123vendas.Domain.Exceptions;
 
 namespace _123vendas.Infrastructure.Repositories;
 
@@ -49,7 +50,7 @@ public class BaseRepository<T> : IBaseRepository<T> where T : class, IBaseEntity
     public async Task DeleteAsync(T entity)
     {
         if (entity.IsDeleted)
-            throw new InvalidOperationException("The entity is already deleted.");
+            throw new EntityAlreadyDeletedException("The entity is already deleted.");
 
         entity.IsDeleted = true;
 

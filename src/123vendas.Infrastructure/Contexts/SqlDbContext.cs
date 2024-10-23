@@ -10,7 +10,7 @@ public class SqlDbContext : DbContext
 {
     public SqlDbContext(DbContextOptions<SqlDbContext> options) : base(options)
     {
-        base.Database.EnsureCreated();
+        // base.Database.EnsureCreated();
     }
 
     public DbSet<Branch> Branches { get; set; }
@@ -35,8 +35,12 @@ public class SqlDbContext : DbContext
         {
             if (typeof(IBaseEntity).IsAssignableFrom(entityType.ClrType))
             {
-                builder.Entity(entityType.ClrType).HasQueryFilter(
-                    (Expression<Func<IBaseEntity, bool>>)(e => !e.IsDeleted));
+                var parameter = Expression.Parameter(entityType.ClrType, "e");
+                var property = Expression.Property(parameter, nameof(IBaseEntity.IsDeleted));
+                var body = Expression.Not(property);
+                var lambda = Expression.Lambda(body, parameter);
+
+                builder.Entity(entityType.ClrType).HasQueryFilter(lambda);
             }
         }
     }

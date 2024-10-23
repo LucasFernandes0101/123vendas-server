@@ -32,11 +32,11 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
             .IsRequired();
 
         builder.Property(p => p.CreatedAt)
-            .HasColumnType("datetime")
+            .HasColumnType("datetime2")
             .ValueGeneratedOnAdd();
 
         builder.Property(p => p.UpdatedAt)
-            .HasColumnType("datetime")
+            .HasColumnType("datetime2")
             .ValueGeneratedOnUpdate();
 
         builder.Property(x => x.IsDeleted)

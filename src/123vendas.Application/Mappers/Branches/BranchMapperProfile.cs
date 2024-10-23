@@ -11,8 +11,6 @@ public class BranchMapperProfile : Profile
     {
         CreateMap<BranchGetDetailResponseDTO, Branch>().ReverseMap();
 
-        CreateMap<BranchGetRequestDTO, Branch>().ReverseMap();
-
         CreateMap<BranchGetResponseDTO, Branch>().ReverseMap();
 
         CreateMap<BranchPostRequestDTO, Branch>().ReverseMap();

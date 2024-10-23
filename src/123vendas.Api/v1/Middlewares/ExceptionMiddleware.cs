@@ -2,6 +2,7 @@
 using _123vendas.Domain.Exceptions;
 using FluentValidation;
 using Newtonsoft.Json;
+using System.Buffers.Text;
 using System.Net;
 
 namespace _123vendas_server.v1.Middlewares;
@@ -28,46 +29,56 @@ public class ExceptionMiddleware
         }
     }
 
-    private Task HandleExceptionAsync(HttpContext context, Exception ex)
+    private async Task HandleExceptionAsync(HttpContext context, Exception ex)
     {
-        var statusCode = (int)(ex is BaseException baseEx ?
-                                ExceptionStatusCodes.GetExceptionStatusCode(baseEx) :
-                                HttpStatusCode.InternalServerError);
-
+        var statusCode = GetStatusCode(ex);
         context.Response.StatusCode = statusCode;
         context.Response.ContentType = "application/json";
 
-        _logger.LogError(ex, "An error occurred while processing the request.");
+        _logger.LogError(ex, "An error occurred while processing the request at {Url}", context.Request.Path);
 
-        if(ex is ValidationException validationEx)
+        var result = ex switch
         {
-            var result = JsonConvert.SerializeObject(new
-            {
-                StatusCode = statusCode,
-                Message = "Validation failed.",
-                Errors = validationEx.Errors.Select(e => new { e.PropertyName, e.ErrorMessage })
-            });
-            return context.Response.WriteAsync(result);
-        }
+            ValidationException validationEx => CreateValidationErrorResponse(validationEx, statusCode),
+            BaseException baseEx => CreateBaseErrorResponse(baseEx, statusCode),
+            _ => CreateGenericErrorResponse(ex, statusCode)
+        };
 
-        if (ex is not BaseException && !IsTestEnvironment)
-        {
-            var result = JsonConvert.SerializeObject(new
-            {
-                StatusCode = statusCode,
-                Message = "An unexpected error occurred. Please try again later."
-            });
-            return context.Response.WriteAsync(result);
-        }
+        await context.Response.WriteAsync(result);
+    }
 
-        var detailedResult = JsonConvert.SerializeObject(new
+    private int GetStatusCode(Exception ex) =>
+        ex is BaseException baseEx ? (int)ExceptionStatusCodes.GetExceptionStatusCode(baseEx) : (int)HttpStatusCode.InternalServerError;
+
+    private string CreateValidationErrorResponse(ValidationException validationEx, int statusCode)
+    {
+        var errors = validationEx.Errors.Select(e => new { e.PropertyName, e.ErrorMessage });
+        return JsonConvert.SerializeObject(new
         {
             StatusCode = statusCode,
-            Message = ex.Message,
+            Message = "Validation failed.",
+            Errors = errors
+        });
+    }
+
+    private string CreateBaseErrorResponse(BaseException baseEx, int statusCode)
+    {
+        return JsonConvert.SerializeObject(new
+        {
+            StatusCode = statusCode,
+            Message = baseEx.Message,
+            Details = IsTestEnvironment ? baseEx.StackTrace : string.Empty
+        });
+    }
+
+    private string CreateGenericErrorResponse(Exception ex, int statusCode)
+    {
+        return JsonConvert.SerializeObject(new
+        {
+            StatusCode = statusCode,
+            Message = "An unexpected error occurred. Please try again later.",
             Details = IsTestEnvironment ? ex.StackTrace : string.Empty
         });
-
-        return context.Response.WriteAsync(detailedResult);
     }
 
     private static bool IsTestEnvironment =>

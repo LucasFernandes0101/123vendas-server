@@ -42,10 +42,10 @@ public class BranchProductConfiguration : IEntityTypeConfiguration<BranchProduct
             .OnDelete(DeleteBehavior.Restrict);
 
         builder.Property(bp => bp.CreatedAt)
-            .HasColumnType("datetime")
+            .HasColumnType("datetime2")
             .ValueGeneratedOnAdd();
         builder.Property(bp => bp.UpdatedAt)
-            .HasColumnType("datetime")
+            .HasColumnType("datetime2")
             .ValueGeneratedOnUpdate();
 
         builder.Property(x => x.IsDeleted)
