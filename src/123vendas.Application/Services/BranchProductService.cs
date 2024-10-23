@@ -1,5 +1,4 @@
-﻿using _123vendas.Domain.Base;
-using _123vendas.Domain.Entities;
+﻿using _123vendas.Domain.Entities;
 using _123vendas.Domain.Exceptions;
 using _123vendas.Domain.Interfaces.Repositories;
 using _123vendas.Domain.Interfaces.Services;
