@@ -44,4 +44,32 @@ public class SqlDbContext : DbContext
             }
         }
     }
+
+    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        ConfigureTimestamps();
+        return await base.SaveChangesAsync(cancellationToken);
+    }
+
+    public override int SaveChanges()
+    {
+        ConfigureTimestamps();
+        return base.SaveChanges();
+    }
+
+    private void ConfigureTimestamps()
+    {
+        var entries = ChangeTracker.Entries<IBaseEntity>();
+
+        foreach (var entry in entries)
+        {
+            if (entry.State == EntityState.Added)
+            {
+                entry.Entity.CreatedAt = DateTime.UtcNow;
+                entry.Entity.UpdatedAt = DateTime.UtcNow;
+            }
+            else if (entry.State == EntityState.Modified)
+                entry.Entity.UpdatedAt = DateTime.UtcNow;
+        }
+    }
 }

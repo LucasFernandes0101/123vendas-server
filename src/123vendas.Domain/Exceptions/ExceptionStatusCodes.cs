@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using FluentValidation;
+using System.Net;
 
 namespace _123vendas.Domain.Exceptions;
 
@@ -10,6 +11,7 @@ public static class ExceptionStatusCodes
             {typeof(NotFoundException), HttpStatusCode.NotFound},
             {typeof(EntityAlreadyDeletedException), HttpStatusCode.Conflict},
             {typeof(InvalidPaginationParametersException), HttpStatusCode.BadRequest},
+            {typeof(ValidationException), HttpStatusCode.BadRequest},
         };
 
     public static HttpStatusCode GetExceptionStatusCode(Exception exception)

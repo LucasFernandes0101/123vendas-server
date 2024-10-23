@@ -1,6 +1,6 @@
-﻿using _123vendas.Domain.Base;
+﻿using _123vendas.Domain.Exceptions;
+using _123vendas.Domain.Base;
 using _123vendas.Domain.Entities;
-using _123vendas.Domain.Exceptions;
 using _123vendas.Domain.Interfaces.Repositories;
 using _123vendas.Domain.Interfaces.Services;
 using FluentValidation;
@@ -74,7 +74,7 @@ namespace _123vendas.Application.Services
 
                 var criteria = BuildCriteria(id, isActive, name, startDate, endDate);
 
-                var result = await _repository.GetAsync(criteria, page, maxResults);
+                var result = await _repository.GetAsync(page, maxResults, criteria);
 
                 return result.Items;
             }
@@ -88,15 +88,13 @@ namespace _123vendas.Application.Services
             }
         }
 
-        public async Task<Branch> GetByIdAsync(int id)
+        public async Task<Branch?> GetByIdAsync(int id)
         {
             try
             {
-                return await FindBranchOrThrowAsync(id);
-            }
-            catch (Exception ex) when (ex is NotFoundException)
-            {
-                throw;
+                var branch = await _repository.GetByIdAsync(id);
+
+                return branch;
             }
             catch (Exception ex)
             {

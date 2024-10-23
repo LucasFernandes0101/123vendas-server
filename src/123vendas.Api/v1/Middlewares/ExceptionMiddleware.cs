@@ -31,7 +31,7 @@ public class ExceptionMiddleware
 
     private async Task HandleExceptionAsync(HttpContext context, Exception ex)
     {
-        var statusCode = GetStatusCode(ex);
+        var statusCode = (int)ExceptionStatusCodes.GetExceptionStatusCode(ex);
         context.Response.StatusCode = statusCode;
         context.Response.ContentType = "application/json";
 
@@ -39,43 +39,37 @@ public class ExceptionMiddleware
 
         var result = ex switch
         {
-            ValidationException validationEx => CreateValidationErrorResponse(validationEx, statusCode),
-            BaseException baseEx => CreateBaseErrorResponse(baseEx, statusCode),
-            _ => CreateGenericErrorResponse(ex, statusCode)
+            ValidationException validationEx => CreateValidationErrorResponse(validationEx),
+            BaseException baseEx => CreateBaseErrorResponse(baseEx),
+            _ => CreateGenericErrorResponse(ex)
         };
 
         await context.Response.WriteAsync(result);
     }
 
-    private int GetStatusCode(Exception ex) =>
-        ex is BaseException baseEx ? (int)ExceptionStatusCodes.GetExceptionStatusCode(baseEx) : (int)HttpStatusCode.InternalServerError;
-
-    private string CreateValidationErrorResponse(ValidationException validationEx, int statusCode)
+    private string CreateValidationErrorResponse(ValidationException validationEx)
     {
         var errors = validationEx.Errors.Select(e => new { e.PropertyName, e.ErrorMessage });
         return JsonConvert.SerializeObject(new
         {
-            StatusCode = statusCode,
             Message = "Validation failed.",
             Errors = errors
         });
     }
 
-    private string CreateBaseErrorResponse(BaseException baseEx, int statusCode)
+    private string CreateBaseErrorResponse(BaseException baseEx)
     {
         return JsonConvert.SerializeObject(new
         {
-            StatusCode = statusCode,
             Message = baseEx.Message,
             Details = IsTestEnvironment ? baseEx.StackTrace : string.Empty
         });
     }
 
-    private string CreateGenericErrorResponse(Exception ex, int statusCode)
+    private string CreateGenericErrorResponse(Exception ex)
     {
         return JsonConvert.SerializeObject(new
         {
-            StatusCode = statusCode,
             Message = "An unexpected error occurred. Please try again later.",
             Details = IsTestEnvironment ? ex.StackTrace : string.Empty
         });

@@ -9,11 +9,11 @@
 
   <ItemGroup>
     <Folder Include="Entities\" />
-    <Folder Include="Filters\" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="AspNetCore.IQueryable.Extensions" Version="8.0.0" />
+    <PackageReference Include="FluentValidation" Version="11.10.0" />
   </ItemGroup>
 
 </Project>

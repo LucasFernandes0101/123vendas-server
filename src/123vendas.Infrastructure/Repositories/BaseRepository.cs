@@ -17,21 +17,20 @@ public class BaseRepository<T> : IBaseRepository<T> where T : class, IBaseEntity
         _dbContext = dbContext;
     }
 
-    public async Task<PagedResult<T>> GetAsync(BaseFilter filter)
-    {
-        int count = (filter.Page - 1) * filter.MaxResults;
-
-        IQueryable<T> query = _dbContext.Set<T>().AsQueryable().Filter(filter);
-        return new PagedResult<T>(await query.CountAsync(), await query.Skip(count).Take(filter.MaxResults).Cast<T>().ToListAsync());
-    }
-
-    public async Task<PagedResult<T>> GetAsync(Expression<Func<T, bool>> criteria, int page = 1, int maxResults = 10)
+    public async Task<PagedResult<T>> GetAsync(int page = 1, int maxResults = 10, Expression<Func<T, bool>>? criteria = default)
     {
         page = page == 0 ? 1 : page;
         int count = (page - 1) * maxResults;
 
-        IQueryable<T> query = _dbContext.Set<T>().AsQueryable().Where(criteria);
-        return new PagedResult<T>(await query.CountAsync(), await query.Skip(count).Take(maxResults).ToListAsync());
+        IQueryable<T> query = _dbContext.Set<T>().AsQueryable();
+
+        if (criteria is not null)
+            query = query.Where(criteria);
+
+        var totalRecords = await query.CountAsync();
+        var items = await query.Skip(count).Take(maxResults).ToListAsync();
+
+        return new PagedResult<T>(totalRecords, items);
     }
 
     public async Task<T?> GetByIdAsync(int id)
