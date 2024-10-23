@@ -1,6 +1,6 @@
 ﻿namespace _123vendas.Domain.Base;
 
-public class BaseException : Exception
+public abstract class BaseException : Exception
 {
     public BaseException()
     {

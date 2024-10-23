@@ -98,7 +98,7 @@ namespace _123vendas.Application.Services
             }
             catch (Exception ex)
             {
-                throw new BaseException("An error occurred while retrieving the branch.", ex);
+                throw new ServiceException("An error occurred while retrieving the branch.", ex);
             }
         }
 
@@ -106,12 +106,12 @@ namespace _123vendas.Application.Services
         {
             try
             {
-                var validationResult = await _validator.ValidateAsync(request);
+                var branch = await UpdateBranchAsync(id, request);
+
+                var validationResult = await _validator.ValidateAsync(branch);
 
                 if (!validationResult.IsValid)
                     throw new ValidationException(validationResult.Errors);
-
-                var branch = await UpdateBranchAsync(id, request);
 
                 return await _repository.UpdateAsync(branch);
             }

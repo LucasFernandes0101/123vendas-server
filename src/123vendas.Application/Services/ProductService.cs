@@ -98,20 +98,20 @@ public class ProductService : IProductService
         }
         catch (Exception ex)
         {
-            throw new BaseException("An error occurred while retrieving the product.", ex);
+            throw new ServiceException("An error occurred while retrieving the product.", ex);
         }
     }
 
     public async Task<Product> UpdateAsync(int id, Product request)
     {
         try
-        {
-            var validationResult = await _validator.ValidateAsync(request);
+        {   
+            var product = await UpdateProductAsync(id, request);
+
+            var validationResult = await _validator.ValidateAsync(product);
 
             if (!validationResult.IsValid)
                 throw new ValidationException(validationResult.Errors);
-
-            var product = await UpdateProductAsync(id, request);
 
             return await _repository.UpdateAsync(product);
         }

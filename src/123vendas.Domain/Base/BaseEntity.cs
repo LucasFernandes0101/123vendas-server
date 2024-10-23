@@ -2,7 +2,7 @@
 
 namespace _123vendas.Domain.Base;
 
-public class BaseEntity : IBaseEntity
+public abstract class BaseEntity : IBaseEntity
 {
     public int Id { get; set; }
     public bool IsDeleted { get; set; }
