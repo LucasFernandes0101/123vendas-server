@@ -1,4 +1,5 @@
 ﻿using _123vendas.Application.Mappers.Branches;
+using _123vendas.Application.Mappers.Products;
 using _123vendas.Application.Services;
 using _123vendas.Application.Validations;
 using _123vendas.Domain.Entities;
@@ -41,15 +42,18 @@ public static class DependencyResolver
     private static void ResolveServices(this IServiceCollection services)
     {
         services.AddScoped<IBranchService, BranchService>();
+        services.AddScoped<IProductService, ProductService>();
     }
 
     private static void ResolveAutoMapper(this IServiceCollection services)
     {
         services.AddAutoMapper(typeof(BranchMapperProfile));
+        services.AddAutoMapper(typeof(ProductMapperProfile));
     }
 
     private static void ResolveFluentValidators(this IServiceCollection services)
     {
         services.AddScoped<IValidator<Branch>, BranchValidator>();
+        services.AddScoped<IValidator<Product>, ProductValidator>();
     }
 }

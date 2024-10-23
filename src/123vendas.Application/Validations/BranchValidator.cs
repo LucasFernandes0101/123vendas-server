@@ -17,8 +17,5 @@ public class BranchValidator : AbstractValidator<Branch>
         RuleFor(branch => branch.Phone)
             .MaximumLength(20).WithMessage("Phone cannot exceed 20 characters.")
             .Matches(@"^\+?\d*$").WithMessage("Phone must be a valid phone number.");
-
-        RuleFor(branch => branch.IsActive)
-            .NotNull().WithMessage("IsActive is required.");
     }
 }
