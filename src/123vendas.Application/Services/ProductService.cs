@@ -114,12 +114,12 @@ public class ProductService : IProductService
 
             await ValidateProductAsync(product);
 
-            var updatedProduct = await _repository.UpdateAsync(product);
+            await _repository.UpdateAsync(product);
 
-            if (!oldName.Equals(updatedProduct.Name) || oldCategory != updatedProduct.Category)
-                await _branchProductRepository.UpdateByProductIdAsync(updatedProduct.Id, updatedProduct.Name, updatedProduct.Category);
+            if (!oldName.Equals(product.Name) || oldCategory != product.Category)
+                await _branchProductRepository.UpdateByProductIdAsync(product.Id, product.Name, product.Category);
 
-            return updatedProduct;
+            return product;
         }
         catch (Exception ex) when (ex is ValidationException || ex is NotFoundException)
         {

@@ -22,7 +22,7 @@ builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen();
 
-builder.Services.ResolveDependencies(builder.Configuration);
+builder.Services.ResolveDependencies();
 
 var app = builder.Build();
 

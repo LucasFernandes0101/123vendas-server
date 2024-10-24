@@ -1,6 +1,9 @@
-﻿using _123vendas.Domain.Entities;
+﻿using _123vendas.Application.Events.Sales;
+using _123vendas.Domain.Base;
+using _123vendas.Domain.Entities;
 using _123vendas.Domain.Enums;
 using _123vendas.Domain.Exceptions;
+using _123vendas.Domain.Interfaces.Integrations;
 using _123vendas.Domain.Interfaces.Repositories;
 using _123vendas.Domain.Interfaces.Services;
 using FluentValidation;
@@ -11,22 +14,25 @@ namespace _123vendas.Application.Services;
 
 public class SaleService : ISaleService
 {
-    private readonly ISaleRepository _saleRepository;
+    private readonly ISaleRepository _repository;
     private readonly ISaleItemRepository _saleItemRepository;
     private readonly IBranchProductRepository _branchProductRepository;
     private readonly IValidator<Sale> _validator;
+    private readonly IRabbitMQIntegration _rabbitMQIntegration;
     private readonly ILogger<SaleService> _logger;
 
-    public SaleService(ISaleRepository saleRepository,
+    public SaleService(ISaleRepository repository,
                        ISaleItemRepository saleItemRepository,
                        IBranchProductRepository branchProductRepository,
                        IValidator<Sale> validator,
+                       IRabbitMQIntegration rabbitMQIntegration,
                        ILogger<SaleService> logger)
     {
-        _saleRepository = saleRepository;
+        _repository = repository;
         _saleItemRepository = saleItemRepository;
         _branchProductRepository = branchProductRepository;
         _validator = validator;
+        _rabbitMQIntegration = rabbitMQIntegration;
         _logger = logger;
     }
 
@@ -39,6 +45,7 @@ public class SaleService : ISaleService
                 BranchId = request.BranchId,
                 CustomerId = request.CustomerId,
                 Date = DateTime.Now,
+                Status = SaleStatus.Created,
                 Items = new List<SaleItem>()
             };
 
@@ -46,9 +53,11 @@ public class SaleService : ISaleService
 
             await ValidateSaleAsync(sale);
 
-            var savedSale = await _saleRepository.AddAsync(sale);
+            var savedSale = await _repository.AddAsync(sale);
 
             await UpdateStockQuantitiesAsync(sale.Items, sale.BranchId);
+
+            await PublishSaleMessageAsync(new SaleCreatedEvent(sale));
 
             return savedSale;
         }
@@ -68,24 +77,27 @@ public class SaleService : ISaleService
         {
             var sale = await GetSaleWithItemsOrThrowAsync(saleId);
 
+            if (sale.Status == SaleStatus.Canceled)
+                throw new SaleAlreadyCanceledException($"Cannot cancel an item from a sale that is already canceled.");
+
             var saleItem = sale?.Items?.FirstOrDefault(i => i.Sequence == sequence);
 
             if (saleItem is null)
-                throw new NotFoundException($"Sale item sequence {sequence} not found in sale ID {saleId}.");
+                throw new NotFoundException($"Sale item sequence {sequence} not found.");
 
             ValidateItemForCancellation(saleItem);
 
             CancelItem(saleItem);
 
-            await _saleItemRepository.UpdateAsync(saleItem);
-
             sale.TotalAmount = CalculateTotalAmount(sale.Items);
 
-            await _saleRepository.UpdateAsync(sale);
+            await _repository.UpdateAsync(sale);
+
+            await PublishSaleMessageAsync(new SaleItemCancelledEvent(saleItem));
 
             return sale;
         }
-        catch (Exception ex) when (ex is NotFoundException || ex is SaleItemAlreadyCanceledException)
+        catch (Exception ex) when (ex is NotFoundException || ex is SaleItemAlreadyCanceledException || ex is SaleAlreadyCanceledException)
         {
             throw;
         }
@@ -130,7 +142,7 @@ public class SaleService : ISaleService
 
             var criteria = BuildCriteria(id, branchId, customerId, status, startDate, endDate);
 
-            var result = await _saleRepository.GetAsync(page, maxResults, criteria);
+            var result = await _repository.GetAsync(page, maxResults, criteria);
 
             return result.Items;
         }
@@ -156,7 +168,7 @@ public class SaleService : ISaleService
     {
         try
         {
-            var existingSale = await GetSaleOrThrowAsync(saleId);
+            var existingSale = await GetSaleWithItemsOrThrowAsync(saleId);
 
             ValidateForUpdate(existingSale);
 
@@ -164,7 +176,11 @@ public class SaleService : ISaleService
 
             await ValidateSaleAsync(updatedSale);
 
-            return await _saleRepository.UpdateAsync(updatedSale);
+            await _repository.UpdateAsync(updatedSale);
+
+            await PublishSaleMessageAsync(new SaleUpdatedEvent(updatedSale));
+
+            return updatedSale;
         }
         catch (Exception ex) when (ex is NotFoundException || ex is SaleAlreadyCanceledException || ex is ValidationException)
         {
@@ -180,7 +196,7 @@ public class SaleService : ISaleService
     {
         try
         {
-            var sale = await _saleRepository.GetByIdAsync(saleId);
+            var sale = await _repository.GetByIdAsync(saleId);
 
             if (sale is null)
                 throw new NotFoundException($"Sale with ID {saleId} not found.");
@@ -191,9 +207,11 @@ public class SaleService : ISaleService
             sale.Status = SaleStatus.Canceled;
             sale.CancelledAt = DateTime.Now;
 
-            var updatedSale = await _saleRepository.UpdateAsync(sale);
+            await _repository.UpdateAsync(sale);
 
-            return updatedSale;
+            await PublishSaleMessageAsync(new SaleCancelledEvent(sale));
+
+            return sale;
         }
         catch (Exception ex) when (ex is NotFoundException || ex is InvalidOperationException || ex is SaleAlreadyCanceledException)
         {
@@ -211,7 +229,7 @@ public class SaleService : ISaleService
         {
             var existingSale = await GetSaleOrThrowAsync(saleId);
 
-            await _saleRepository.DeleteAsync(existingSale);
+            await _repository.DeleteAsync(existingSale);
         }
         catch (Exception ex) when (ex is not NotFoundException)
         {
@@ -314,21 +332,33 @@ public class SaleService : ISaleService
 
     private async Task<Sale> GetSaleOrThrowAsync(int saleId)
     {
-        var sale = await _saleRepository.GetByIdAsync(saleId);
+        var sale = await _repository.GetByIdAsync(saleId);
         if (sale is null)
             throw new NotFoundException($"Sale with ID {saleId} not found.");
 
         return sale;
     }
 
-    private async Task<Sale?> GetSaleWithItemsOrThrowAsync(int id)
+    private async Task<Sale> GetSaleWithItemsOrThrowAsync(int id)
     {
-        var sale = await _saleRepository.GetWithItemsByIdAsync(id);
+        var sale = await _repository.GetWithItemsByIdAsync(id);
 
         if (sale is null)
             throw new NotFoundException($"Sale with ID {id} not found.");
 
         return sale;
+    }
+
+    private async Task PublishSaleMessageAsync(BaseEvent @event)
+    {
+        try
+        {
+            await _rabbitMQIntegration.PublishMessageAsync(@event);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, $"An error occurred while publishing event {@event.GetType().Name}");
+        }
     }
 
     private async Task<BranchProduct> GetBranchProductOrThrowAsync(int branchId, int productId)

@@ -4,34 +4,37 @@ using _123vendas.Application.Mappers.Customers;
 using _123vendas.Application.Mappers.Products;
 using _123vendas.Application.Mappers.Sales;
 using _123vendas.Application.Services;
-using _123vendas.Domain.Validators;
 using _123vendas.Domain.Entities;
+using _123vendas.Domain.Interfaces.Integrations;
 using _123vendas.Domain.Interfaces.Repositories;
 using _123vendas.Domain.Interfaces.Services;
+using _123vendas.Domain.Validators;
 using _123vendas.Infrastructure.Contexts;
+using _123vendas.Infrastructure.Integrations;
 using _123vendas.Infrastructure.Repositories;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace _123vendas.Application.Configurations;
 
 public static class DependencyResolver
 {
-    public static IServiceCollection ResolveDependencies(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection ResolveDependencies(this IServiceCollection services)
     {
         services.ResolveAutoMapper();
         services.ResolveFluentValidators();
-        services.ResolveRepositories(configuration);
+        services.ResolveRepositories();
         services.ResolveServices();
+
+        services.AddSingleton<IRabbitMQIntegration, RabbitMQIntegration>();
 
         return services;
     }
 
-    private static void ResolveRepositories(this IServiceCollection services, IConfiguration configuration)
+    private static void ResolveRepositories(this IServiceCollection services)
     {
-        services.AddDbContext<SqlDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("123VendasDB"))
+        services.AddDbContext<SqlDbContext>(options => options.UseSqlServer(Environment.GetEnvironmentVariable("SQL_CONNECTION_STRING"))
             .EnableSensitiveDataLogging(true));
 
         services.AddScoped<IBranchRepository, BranchRepository>();
