@@ -15,9 +15,10 @@ using Xunit;
 namespace _123vendas.Tests.Services;
 
 [Trait("Customer", "Service")]
-public class CustomerServiceTests
+public class CustomerServiceTest
 {
     [Fact(DisplayName = "Should create customer successfully")]
+    [Trait("Customer", "Service")]
     public async Task CreateAsync_ShouldCreateCustomer()
     {
         // Arrange
@@ -39,6 +40,7 @@ public class CustomerServiceTests
     }
 
     [Fact(DisplayName = "Should throw ValidationException when customer is invalid")]
+    [Trait("Customer", "Service")]
     public async Task CreateAsync_ShouldThrowValidationException_WhenInvalid()
     {
         // Arrange
@@ -60,6 +62,7 @@ public class CustomerServiceTests
     }
 
     [Fact(DisplayName = "Should delete customer successfully")]
+    [Trait("Customer", "Service")]
     public async Task DeleteAsync_ShouldDeleteCustomer()
     {
         // Arrange
@@ -79,6 +82,7 @@ public class CustomerServiceTests
     }
 
     [Fact(DisplayName = "Should throw NotFoundException when customer not found on delete")]
+    [Trait("Customer", "Service")]
     public async Task DeleteAsync_ShouldThrowNotFoundException_WhenCustomerNotFound()
     {
         // Arrange
@@ -99,6 +103,7 @@ public class CustomerServiceTests
     }
 
     [Fact(DisplayName = "Should retrieve all customers successfully")]
+    [Trait("Customer", "Service")]
     public async Task GetAllAsync_ShouldReturnCustomers()
     {
         // Arrange
@@ -119,6 +124,7 @@ public class CustomerServiceTests
     }
 
     [Fact(DisplayName = "Should throw InvalidPaginationParametersException when page is less than 1")]
+    [Trait("Customer", "Service")]
     public async Task GetAllAsync_ShouldThrowInvalidPaginationParametersException_WhenPageIsLessThan1()
     {
         // Arrange
@@ -135,6 +141,7 @@ public class CustomerServiceTests
     }
 
     [Fact(DisplayName = "Should retrieve customer by Id successfully")]
+    [Trait("Customer", "Service")]
     public async Task GetByIdAsync_ShouldReturnCustomer()
     {
         // Arrange
@@ -154,6 +161,7 @@ public class CustomerServiceTests
     }
 
     [Fact(DisplayName = "Should throw ServiceException when an error occurs retrieving customer by Id")]
+    [Trait("Customer", "Service")]
     public async Task GetByIdAsync_ShouldThrowServiceException_WhenErrorOccurs()
     {
         // Arrange
@@ -173,6 +181,7 @@ public class CustomerServiceTests
     }
 
     [Fact(DisplayName = "Should update customer successfully")]
+    [Trait("Customer", "Service")]
     public async Task UpdateAsync_ShouldUpdateCustomer()
     {
         // Arrange
@@ -196,6 +205,7 @@ public class CustomerServiceTests
     }
 
     [Fact(DisplayName = "Should throw NotFoundException when customer not found on update")]
+    [Trait("Customer", "Service")]
     public async Task UpdateAsync_ShouldThrowNotFoundException_WhenCustomerNotFound()
     {
         // Arrange
@@ -217,6 +227,7 @@ public class CustomerServiceTests
     }
 
     [Fact(DisplayName = "Should throw ValidationException when customer is invalid on update")]
+    [Trait("Customer", "Service")]
     public async Task UpdateAsync_ShouldThrowValidationException_WhenCustomerIsInvalid()
     {
         // Arrange
