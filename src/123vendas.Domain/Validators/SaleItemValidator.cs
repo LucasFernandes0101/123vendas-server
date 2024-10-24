@@ -1,7 +1,7 @@
 ﻿using _123vendas.Domain.Entities;
 using FluentValidation;
 
-namespace _123vendas.Application.Validators;
+namespace _123vendas.Domain.Validators;
 
 public class SaleItemValidator : AbstractValidator<SaleItem>
 {

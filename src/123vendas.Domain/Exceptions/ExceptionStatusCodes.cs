@@ -14,6 +14,7 @@ public static class ExceptionStatusCodes
             {typeof(ValidationException), HttpStatusCode.BadRequest},
             {typeof(SaleAlreadyCanceledException), HttpStatusCode.Conflict},
             {typeof(SaleItemAlreadyCanceledException), HttpStatusCode.Conflict},
+            {typeof(ItemOutOfStockException), HttpStatusCode.Conflict},
         };
 
     public static HttpStatusCode GetExceptionStatusCode(Exception exception)

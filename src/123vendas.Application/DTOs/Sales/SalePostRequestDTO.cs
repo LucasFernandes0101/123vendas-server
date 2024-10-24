@@ -2,7 +2,6 @@
 
 public class SalePostRequestDTO
 {
-    public DateTime Date { get; set; }
     public int CustomerId { get; set; }
     public int BranchId { get; set; }
 

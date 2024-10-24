@@ -9,6 +9,7 @@ public class SaleMapperProfile : Profile
 	public SaleMapperProfile()
 	{
         CreateMap<SaleItemGetDTO, SaleItem>().ReverseMap();
+        CreateMap<SaleItemGetDetailDTO, SaleItem>().ReverseMap();
         CreateMap<SaleItemPostDTO, SaleItem>().ReverseMap();
 
         CreateMap<SaleGetDetailResponseDTO, Sale>().ReverseMap();

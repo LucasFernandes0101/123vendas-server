@@ -4,7 +4,7 @@ using _123vendas.Application.Mappers.Customers;
 using _123vendas.Application.Mappers.Products;
 using _123vendas.Application.Mappers.Sales;
 using _123vendas.Application.Services;
-using _123vendas.Application.Validators;
+using _123vendas.Domain.Validators;
 using _123vendas.Domain.Entities;
 using _123vendas.Domain.Interfaces.Repositories;
 using _123vendas.Domain.Interfaces.Services;

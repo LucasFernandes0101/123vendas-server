@@ -1,7 +1,7 @@
 ﻿using _123vendas.Domain.Entities;
 using FluentValidation;
 
-namespace _123vendas.Application.Validators;
+namespace _123vendas.Domain.Validators;
 
 public class SaleValidator : AbstractValidator<Sale>
 {
@@ -16,7 +16,7 @@ public class SaleValidator : AbstractValidator<Sale>
             .WithMessage("CustomerId must be greater than zero.");
 
         RuleFor(sale => sale.Date)
-            .LessThanOrEqualTo(DateTime.Now)
+            .GreaterThan(DateTime.Now)
             .WithMessage("Sale date cannot be in the future.");
 
         RuleFor(sale => sale.TotalAmount)

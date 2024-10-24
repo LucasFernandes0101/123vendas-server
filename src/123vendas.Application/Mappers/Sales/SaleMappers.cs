@@ -38,4 +38,9 @@ public static class SaleMappers
     {
         return dto is not null ? _mapper.Map<Sale>(dto) : new Sale();
     }
+
+    public static SaleItemGetDetailDTO ToDetailDTO(this SaleItem entity)
+    {
+        return _mapper.Map<SaleItemGetDetailDTO>(entity);
+    }
 }

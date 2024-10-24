@@ -30,7 +30,7 @@ public class SaleService : ISaleService
         _logger = logger;
     }
 
-    public async Task<Sale> CreateSaleAsync(Sale request)
+    public async Task<Sale> CreateAsync(Sale request)
     {
         try
         {
@@ -38,45 +38,44 @@ public class SaleService : ISaleService
             {
                 BranchId = request.BranchId,
                 CustomerId = request.CustomerId,
-                Date = DateTime.UtcNow,
-                Items = new List<SaleItem>(),
-                TotalAmount = 0
+                Date = DateTime.Now,
+                Items = new List<SaleItem>()
             };
 
-            await ProcessSaleItemsAsync(sale, request.Items);
+            await ProcessItemsAsync(sale, request.Items);
 
             await ValidateSaleAsync(sale);
 
             var savedSale = await _saleRepository.AddAsync(sale);
 
-            await SaveSaleItemsAsync(savedSale.Id, sale.Items);
+            await UpdateStockQuantitiesAsync(sale.Items, sale.BranchId);
 
             return savedSale;
         }
-        catch (Exception ex) when (ex is ValidationException || ex is NotFoundException)
+        catch (Exception ex) when (ex is ValidationException || ex is NotFoundException || ex is ItemOutOfStockException)
         {
             throw;
         }
         catch (Exception ex)
         {
-            throw new ServiceException("An error occurred while saving sale. Please try again later.", ex);
+            throw new ServiceException("An error occurred while processing sale. Please try again later.", ex);
         }
     }
 
-    public async Task<Sale> CancelSaleItemAsync(int saleId, int saleItemId)
+    public async Task<Sale> CancelItemAsync(int saleId, int sequence)
     {
         try
         {
             var sale = await GetSaleWithItemsOrThrowAsync(saleId);
 
-            var saleItem = sale?.Items?.FirstOrDefault(i => i.Id == saleItemId);
+            var saleItem = sale?.Items?.FirstOrDefault(i => i.Sequence == sequence);
 
             if (saleItem is null)
-                throw new NotFoundException($"Sale item with ID {saleItemId} not found in sale ID {saleId}.");
+                throw new NotFoundException($"Sale item sequence {sequence} not found in sale ID {saleId}.");
 
-            ValidateSaleItemForCancellation(saleItem);
+            ValidateItemForCancellation(saleItem);
 
-            CancelSaleItem(saleItem);
+            CancelItem(saleItem);
 
             await _saleItemRepository.UpdateAsync(saleItem);
 
@@ -93,6 +92,25 @@ public class SaleService : ISaleService
         catch (Exception ex)
         {
             throw new ServiceException("An error occurred while canceling the sale item.", ex);
+        }
+    }
+
+    public async Task<SaleItem> GetItemAsync(int saleId, int sequence)
+    {
+        try
+        {
+            var sale = await GetSaleWithItemsOrThrowAsync(saleId);
+
+            var saleItem = sale?.Items?.FirstOrDefault(i => i.Sequence == sequence);
+
+            if (saleItem is null)
+                throw new NotFoundException($"Sale item sequence {sequence} not found in sale ID {saleId}.");
+
+            return saleItem;
+        }
+        catch (Exception ex) when (ex is not NotFoundException)
+        {
+            throw new ServiceException("An error occurred while retrieving the item.", ex);
         }
     }
 
@@ -134,13 +152,13 @@ public class SaleService : ISaleService
         }
     }
 
-    public async Task<Sale> UpdateSaleAsync(int saleId, Sale request)
+    public async Task<Sale> UpdateAsync(int saleId, Sale request)
     {
         try
         {
             var existingSale = await GetSaleOrThrowAsync(saleId);
 
-            ValidateSaleForUpdate(existingSale);
+            ValidateForUpdate(existingSale);
 
             var updatedSale = UpdateSaleProperties(existingSale, request);
 
@@ -158,7 +176,7 @@ public class SaleService : ISaleService
         }
     }
 
-    public async Task<Sale> CancelSaleAsync(int saleId)
+    public async Task<Sale> CancelAsync(int saleId)
     {
         try
         {
@@ -171,7 +189,7 @@ public class SaleService : ISaleService
                 throw new SaleAlreadyCanceledException($"This sale is already canceled.");
 
             sale.Status = SaleStatus.Canceled;
-            sale.CancelledAt = DateTime.UtcNow;
+            sale.CancelledAt = DateTime.Now;
 
             var updatedSale = await _saleRepository.UpdateAsync(sale);
 
@@ -203,13 +221,13 @@ public class SaleService : ISaleService
 
     #region CreateSale
 
-    private async Task ProcessSaleItemsAsync(Sale sale, List<SaleItem> items)
+    private async Task ProcessItemsAsync(Sale sale, List<SaleItem> items)
     {
         short sequence = 1;
 
         foreach (var item in items)
         {
-            var saleItem = await ProcessSaleItemAsync(sale.BranchId, item, sequence);
+            var saleItem = await ProcessItemAsync(sale.BranchId, item, sequence);
             sale.Items.Add(saleItem);
             sale.TotalAmount += saleItem.Price;
 
@@ -217,9 +235,12 @@ public class SaleService : ISaleService
         }
     }
 
-    private async Task<SaleItem> ProcessSaleItemAsync(int branchId, SaleItem requestItem, short sequence)
+    private async Task<SaleItem> ProcessItemAsync(int branchId, SaleItem requestItem, short sequence)
     {
         var branchProduct = await GetBranchProductOrThrowAsync(branchId, requestItem.ProductId);
+
+        if (branchProduct.StockQuantity < requestItem.Quantity)
+            throw new ItemOutOfStockException($"Product {branchProduct.ProductName} is out of stock.");
 
         var saleItem = new SaleItem
         {
@@ -242,18 +263,20 @@ public class SaleService : ISaleService
         return item.UnitPrice * item.Quantity * discountMultiplier;
     }
 
-    private async Task SaveSaleItemsAsync(int saleId, List<SaleItem> items)
+    private async Task UpdateStockQuantitiesAsync(List<SaleItem> items, int branchId)
     {
-        foreach (var saleItem in items)
+        foreach (var item in items)
         {
-            saleItem.SaleId = saleId;
-            await _saleItemRepository.AddAsync(saleItem);
+            var branchProduct = await GetBranchProductOrThrowAsync(branchId, item.ProductId);
+
+            branchProduct.StockQuantity -= item.Quantity;
+            await _branchProductRepository.UpdateAsync(branchProduct);
         }
     }
 
-    # endregion
+    #endregion
 
-    private void ValidateSaleForUpdate(Sale sale)
+    private void ValidateForUpdate(Sale sale)
     {
         if (sale.Status == SaleStatus.Canceled)
             throw new SaleAlreadyCanceledException("Cannot update a canceled sale.");
@@ -272,16 +295,16 @@ public class SaleService : ISaleService
         return updatedSale;
     }
 
-    private void ValidateSaleItemForCancellation(SaleItem saleItem)
+    private void ValidateItemForCancellation(SaleItem saleItem)
     {
         if (saleItem.IsCancelled)
             throw new SaleItemAlreadyCanceledException("This item is already cancelled.");
     }
 
-    private void CancelSaleItem(SaleItem saleItem)
+    private void CancelItem(SaleItem saleItem)
     {
         saleItem.IsCancelled = true;
-        saleItem.CancelledAt = DateTime.UtcNow;
+        saleItem.CancelledAt = DateTime.Now;
     }
 
     private decimal CalculateTotalAmount(List<SaleItem> items)
