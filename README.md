@@ -142,10 +142,10 @@ Aqui está a versão revisada da seção sobre a arquitetura de eventos com Rabb
 
 Nesta seção, explicamos a integração da aplicação com RabbitMQ, utilizando a arquitetura de Pub/Sub para eventos relacionados a vendas. A *exchange* utilizada é `ex_sale`, do tipo *direct*, e os consumidores podem criar suas próprias filas e fazer o *bind* com as *routing keys* dos eventos que desejam consumir. Essa abordagem garante flexibilidade e permite que diferentes serviços processem eventos de maneira independente.
 
-#### Exchange: ex_sale {#exchange-e-routing-keys}
+#### Exchange: ex_sale
 - **Tipo:** Direct
 
-### Eventos e Exemplos de Payload {#eventos-e-payloads}
+### Eventos e Exemplos de Payload
 
 #### 1. **SaleCancelledEvent**
 - **Routing Key:** `SaleCancelledEvent`
