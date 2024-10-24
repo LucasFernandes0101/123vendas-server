@@ -1,10 +1,9 @@
-﻿using _123vendas.Domain.Base;
+﻿namespace _123vendas.Application.DTOs.Sales;
 
-namespace _123vendas.Domain.Entities;
-
-public class SaleItem : BaseEntity
+public class SaleItemGetDTO
 {
-    public short Sequence { get; set; } 
+    public int Id { get; set; }
+    public short Sequence { get; set; }
     public int SaleId { get; set; }
     public int ProductId { get; set; }
     public string? ProductName { get; set; }
@@ -14,7 +13,4 @@ public class SaleItem : BaseEntity
     public decimal? Discount { get; set; }
     public bool IsCancelled { get; set; }
     public DateTime? CancelledAt { get; set; }
-
-    public virtual Sale? Sale { get; set; }
-    public virtual Product? Product { get; set; }
 }

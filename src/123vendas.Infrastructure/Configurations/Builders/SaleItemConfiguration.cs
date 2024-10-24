@@ -38,6 +38,9 @@ public class SaleItemConfiguration : IEntityTypeConfiguration<SaleItem>
             .HasColumnType("datetime2")
             .IsRequired(false);
 
+        builder.Property(si => si.Sequence)
+                .IsRequired();
+
         builder.Property(si => si.CreatedAt)
             .HasColumnType("datetime2")
             .ValueGeneratedOnAdd();

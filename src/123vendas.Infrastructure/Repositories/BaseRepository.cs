@@ -8,7 +8,7 @@ using _123vendas.Domain.Exceptions;
 
 namespace _123vendas.Infrastructure.Repositories;
 
-public class BaseRepository<T> : IBaseRepository<T> where T : class, IBaseEntity
+public abstract class BaseRepository<T> : IBaseRepository<T> where T : class, IBaseEntity
 {
     protected readonly SqlDbContext _dbContext;
 
