@@ -14,7 +14,6 @@ using Xunit;
 
 namespace _123vendas.Tests.Services;
 
-[Trait("Customer", "Service")]
 public class CustomerServiceTest
 {
     [Fact(DisplayName = "Should create customer successfully")]
@@ -22,10 +21,7 @@ public class CustomerServiceTest
     public async Task CreateAsync_ShouldCreateCustomer()
     {
         // Arrange
-        var repository = Substitute.For<ICustomerRepository>();
-        var validator = Substitute.For<IValidator<Customer>>();
-        var logger = Substitute.For<ILogger<CustomerService>>();
-        var service = new CustomerService(repository, validator, logger);
+        var (repository, validator, logger, service) = CreateDependencies();
 
         var customerMock = new CustomerMock().Generate();
         validator.ValidateAsync(customerMock).Returns(Task.FromResult(new ValidationResult()));
@@ -44,10 +40,7 @@ public class CustomerServiceTest
     public async Task CreateAsync_ShouldThrowValidationException_WhenInvalid()
     {
         // Arrange
-        var repository = Substitute.For<ICustomerRepository>();
-        var validator = Substitute.For<IValidator<Customer>>();
-        var logger = Substitute.For<ILogger<CustomerService>>();
-        var service = new CustomerService(repository, validator, logger);
+        var (repository, validator, logger, service) = CreateDependencies();
 
         var customerMock = new CustomerMock().Generate();
         var validationErrors = new List<ValidationFailure> { new ValidationFailure("Name", "Name is required.") };
@@ -66,10 +59,7 @@ public class CustomerServiceTest
     public async Task DeleteAsync_ShouldDeleteCustomer()
     {
         // Arrange
-        var repository = Substitute.For<ICustomerRepository>();
-        var validator = Substitute.For<IValidator<Customer>>();
-        var logger = Substitute.For<ILogger<CustomerService>>();
-        var service = new CustomerService(repository, validator, logger);
+        var (repository, validator, logger, service) = CreateDependencies();
 
         var customerMock = new CustomerMock().Generate();
         repository.GetByIdAsync(customerMock.Id).Returns(Task.FromResult(customerMock));
@@ -86,10 +76,7 @@ public class CustomerServiceTest
     public async Task DeleteAsync_ShouldThrowNotFoundException_WhenCustomerNotFound()
     {
         // Arrange
-        var repository = Substitute.For<ICustomerRepository>();
-        var validator = Substitute.For<IValidator<Customer>>();
-        var logger = Substitute.For<ILogger<CustomerService>>();
-        var service = new CustomerService(repository, validator, logger);
+        var (repository, validator, logger, service) = CreateDependencies();
 
         var invalidId = 999;
         repository.GetByIdAsync(invalidId).Returns(Task.FromResult<Customer>(null));
@@ -107,10 +94,7 @@ public class CustomerServiceTest
     public async Task GetAllAsync_ShouldReturnCustomers()
     {
         // Arrange
-        var repository = Substitute.For<ICustomerRepository>();
-        var validator = Substitute.For<IValidator<Customer>>();
-        var logger = Substitute.For<ILogger<CustomerService>>();
-        var service = new CustomerService(repository, validator, logger);
+        var (repository, validator, logger, service) = CreateDependencies();
 
         var customers = new List<Customer> { new CustomerMock().Generate(), new CustomerMock().Generate() };
         repository.GetAsync(1, 10, Arg.Any<Expression<Func<Customer, bool>>>()).Returns(Task.FromResult(new PagedResult<Customer>(customers.Count(), customers)));
@@ -128,10 +112,7 @@ public class CustomerServiceTest
     public async Task GetAllAsync_ShouldThrowInvalidPaginationParametersException_WhenPageIsLessThan1()
     {
         // Arrange
-        var repository = Substitute.For<ICustomerRepository>();
-        var validator = Substitute.For<IValidator<Customer>>();
-        var logger = Substitute.For<ILogger<CustomerService>>();
-        var service = new CustomerService(repository, validator, logger);
+        var (repository, validator, logger, service) = CreateDependencies();
 
         // Act
         Func<Task> act = () => service.GetAllAsync(null, null, null, null, null, null, null, null, 0, 10);
@@ -145,10 +126,7 @@ public class CustomerServiceTest
     public async Task GetByIdAsync_ShouldReturnCustomer()
     {
         // Arrange
-        var repository = Substitute.For<ICustomerRepository>();
-        var validator = Substitute.For<IValidator<Customer>>();
-        var logger = Substitute.For<ILogger<CustomerService>>();
-        var service = new CustomerService(repository, validator, logger);
+        var (repository, validator, logger, service) = CreateDependencies();
 
         var customerMock = new CustomerMock().Generate();
         repository.GetByIdAsync(customerMock.Id).Returns(Task.FromResult(customerMock));
@@ -165,10 +143,7 @@ public class CustomerServiceTest
     public async Task GetByIdAsync_ShouldThrowServiceException_WhenErrorOccurs()
     {
         // Arrange
-        var repository = Substitute.For<ICustomerRepository>();
-        var validator = Substitute.For<IValidator<Customer>>();
-        var logger = Substitute.For<ILogger<CustomerService>>();
-        var service = new CustomerService(repository, validator, logger);
+        var (repository, validator, logger, service) = CreateDependencies();
 
         var invalidId = 999;
         repository.GetByIdAsync(invalidId).Returns(Task.FromException<Customer>(new Exception("Database error")));
@@ -185,10 +160,7 @@ public class CustomerServiceTest
     public async Task UpdateAsync_ShouldUpdateCustomer()
     {
         // Arrange
-        var repository = Substitute.For<ICustomerRepository>();
-        var validator = Substitute.For<IValidator<Customer>>();
-        var logger = Substitute.For<ILogger<CustomerService>>();
-        var service = new CustomerService(repository, validator, logger);
+        var (repository, validator, logger, service) = CreateDependencies();
         var existingCustomer = new CustomerMock().Generate();
         var updatedCustomer = new CustomerMock().Generate();
 
@@ -209,10 +181,7 @@ public class CustomerServiceTest
     public async Task UpdateAsync_ShouldThrowNotFoundException_WhenCustomerNotFound()
     {
         // Arrange
-        var repository = Substitute.For<ICustomerRepository>();
-        var validator = Substitute.For<IValidator<Customer>>();
-        var logger = Substitute.For<ILogger<CustomerService>>();
-        var service = new CustomerService(repository, validator, logger);
+        var (repository, validator, logger, service) = CreateDependencies();
 
         var updatedCustomer = new CustomerMock().Generate();
         var invalidId = 999;
@@ -231,10 +200,7 @@ public class CustomerServiceTest
     public async Task UpdateAsync_ShouldThrowValidationException_WhenCustomerIsInvalid()
     {
         // Arrange
-        var repository = Substitute.For<ICustomerRepository>();
-        var validator = Substitute.For<IValidator<Customer>>();
-        var logger = Substitute.For<ILogger<CustomerService>>();
-        var service = new CustomerService(repository, validator, logger);
+        var (repository, validator, logger, service) = CreateDependencies();
 
         var existingCustomer = new CustomerMock().Generate();
         var updatedCustomer = new CustomerMock().Generate();
@@ -248,5 +214,15 @@ public class CustomerServiceTest
         // Assert
         await act.Should().ThrowAsync<ValidationException>();
         await repository.DidNotReceive().UpdateAsync(Arg.Any<Customer>());
+    }
+
+    private (ICustomerRepository repository, IValidator<Customer> validator, ILogger<CustomerService> logger, CustomerService service) CreateDependencies()
+    {
+        var repository = Substitute.For<ICustomerRepository>();
+        var validator = Substitute.For<IValidator<Customer>>();
+        var logger = Substitute.For<ILogger<CustomerService>>();
+        var service = new CustomerService(repository, validator, logger);
+
+        return (repository, validator, logger, service);
     }
 }

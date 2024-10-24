@@ -55,9 +55,9 @@ public class SaleService : ISaleService
 
             var savedSale = await _repository.AddAsync(sale);
 
-            await UpdateStockQuantitiesAsync(sale.Items, sale.BranchId);
+            await UpdateStockQuantitiesAsync(savedSale.Items, savedSale.BranchId);
 
-            await PublishSaleMessageAsync(new SaleCreatedEvent(sale));
+            await PublishSaleMessageAsync(new SaleCreatedEvent(savedSale));
 
             return savedSale;
         }
@@ -365,7 +365,7 @@ public class SaleService : ISaleService
     {
         var branchProduct = (await _branchProductRepository.GetAsync(1, 1,
             p => p.IsActive && p.BranchId == branchId && p.ProductId == productId))
-            .Items.FirstOrDefault();
+            .Items?.FirstOrDefault();
 
         if (branchProduct is null)
             throw new NotFoundException($"Product ID {productId} not found or inactive in branch ID {branchId}.");
