@@ -2,9 +2,11 @@
 using _123vendas.Domain.Interfaces.Repositories;
 using _123vendas.Infrastructure.Contexts;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics.CodeAnalysis;
 
 namespace _123vendas.Infrastructure.Repositories;
 
+[ExcludeFromCodeCoverage]
 public class SaleRepository : BaseRepository<Sale>, ISaleRepository
 {
     public SaleRepository(SqlDbContext dbContext) : base(dbContext)

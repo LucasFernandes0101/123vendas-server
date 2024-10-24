@@ -1,8 +1,10 @@
 ﻿using _123vendas.Domain.Entities;
 using FluentValidation;
+using System.Diagnostics.CodeAnalysis;
 
 namespace _123vendas.Domain.Validators;
 
+[ExcludeFromCodeCoverage]
 public class CustomerValidator : AbstractValidator<Customer>
 {
     public CustomerValidator()

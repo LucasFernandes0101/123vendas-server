@@ -1,9 +1,11 @@
 ﻿using _123vendas.Application.DTOs.Branches;
 using _123vendas.Domain.Entities;
 using AutoMapper;
+using System.Diagnostics.CodeAnalysis;
 
 namespace _123vendas.Application.Mappers.Branches;
 
+[ExcludeFromCodeCoverage]
 public static class BranchMappers
 {
     private static readonly IMapper _mapper = new MapperConfiguration(cfg =>

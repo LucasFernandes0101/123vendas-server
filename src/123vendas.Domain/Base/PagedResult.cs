@@ -1,5 +1,8 @@
-﻿namespace _123vendas.Domain.Base;
+﻿using System.Diagnostics.CodeAnalysis;
 
+namespace _123vendas.Domain.Base;
+
+[ExcludeFromCodeCoverage]
 public class PagedResult<T>
 {
     public int Total { get; set; }

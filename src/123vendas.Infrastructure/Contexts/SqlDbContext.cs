@@ -1,11 +1,13 @@
 ﻿using _123vendas.Domain.Base.Interfaces;
 using _123vendas.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 using System.Reflection;
 
 namespace _123vendas.Infrastructure.Contexts;
 
+[ExcludeFromCodeCoverage]
 public class SqlDbContext : DbContext
 {
     public SqlDbContext(DbContextOptions<SqlDbContext> options) : base(options)

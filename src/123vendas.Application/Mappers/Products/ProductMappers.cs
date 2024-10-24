@@ -1,9 +1,11 @@
 ﻿using _123vendas.Application.DTOs.Products;
 using _123vendas.Domain.Entities;
 using AutoMapper;
+using System.Diagnostics.CodeAnalysis;
 
 namespace _123vendas.Application.Mappers.Products;
 
+[ExcludeFromCodeCoverage]
 public static class ProductMappers
 {
     private static readonly IMapper _mapper = new MapperConfiguration(cfg =>

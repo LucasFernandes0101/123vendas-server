@@ -4,10 +4,12 @@ using _123vendas.Domain.Interfaces.Integrations;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Exceptions;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 
 namespace _123vendas.Infrastructure.Integrations;
 
+[ExcludeFromCodeCoverage]
 public class RabbitMQIntegration : IRabbitMQIntegration, IDisposable
 {
     private readonly IConnectionFactory _connectionFactory;

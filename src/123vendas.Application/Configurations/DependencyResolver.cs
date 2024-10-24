@@ -15,9 +15,11 @@ using _123vendas.Infrastructure.Repositories;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using System.Diagnostics.CodeAnalysis;
 
 namespace _123vendas.Application.Configurations;
 
+[ExcludeFromCodeCoverage]
 public static class DependencyResolver
 {
     public static IServiceCollection ResolveDependencies(this IServiceCollection services)

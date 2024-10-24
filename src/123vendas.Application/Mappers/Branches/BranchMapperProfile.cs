@@ -2,9 +2,11 @@
 using _123vendas.Domain.Entities;
 
 using AutoMapper;
+using System.Diagnostics.CodeAnalysis;
 
 namespace _123vendas.Application.Mappers.Branches;
 
+[ExcludeFromCodeCoverage]
 public class BranchMapperProfile : Profile
 {
     public BranchMapperProfile()

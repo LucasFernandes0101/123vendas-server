@@ -2,9 +2,11 @@
 using Serilog;
 using Serilog.Core;
 using Serilog.Events;
+using System.Diagnostics.CodeAnalysis;
 
 namespace _123vendas.Application.Configurations;
 
+[ExcludeFromCodeCoverage]
 public static class SerilogExtension
 {
     private static readonly LogEventLevel _defaultLogLevel = LogEventLevel.Information;

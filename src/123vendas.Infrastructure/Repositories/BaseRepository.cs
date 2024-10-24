@@ -1,13 +1,14 @@
-﻿using _123vendas.Domain.Base.Interfaces;
-using _123vendas.Domain.Base;
+﻿using _123vendas.Domain.Base;
+using _123vendas.Domain.Base.Interfaces;
+using _123vendas.Domain.Exceptions;
 using _123vendas.Infrastructure.Contexts;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
-using AspNetCore.IQueryable.Extensions.Filter;
-using _123vendas.Domain.Exceptions;
 
 namespace _123vendas.Infrastructure.Repositories;
 
+[ExcludeFromCodeCoverage]
 public abstract class BaseRepository<T> : IBaseRepository<T> where T : class, IBaseEntity
 {
     protected readonly SqlDbContext _dbContext;

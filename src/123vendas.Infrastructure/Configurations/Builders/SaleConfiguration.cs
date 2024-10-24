@@ -1,10 +1,12 @@
 ﻿using _123vendas.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection.Emit;
 
 namespace _123vendas.Infrastructure.Configurations.Builders;
 
+[ExcludeFromCodeCoverage]
 public class SaleConfiguration : IEntityTypeConfiguration<Sale>
 {
     public void Configure(EntityTypeBuilder<Sale> builder)

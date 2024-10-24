@@ -1,9 +1,11 @@
 ﻿using _123vendas.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.Diagnostics.CodeAnalysis;
 
 namespace _123vendas.Infrastructure.Configurations.Builders;
 
+[ExcludeFromCodeCoverage]
 public class BranchConfiguration : IEntityTypeConfiguration<Branch>
 {
     public void Configure(EntityTypeBuilder<Branch> builder)
