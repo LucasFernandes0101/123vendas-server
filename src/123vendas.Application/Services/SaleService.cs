@@ -14,6 +14,8 @@ namespace _123vendas.Application.Services;
 
 public class SaleService : ISaleService
 {
+    private const int MAX_ITEMS_PER_SALE = 20;
+
     private readonly ISaleRepository _repository;
     private readonly ISaleItemRepository _saleItemRepository;
     private readonly IBranchProductRepository _branchProductRepository;
@@ -61,7 +63,7 @@ public class SaleService : ISaleService
 
             return savedSale;
         }
-        catch (Exception ex) when (ex is ValidationException || ex is NotFoundException || ex is ItemOutOfStockException)
+        catch (Exception ex) when (ex is ValidationException || ex is BaseException)
         {
             throw;
         }
@@ -97,7 +99,7 @@ public class SaleService : ISaleService
 
             return sale;
         }
-        catch (Exception ex) when (ex is NotFoundException || ex is SaleItemAlreadyCanceledException || ex is SaleAlreadyCanceledException)
+        catch (BaseException)
         {
             throw;
         }
@@ -120,7 +122,11 @@ public class SaleService : ISaleService
 
             return saleItem;
         }
-        catch (Exception ex) when (ex is not NotFoundException)
+        catch (BaseException)
+        {
+            throw;
+        }
+        catch (Exception ex)
         {
             throw new ServiceException("An error occurred while retrieving the item.", ex);
         }
@@ -146,7 +152,11 @@ public class SaleService : ISaleService
 
             return result.Items;
         }
-        catch (Exception ex) when (ex is not InvalidPaginationParametersException)
+        catch (BaseException ex)
+        {
+            throw new ServiceException("An error occurred while retrieving sales.", ex);
+        }
+        catch (Exception ex)
         {
             throw new ServiceException("An error occurred while retrieving sales.", ex);
         }
@@ -158,7 +168,11 @@ public class SaleService : ISaleService
         {
             return await GetSaleWithItemsOrThrowAsync(id);
         }
-        catch (Exception ex) when (ex is not NotFoundException)
+        catch (BaseException)
+        {
+            throw;
+        }
+        catch (Exception ex)
         {
             throw new ServiceException("An error occurred while retrieving the sale.", ex);
         }
@@ -182,7 +196,7 @@ public class SaleService : ISaleService
 
             return updatedSale;
         }
-        catch (Exception ex) when (ex is NotFoundException || ex is SaleAlreadyCanceledException || ex is ValidationException)
+        catch (BaseException)
         {
             throw;
         }
@@ -213,7 +227,7 @@ public class SaleService : ISaleService
 
             return sale;
         }
-        catch (Exception ex) when (ex is NotFoundException || ex is InvalidOperationException || ex is SaleAlreadyCanceledException)
+        catch (BaseException)
         {
             throw;
         }
@@ -231,7 +245,11 @@ public class SaleService : ISaleService
 
             await _repository.DeleteAsync(existingSale);
         }
-        catch (Exception ex) when (ex is not NotFoundException)
+        catch (BaseException)
+        {
+            throw;
+        }
+        catch (Exception ex)
         {
             throw new ServiceException("An error occurred while deleting the sale. Please try again later.", ex);
         }
@@ -260,15 +278,19 @@ public class SaleService : ISaleService
         if (branchProduct.StockQuantity < requestItem.Quantity)
             throw new ItemOutOfStockException($"Product {branchProduct.ProductName} is out of stock.");
 
+        if (requestItem.Quantity > MAX_ITEMS_PER_SALE)
+            throw new ItemQuantityLimitExceededException("Cannot sell more than 20 identical items.");
+
         var saleItem = new SaleItem
         {
             ProductId = branchProduct.ProductId,
             ProductName = branchProduct.ProductName,
             UnitPrice = branchProduct.Price,
             Quantity = requestItem.Quantity,
-            Discount = requestItem.Discount ?? 0,
             Sequence = sequence
         };
+
+        saleItem.Discount = CalculateItemDiscount(requestItem);
 
         saleItem.Price = CalculateItemPrice(saleItem);
 
@@ -279,6 +301,20 @@ public class SaleService : ISaleService
     {
         var discountMultiplier = 1 - (item.Discount / 100 ?? 0);
         return item.UnitPrice * item.Quantity * discountMultiplier;
+    }
+
+    private decimal CalculateItemDiscount(SaleItem item)
+    {
+        if (item.Quantity < 4)
+            return 0;
+
+        if (item.Discount.HasValue && item.Discount.Value > 0)
+            return item.Discount.Value;
+
+        if (item.Quantity >= 10)
+            return 20;
+
+        return 10;
     }
 
     private async Task UpdateStockQuantitiesAsync(List<SaleItem> items, int branchId)

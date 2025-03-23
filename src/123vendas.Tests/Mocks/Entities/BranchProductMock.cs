@@ -14,7 +14,7 @@ public class BranchProductMock : Faker<BranchProduct>
         .RuleFor(bp => bp.ProductName, f => f.Commerce.ProductName())
         .RuleFor(bp => bp.ProductCategory, f => f.PickRandom<ProductCategory>())
         .RuleFor(bp => bp.Price, f => f.Finance.Amount(1, 1000, 2))
-        .RuleFor(bp => bp.StockQuantity, f => f.Random.Int(0, 100))
+        .RuleFor(bp => bp.StockQuantity, f => f.Random.Int(100, 1000))
         .RuleFor(bp => bp.IsActive, f => f.Random.Bool());
     }
 }

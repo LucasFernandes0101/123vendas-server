@@ -1,4 +1,5 @@
-﻿using _123vendas.Domain.Entities;
+﻿using _123vendas.Domain.Base;
+using _123vendas.Domain.Entities;
 using _123vendas.Domain.Exceptions;
 using _123vendas.Domain.Interfaces.Repositories;
 using _123vendas.Domain.Interfaces.Services;
@@ -31,7 +32,11 @@ public class CustomerService : ICustomerService
 
             return await _repository.AddAsync(request);
         }
-        catch (Exception ex) when (ex is not ValidationException)
+        catch (Exception ex) when (ex is ValidationException || ex is BaseException)
+        {
+            throw;
+        }
+        catch (Exception ex)
         {
             throw new ServiceException("An error occurred while creating a customer.", ex);
         }
@@ -45,7 +50,7 @@ public class CustomerService : ICustomerService
 
             await _repository.DeleteAsync(customer);
         }
-        catch (Exception ex) when (ex is NotFoundException || ex is EntityAlreadyDeletedException)
+        catch (BaseException)
         {
             throw;
         }
@@ -77,7 +82,7 @@ public class CustomerService : ICustomerService
 
             return result.Items;
         }
-        catch (Exception ex) when (ex is InvalidPaginationParametersException)
+        catch (BaseException)
         {
             throw;
         }
@@ -111,7 +116,7 @@ public class CustomerService : ICustomerService
 
             return await _repository.UpdateAsync(customer);
         }
-        catch (Exception ex) when (ex is ValidationException || ex is NotFoundException)
+        catch (Exception ex) when (ex is ValidationException || ex is BaseException)
         {
             throw;
         }
@@ -135,11 +140,11 @@ public class CustomerService : ICustomerService
         return existingCustomer;
     }
 
-    private Expression<Func<Customer, bool>> BuildCriteria(int? id, 
-                                                           string? name, 
-                                                           string? document, 
-                                                           string? phone, 
-                                                           string? email, 
+    private Expression<Func<Customer, bool>> BuildCriteria(int? id,
+                                                           string? name,
+                                                           string? document,
+                                                           string? phone,
+                                                           string? email,
                                                            bool? isActive,
                                                            DateTime? startDate,
                                                            DateTime? endDate)

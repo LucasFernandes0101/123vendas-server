@@ -1,4 +1,5 @@
-﻿using _123vendas.Domain.Entities;
+﻿using _123vendas.Domain.Base;
+using _123vendas.Domain.Entities;
 using _123vendas.Domain.Exceptions;
 using _123vendas.Domain.Interfaces.Repositories;
 using _123vendas.Domain.Interfaces.Services;
@@ -47,7 +48,7 @@ public class BranchProductService : IBranchProductService
             var branchProduct = await FindBranchProductOrThrowAsync(id);
             await _repository.DeleteAsync(branchProduct);
         }
-        catch (Exception ex) when (ex is NotFoundException || ex is EntityAlreadyDeletedException)
+        catch (BaseException)
         {
             throw;
         }
@@ -76,7 +77,7 @@ public class BranchProductService : IBranchProductService
             var result = await _repository.GetAsync(page, maxResults, criteria);
             return result.Items;
         }
-        catch (Exception ex) when (ex is InvalidPaginationParametersException)
+        catch (BaseException)
         {
             throw;
         }

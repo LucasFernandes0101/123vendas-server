@@ -62,7 +62,7 @@ public class SaleServiceTest
         var branchProducts = new BranchProductMock().Generate(1);
 
         branchProductRepository.GetAsync(1, 1, Arg.Any<Expression<Func<BranchProduct, bool>>>()).Returns(Task.FromResult(new PagedResult<BranchProduct>(1, branchProducts)));
-        validator.ValidateAsync(Arg.Any<Sale>()).Returns(new ValidationResult(new List<ValidationFailure> { 
+        validator.ValidateAsync(Arg.Any<Sale>()).Returns(new ValidationResult(new List<ValidationFailure> {
             new ValidationFailure("CustomerId", "Customer is required") }));
 
         var saleService = new SaleService(repository, saleItemRepository, branchProductRepository, validator, rabbitMQIntegration, logger);
@@ -113,9 +113,11 @@ public class SaleServiceTest
         await act.Should().ThrowAsync<NotFoundException>();
     }
 
-    [Fact(DisplayName = "Create Sale - Validate Discount on Items with Branch Product Price")]
+    [Theory(DisplayName = "Create Sale - Validate Discount on Items with Valid Discount Provided")]
     [Trait("Sale", "Service")]
-    public async Task CreateSaleAsync_ShouldApplyDiscount_WhenValidDiscountProvided()
+    [InlineData(1)]
+    [InlineData(4)]
+    public async Task CreateSaleAsync_ShouldApplyDiscount_WhenValidDiscountProvided(int quantity)
     {
         // Arrange
         var (repository, saleItemRepository, branchProductRepository, validator, rabbitMQIntegration, logger) = CreateDependencies();
@@ -126,7 +128,7 @@ public class SaleServiceTest
             new SaleItem
             {
                 ProductId = 1,
-                Quantity = 1,
+                Quantity = quantity,
                 Discount = 25,
                 Sequence = 2
             }
@@ -149,7 +151,7 @@ public class SaleServiceTest
         repository.AddAsync(Arg.Do<Sale>(s => capturedSale = s)).Returns(sale);
 
         var saleService = new SaleService(repository, saleItemRepository, branchProductRepository, validator, rabbitMQIntegration, logger);
-        
+
         // Act
         await saleService.CreateAsync(sale);
 
@@ -157,11 +159,135 @@ public class SaleServiceTest
         capturedSale.Should().NotBeNull();
         capturedSale.Items.Should().NotBeEmpty();
 
-        capturedSale.Items[0].Discount.Should().Be(25);
-        capturedSale.Items[0].Price.Should().Be(75);
-        capturedSale.TotalAmount.Should().Be(75);
+        if (quantity >= 4)
+        {
+            capturedSale.Items[0].Discount.Should().Be(25);
+            capturedSale.Items[0].Price.Should().Be(300);
+            capturedSale.TotalAmount.Should().Be(300);
+        }
+        else
+        {
+            capturedSale.Items[0].Discount.Should().Be(0);
+            capturedSale.Items[0].Price.Should().Be(100);
+            capturedSale.TotalAmount.Should().Be(100);
+        }
 
         await repository.Received(1).AddAsync(Arg.Any<Sale>());
+    }
+
+    [Theory(DisplayName = "Create Sale - Apply Correct Discount Based on Item Quantity")]
+    [Trait("Sale", "Service")]
+    [InlineData(1)]
+    [InlineData(2)]
+    [InlineData(4)]
+    [InlineData(5)]
+    [InlineData(10)]
+    [InlineData(20)]
+    public async Task CreateSaleAsync_ShouldApplyCorrectDiscount_BasedItemQuantity(int quantity)
+    {
+        // Arrange
+        var (repository, saleItemRepository, branchProductRepository, validator, rabbitMQIntegration, logger) = CreateDependencies();
+
+        var sale = new SaleMock().Generate();
+        sale.Items = new List<SaleItem>()
+        {
+            new SaleItem
+            {
+                ProductId = 1,
+                Quantity = quantity,
+                Sequence = 2
+            }
+        };
+
+        var branchProduct = new BranchProduct
+        {
+            ProductId = sale.Items[0].ProductId,
+            BranchId = 1,
+            Price = 100,
+            StockQuantity = 100,
+        };
+
+        validator.ValidateAsync(Arg.Any<Sale>()).Returns(new ValidationResult());
+
+        branchProductRepository.GetAsync(1, 1, Arg.Any<Expression<Func<BranchProduct, bool>>>())
+            .Returns(Task.FromResult(new PagedResult<BranchProduct>(1, new List<BranchProduct>() { branchProduct })));
+
+        var capturedSale = new Sale();
+        repository.AddAsync(Arg.Do<Sale>(s => capturedSale = s)).Returns(sale);
+
+        var saleService = new SaleService(repository, saleItemRepository, branchProductRepository, validator, rabbitMQIntegration, logger);
+
+        // Act
+        await saleService.CreateAsync(sale);
+
+        // Assert
+        capturedSale.Should().NotBeNull();
+        capturedSale.Items.Should().NotBeEmpty();
+
+        decimal expectedDiscount = 0;
+        decimal expectedPrice = branchProduct.Price * quantity;
+
+        if (quantity >= 10)
+        {
+            expectedDiscount = 20;
+            expectedPrice = branchProduct.Price * quantity * (1 - 0.20m);
+        }
+        else if (quantity >= 4)
+        {
+            expectedDiscount = 10;
+            expectedPrice = branchProduct.Price * quantity * (1 - 0.10m);
+        }
+
+        capturedSale.Items[0].Discount.Should().Be(expectedDiscount);
+        capturedSale.Items[0].Price.Should().Be(expectedPrice);
+        capturedSale.TotalAmount.Should().Be(expectedPrice);
+
+        await repository.Received(1).AddAsync(Arg.Any<Sale>());
+    }
+
+    [Fact(DisplayName = "Create Sale - Should Throw When Item Quantity More Than 20")]
+    [Trait("Sale", "Service")]
+    public async Task CreateSaleAsync_ShouldThrow_WhenItemQuantityMoreThan20()
+    {
+        // Arrange
+        var (repository, saleItemRepository, branchProductRepository, validator, rabbitMQIntegration, logger) = CreateDependencies();
+
+        var sale = new SaleMock().Generate();
+        sale.Items = new List<SaleItem>()
+        {
+            new SaleItem
+            {
+                ProductId = 1,
+                Quantity = 21,
+                Discount = 25,
+                Sequence = 2
+            }
+        };
+
+        var branchProduct = new BranchProduct
+        {
+            ProductId = sale.Items[0].ProductId,
+            BranchId = 1,
+            Price = 100,
+            StockQuantity = 100,
+        };
+
+        validator.ValidateAsync(Arg.Any<Sale>()).Returns(new ValidationResult());
+
+        branchProductRepository.GetAsync(1, 1, Arg.Any<Expression<Func<BranchProduct, bool>>>())
+            .Returns(Task.FromResult(new PagedResult<BranchProduct>(1, new List<BranchProduct>() { branchProduct })));
+
+        var capturedSale = new Sale();
+        repository.AddAsync(Arg.Do<Sale>(s => capturedSale = s)).Returns(sale);
+
+        var saleService = new SaleService(repository, saleItemRepository, branchProductRepository, validator, rabbitMQIntegration, logger);
+
+        // Act
+        Func<Task> act = async () => await saleService.CreateAsync(sale);
+
+        // Assert
+        await act.Should().ThrowAsync<ItemQuantityLimitExceededException>()
+            .WithMessage("Cannot sell more than 20 identical items.");
     }
 
     [Fact(DisplayName = "Cancel Sale Item - Valid Request")]
@@ -172,19 +298,23 @@ public class SaleServiceTest
         var (repository, saleItemRepository, branchProductRepository, validator, rabbitMQIntegration, logger) = CreateDependencies();
 
         var sale = new SaleMock().Generate();
+        sale.TotalAmount = sale.Items!.Sum(i => i.Price);
         sale.Status = SaleStatus.Created;
         var oldSaleAmount = sale.TotalAmount;
 
         repository.GetWithItemsByIdAsync(sale.Id).Returns(sale);
         var saleService = new SaleService(repository, saleItemRepository, branchProductRepository, validator, rabbitMQIntegration, logger);
-        
+
         // Act
         var result = await saleService.CancelItemAsync(sale.Id, sale.Items!.First().Sequence);
 
         // Assert
         result.Should().NotBeNull();
         result.Items.Should().Contain(i => i.IsCancelled);
-        await repository.Received(1).UpdateAsync(Arg.Is<Sale>(s => oldSaleAmount > s.TotalAmount));
+
+        var canceledItemPrice = sale.Items!.First().Price;
+        await repository.Received(1).UpdateAsync(Arg.Is<Sale>(s => s.TotalAmount == (oldSaleAmount - canceledItemPrice)));
+
         await rabbitMQIntegration.Received(1).PublishMessageAsync(Arg.Is<SaleItemCancelledEvent>(e => e.Sequence == sale.Items!.First().Sequence));
     }
 

@@ -1,4 +1,5 @@
-﻿using _123vendas.Domain.Entities;
+﻿using _123vendas.Domain.Base;
+using _123vendas.Domain.Entities;
 using _123vendas.Domain.Exceptions;
 using _123vendas.Domain.Interfaces.Repositories;
 using _123vendas.Domain.Interfaces.Services;
@@ -16,7 +17,7 @@ public class ProductService : IProductService
     private readonly ILogger<ProductService> _logger;
 
     public ProductService(IProductRepository repository,
-                          IBranchProductRepository branchProductRepository,   
+                          IBranchProductRepository branchProductRepository,
                           IValidator<Product> validator,
                           ILogger<ProductService> logger)
     {
@@ -34,7 +35,11 @@ public class ProductService : IProductService
 
             return await _repository.AddAsync(request);
         }
-        catch (Exception ex) when (ex is not ValidationException)
+        catch (Exception ex) when (ex is ValidationException || ex is BaseException)
+        {
+            throw;
+        }
+        catch (Exception ex)
         {
             throw new ServiceException("An error occurred while creating a product.", ex);
         }
@@ -48,7 +53,7 @@ public class ProductService : IProductService
 
             await _repository.DeleteAsync(product);
         }
-        catch (Exception ex) when (ex is NotFoundException || ex is EntityAlreadyDeletedException)
+        catch (BaseException)
         {
             throw;
         }
@@ -77,7 +82,7 @@ public class ProductService : IProductService
 
             return result.Items;
         }
-        catch (Exception ex) when (ex is InvalidPaginationParametersException)
+        catch (BaseException)
         {
             throw;
         }
@@ -121,7 +126,7 @@ public class ProductService : IProductService
 
             return product;
         }
-        catch (Exception ex) when (ex is ValidationException || ex is NotFoundException)
+        catch (BaseException)
         {
             throw;
         }
