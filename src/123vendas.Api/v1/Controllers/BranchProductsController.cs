@@ -27,7 +27,8 @@ namespace _123vendas_server.v1.Controllers
                                                             request.StartDate,
                                                             request.EndDate,
                                                             request.Page,
-                                                            request.MaxResults);
+                                                            request.Size,
+                                                            request.OrderByClause);
 
             var response = branchProducts.ToDTO();
 

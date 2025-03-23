@@ -27,7 +27,8 @@ public class SalesController : ControllerBase
                                                    request.StartDate,
                                                    request.EndDate,
                                                    request.Page,
-                                                   request.MaxResults);
+                                                   request.Size,
+                                                   request.OrderByClause);
 
         var response = sales.ToDTO();
 

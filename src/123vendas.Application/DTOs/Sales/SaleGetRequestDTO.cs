@@ -1,8 +1,9 @@
-﻿using _123vendas.Domain.Enums;
+﻿using _123vendas.Application.DTOs.Common;
+using _123vendas.Domain.Enums;
 
 namespace _123vendas.Application.DTOs.Sales;
 
-public record SaleGetRequestDTO
+public record SaleGetRequestDTO : PagedRequestDTO
 {
     public int? Id { get; init; }
     public int? CustomerId { get; init; }
@@ -10,6 +11,4 @@ public record SaleGetRequestDTO
     public SaleStatus? Status { get; init; }
     public DateTime? StartDate { get; init; }
     public DateTime? EndDate { get; init; }
-    public int Page { get; init; } = 1;
-    public int MaxResults { get; init; } = 10;
 }

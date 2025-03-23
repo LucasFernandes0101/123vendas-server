@@ -4,7 +4,7 @@ namespace _123vendas.Domain.Interfaces.Services;
 
 public interface IBranchService
 {
-    Task<List<Branch>> GetAllAsync(int? id, bool? isActive, string? name, DateTime? startDate, DateTime? endDate, int page = 1, int maxResults = 10);
+    Task<List<Branch>> GetAllAsync(int? id, bool? isActive, string? name, DateTime? startDate, DateTime? endDate, int page = 1, int maxResults = 10, string? orderByClause = default);
     Task<Branch?> GetByIdAsync(int id);
     Task<Branch> CreateAsync(Branch request);
     Task<Branch> UpdateAsync(int id, Branch request);

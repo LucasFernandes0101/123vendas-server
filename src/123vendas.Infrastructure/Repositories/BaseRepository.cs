@@ -2,6 +2,7 @@
 using _123vendas.Domain.Base.Interfaces;
 using _123vendas.Domain.Exceptions;
 using _123vendas.Infrastructure.Contexts;
+using _123vendas.Infrastructure.Extensions;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
@@ -18,7 +19,10 @@ public abstract class BaseRepository<T> : IBaseRepository<T> where T : class, IB
         _dbContext = dbContext;
     }
 
-    public async Task<PagedResult<T>> GetAsync(int page = 1, int maxResults = 10, Expression<Func<T, bool>>? criteria = default)
+    public async Task<PagedResult<T>> GetAsync(int page = 1, 
+                                               int maxResults = 10, 
+                                               Expression<Func<T, bool>>? criteria = default,
+                                               string? orderByClause = default)
     {
         page = page == 0 ? 1 : page;
         int count = (page - 1) * maxResults;
@@ -27,6 +31,9 @@ public abstract class BaseRepository<T> : IBaseRepository<T> where T : class, IB
 
         if (criteria is not null)
             query = query.Where(criteria);
+
+        if (!string.IsNullOrWhiteSpace(orderByClause))
+            query = query.ApplyOrdering(orderByClause);
 
         var totalRecords = await query.CountAsync();
         var items = await query.Skip(count).Take(maxResults).ToListAsync();

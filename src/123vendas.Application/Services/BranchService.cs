@@ -62,7 +62,8 @@ public class BranchService : IBranchService
                                                 DateTime? startDate,
                                                 DateTime? endDate,
                                                 int page = 1,
-                                                int maxResults = 10)
+                                                int maxResults = 10,
+                                                string? orderByClause = default)
     {
         try
         {
@@ -71,7 +72,7 @@ public class BranchService : IBranchService
 
             var criteria = BuildCriteria(id, isActive, name, startDate, endDate);
 
-            var result = await _repository.GetAsync(page, maxResults, criteria);
+            var result = await _repository.GetAsync(page, maxResults, criteria, orderByClause);
 
             return result.Items;
         }

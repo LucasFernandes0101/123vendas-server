@@ -139,7 +139,8 @@ public class SaleService : ISaleService
                                               DateTime? startDate,
                                               DateTime? endDate,
                                               int page = 1,
-                                              int maxResults = 10)
+                                              int maxResults = 10,
+                                              string? orderByClause = default)
     {
         try
         {
@@ -148,7 +149,7 @@ public class SaleService : ISaleService
 
             var criteria = BuildCriteria(id, branchId, customerId, status, startDate, endDate);
 
-            var result = await _repository.GetAsync(page, maxResults, criteria);
+            var result = await _repository.GetAsync(page, maxResults, criteria, orderByClause);
 
             return result.Items;
         }

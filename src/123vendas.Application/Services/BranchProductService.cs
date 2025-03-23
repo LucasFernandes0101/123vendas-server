@@ -66,7 +66,8 @@ public class BranchProductService : IBranchProductService
         DateTime? startDate,
         DateTime? endDate,
         int page = 1,
-        int maxResults = 10)
+        int maxResults = 10,
+        string? orderByClause = default)
     {
         try
         {
@@ -74,7 +75,9 @@ public class BranchProductService : IBranchProductService
                 throw new InvalidPaginationParametersException("Page number and max results must be greater than zero.");
 
             var criteria = BuildCriteria(id, branchId, productId, isActive, startDate, endDate);
-            var result = await _repository.GetAsync(page, maxResults, criteria);
+
+            var result = await _repository.GetAsync(page, maxResults, criteria, orderByClause);
+
             return result.Items;
         }
         catch (BaseException)
