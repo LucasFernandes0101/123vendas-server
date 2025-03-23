@@ -38,7 +38,7 @@ public class RabbitMQIntegration : IRabbitMQIntegration, IDisposable
         string message = JsonConvert.SerializeObject(@event);
         byte[] body = Encoding.UTF8.GetBytes(message);
 
-        var basicProperties = _channel.CreateBasicProperties();
+        var basicProperties = _channel!.CreateBasicProperties();
         basicProperties.Persistent = true;
 
         for (int retry = 0; retry < 10; retry++)

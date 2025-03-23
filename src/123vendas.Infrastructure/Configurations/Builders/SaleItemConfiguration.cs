@@ -14,7 +14,7 @@ public class SaleItemConfiguration : IEntityTypeConfiguration<SaleItem>
 
         builder.HasKey(si => si.Id);
 
-        builder.Property(si => si.ProductName)
+        builder.Property(si => si.ProductTitle)
             .IsRequired()
             .HasColumnType("varchar(150)");
 

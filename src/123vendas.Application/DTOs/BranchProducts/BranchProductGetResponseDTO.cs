@@ -8,7 +8,7 @@ public record BranchProductGetResponseDTO
     public DateTime CreatedAt { get; init; }
     public int BranchId { get; init; }
     public int ProductId { get; init; }
-    public string? ProductName { get; init; }
+    public string? ProductTitle { get; init; }
     public ProductCategory ProductCategory { get; init; }
     public decimal Price { get; init; }
     public bool IsActive { get; init; }

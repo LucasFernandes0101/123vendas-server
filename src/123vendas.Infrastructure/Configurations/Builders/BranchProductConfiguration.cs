@@ -14,7 +14,7 @@ public class BranchProductConfiguration : IEntityTypeConfiguration<BranchProduct
 
         builder.HasKey(bp => bp.Id);
 
-        builder.Property(bp => bp.ProductName)
+        builder.Property(bp => bp.ProductTitle)
             .IsRequired()
             .HasColumnType("varchar(100)");
 

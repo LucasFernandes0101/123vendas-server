@@ -277,7 +277,7 @@ public class SaleService : ISaleService
         var branchProduct = await GetBranchProductOrThrowAsync(branchId, requestItem.ProductId);
 
         if (branchProduct.StockQuantity < requestItem.Quantity)
-            throw new ItemOutOfStockException($"Product {branchProduct.ProductName} is out of stock.");
+            throw new ItemOutOfStockException($"Product {branchProduct.ProductTitle} is out of stock.");
 
         if (requestItem.Quantity > MAX_ITEMS_PER_SALE)
             throw new ItemQuantityLimitExceededException("Cannot sell more than 20 identical items.");
@@ -285,7 +285,7 @@ public class SaleService : ISaleService
         var saleItem = new SaleItem
         {
             ProductId = branchProduct.ProductId,
-            ProductName = branchProduct.ProductName,
+            ProductTitle = branchProduct.ProductTitle,
             UnitPrice = branchProduct.Price,
             Quantity = requestItem.Quantity,
             Sequence = sequence

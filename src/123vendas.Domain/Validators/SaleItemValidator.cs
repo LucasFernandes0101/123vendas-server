@@ -30,7 +30,7 @@ public class SaleItemValidator : AbstractValidator<SaleItem>
             .When(item => item.Discount.HasValue)
             .WithMessage("Discount must be between 0 and 100.");
 
-        RuleFor(item => item.ProductName)
+        RuleFor(item => item.ProductTitle)
             .NotEmpty()
             .WithMessage("ProductName is required.")
             .MaximumLength(150)

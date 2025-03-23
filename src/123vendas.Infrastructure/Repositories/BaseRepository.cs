@@ -1,4 +1,5 @@
-﻿using _123vendas.Domain.Base;
+﻿using _123vendas.Domain;
+using _123vendas.Domain.Base;
 using _123vendas.Domain.Base.Interfaces;
 using _123vendas.Domain.Exceptions;
 using _123vendas.Infrastructure.Contexts;
@@ -19,8 +20,8 @@ public abstract class BaseRepository<T> : IBaseRepository<T> where T : class, IB
         _dbContext = dbContext;
     }
 
-    public async Task<PagedResult<T>> GetAsync(int page = 1, 
-                                               int maxResults = 10, 
+    public async Task<PagedResult<T>> GetAsync(int page = 1,
+                                               int maxResults = 10,
                                                Expression<Func<T, bool>>? criteria = default,
                                                string? orderByClause = default)
     {

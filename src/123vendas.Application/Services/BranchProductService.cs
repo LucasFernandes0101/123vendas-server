@@ -133,7 +133,7 @@ public class BranchProductService : IBranchProductService
 
     private void MapProductDetailsToBranchProduct(BranchProduct branchProduct, Product product)
     {
-        branchProduct.ProductName = product.Name;
+        branchProduct.ProductTitle = product.Title;
         branchProduct.ProductCategory = product.Category;
     }
 

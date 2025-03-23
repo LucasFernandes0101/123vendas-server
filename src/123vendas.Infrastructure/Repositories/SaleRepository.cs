@@ -13,7 +13,7 @@ public class SaleRepository : BaseRepository<Sale>, ISaleRepository
     {
     }
 
-    public new async Task<Sale?> GetWithItemsByIdAsync(int id)
+    public async Task<Sale?> GetWithItemsByIdAsync(int id)
     {
         return await _dbContext.Sales
             .Include(s => s.Items)
