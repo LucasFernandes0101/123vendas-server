@@ -9,7 +9,7 @@
       "applicationUrl": "https://localhost:7067;http://localhost:5215",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "SQL_CONNECTION_STRING": "",
+        "SQL_CONNECTION_STRING": "server=localhost;database=123vendas_db;user=root;password=root;Integrated Security=SSPI;TrustServerCertificate=True",
         "RABBITMQ_HOSTNAME": "",
         "RABBITMQ_USERNAME": "",
         "RABBITMQ_VIRTUALHOST": "",

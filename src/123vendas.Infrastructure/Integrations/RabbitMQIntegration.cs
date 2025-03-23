@@ -12,7 +12,7 @@ namespace _123vendas.Infrastructure.Integrations;
 [ExcludeFromCodeCoverage]
 public class RabbitMQIntegration : IRabbitMQIntegration, IDisposable
 {
-    private readonly IConnectionFactory _connectionFactory;
+    private readonly ConnectionFactory _connectionFactory;
     private IConnection? _persistentConnection;
     private IModel? _channel;
 
@@ -32,7 +32,7 @@ public class RabbitMQIntegration : IRabbitMQIntegration, IDisposable
         EnsureConnected();
 
         string exchangeName = $"ex_{@event.Domain.ToLower()}";
-        _channel.ExchangeDeclare(exchangeName, "direct", durable: true);
+        _channel.ExchangeDeclare(exchangeName, ExchangeType.Direct, durable: true);
 
         string routingKey = @event.GetType().Name;
         string message = JsonConvert.SerializeObject(@event);
@@ -52,7 +52,6 @@ public class RabbitMQIntegration : IRabbitMQIntegration, IDisposable
                     basicProperties: basicProperties,
                     body: body
                 );
-
                 return;
             }
             catch (AlreadyClosedException ex)
@@ -74,10 +73,10 @@ public class RabbitMQIntegration : IRabbitMQIntegration, IDisposable
 
     private void EnsureConnected()
     {
-        if (_persistentConnection == null || !_persistentConnection.IsOpen)
+        if (_persistentConnection is null || !_persistentConnection.IsOpen)
             _persistentConnection = TryConnect(_connectionFactory);
 
-        if (_channel is null || !_channel.IsOpen)
+        if (_channel is null || _channel.IsClosed)
             _channel = _persistentConnection.CreateModel();
     }
 
@@ -91,7 +90,7 @@ public class RabbitMQIntegration : IRabbitMQIntegration, IDisposable
         await Task.Delay(TimeSpan.FromSeconds(Math.Pow(2, retry)));
     }
 
-    private IConnection TryConnect(IConnectionFactory connectionFactory)
+    private IConnection TryConnect(ConnectionFactory connectionFactory)
     {
         string errorMessage = string.Empty;
 
