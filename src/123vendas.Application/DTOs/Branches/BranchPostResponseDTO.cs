@@ -1,6 +1,6 @@
 ﻿namespace _123vendas.Application.DTOs.Branches;
 
-public class BranchPostResponseDTO
+public record BranchPostResponseDTO
 {
-    public int Id { get; set; }
+    public int Id { get; init; }
 }

@@ -2,11 +2,11 @@
 
 namespace _123vendas.Application.DTOs.Products;
 
-public class ProductPostRequestDTO
+public record ProductPostRequestDTO
 {
-    public string? Name { get; set; }
-    public string? Description { get; set; }
-    public ProductCategory Category { get; set; }
-    public decimal BasePrice { get; set; }
-    public bool IsActive { get; set; }
+    public string? Name { get; init; }
+    public string? Description { get; init; }
+    public ProductCategory Category { get; init; }
+    public decimal BasePrice { get; init; }
+    public bool IsActive { get; init; }
 }

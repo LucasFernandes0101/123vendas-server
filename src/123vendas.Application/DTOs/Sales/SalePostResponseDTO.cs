@@ -1,6 +1,6 @@
 ﻿namespace _123vendas.Application.DTOs.Sales;
 
-public class SalePostResponseDTO
+public record SalePostResponseDTO
 {
-    public int Id { get; set; }
+    public int Id { get; init; }
 }

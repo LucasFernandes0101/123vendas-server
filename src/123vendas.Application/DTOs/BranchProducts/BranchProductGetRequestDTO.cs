@@ -1,14 +1,14 @@
 ﻿namespace _123vendas.Application.DTOs.BranchProducts;
 
-public class BranchProductGetRequestDTO
+public record BranchProductGetRequestDTO
 {
-    public int? Id { get; set; }
-    public int? ProductId { get; set; }
-    public int? BranchId { get; set; }
-    public string? ProductName { get; set; }
-    public bool? IsActive { get; set; }
-    public DateTime? StartDate { get; set; }
-    public DateTime? EndDate { get; set; }
-    public int Page { get; set; } = 1;
-    public int MaxResults { get; set; } = 10;
+    public int? Id { get; init; }
+    public int? ProductId { get; init; }
+    public int? BranchId { get; init; }
+    public string? ProductName { get; init; }
+    public bool? IsActive { get; init; }
+    public DateTime? StartDate { get; init; }
+    public DateTime? EndDate { get; init; }
+    public int Page { get; init; } = 1;
+    public int MaxResults { get; init; } = 10;
 }

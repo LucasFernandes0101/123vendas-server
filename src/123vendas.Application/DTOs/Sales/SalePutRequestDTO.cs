@@ -2,13 +2,13 @@
 
 namespace _123vendas.Application.DTOs.Sales;
 
-public class SalePutRequestDTO
+public record SalePutRequestDTO
 {
-    public int Id { get; set; }
-    public SaleStatus Status { get; set; }
-    public DateTime Date { get; set; }
-    public int CustomerId { get; set; }
-    public int BranchId { get; set; }
-    public decimal TotalAmount { get; set; }
-    public DateTime? CancelledAt { get; set; }
+    public int Id { get; init; }
+    public SaleStatus Status { get; init; }
+    public DateTime Date { get; init; }
+    public int CustomerId { get; init; }
+    public int BranchId { get; init; }
+    public decimal TotalAmount { get; init; }
+    public DateTime? CancelledAt { get; init; }
 }

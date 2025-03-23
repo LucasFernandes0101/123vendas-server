@@ -1,16 +1,16 @@
 ﻿namespace _123vendas.Application.DTOs.Sales;
 
-public class SaleItemGetDetailDTO
+public record SaleItemGetDetailDTO
 {
-    public int Id { get; set; }
-    public short Sequence { get; set; }
-    public int SaleId { get; set; }
-    public int ProductId { get; set; }
-    public string? ProductName { get; set; }
-    public int Quantity { get; set; }
-    public decimal UnitPrice { get; set; }
-    public decimal Price { get; set; }
-    public decimal? Discount { get; set; }
-    public bool IsCancelled { get; set; }
-    public DateTime? CancelledAt { get; set; }
+    public int Id { get; init; }
+    public short Sequence { get; init; }
+    public int SaleId { get; init; }
+    public int ProductId { get; init; }
+    public string? ProductName { get; init; }
+    public int Quantity { get; init; }
+    public decimal UnitPrice { get; init; }
+    public decimal Price { get; init; }
+    public decimal? Discount { get; init; }
+    public bool IsCancelled { get; init; }
+    public DateTime? CancelledAt { get; init; }
 }
