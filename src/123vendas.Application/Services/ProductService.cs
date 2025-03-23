@@ -1,4 +1,6 @@
-﻿using _123vendas.Domain.Entities;
+﻿using _123vendas.Domain.Base;
+using _123vendas.Domain.Entities;
+using _123vendas.Domain.Enums;
 using _123vendas.Domain.Exceptions;
 using _123vendas.Domain.Interfaces.Repositories;
 using _123vendas.Domain.Interfaces.Services;
@@ -16,7 +18,7 @@ public class ProductService : IProductService
     private readonly ILogger<ProductService> _logger;
 
     public ProductService(IProductRepository repository,
-                          IBranchProductRepository branchProductRepository,   
+                          IBranchProductRepository branchProductRepository,
                           IValidator<Product> validator,
                           ILogger<ProductService> logger)
     {
@@ -34,7 +36,11 @@ public class ProductService : IProductService
 
             return await _repository.AddAsync(request);
         }
-        catch (Exception ex) when (ex is not ValidationException)
+        catch (Exception ex) when (ex is ValidationException || ex is BaseException)
+        {
+            throw;
+        }
+        catch (Exception ex)
         {
             throw new ServiceException("An error occurred while creating a product.", ex);
         }
@@ -48,7 +54,7 @@ public class ProductService : IProductService
 
             await _repository.DeleteAsync(product);
         }
-        catch (Exception ex) when (ex is NotFoundException || ex is EntityAlreadyDeletedException)
+        catch (BaseException)
         {
             throw;
         }
@@ -60,24 +66,28 @@ public class ProductService : IProductService
 
     public async Task<List<Product>> GetAllAsync(int? id,
                                                 bool? isActive,
-                                                string? name,
+                                                string? title,
+                                                string? category,
+                                                decimal? minPrice,
+                                                decimal? maxPrice,
                                                 DateTime? startDate,
                                                 DateTime? endDate,
                                                 int page = 1,
-                                                int maxResults = 10)
+                                                int maxResults = 10,
+                                                string? orderByClause = default)
     {
         try
         {
             if (page <= 0 || maxResults <= 0)
                 throw new InvalidPaginationParametersException("Page number and max results must be greater than zero.");
 
-            var criteria = BuildCriteria(id, isActive, name, startDate, endDate);
+            var criteria = BuildCriteria(id, isActive, title, category, minPrice, maxPrice, startDate, endDate);
 
-            var result = await _repository.GetAsync(page, maxResults, criteria);
+            var result = await _repository.GetAsync(page, maxResults, criteria, orderByClause);
 
             return result.Items;
         }
-        catch (Exception ex) when (ex is InvalidPaginationParametersException)
+        catch (BaseException)
         {
             throw;
         }
@@ -107,7 +117,7 @@ public class ProductService : IProductService
         {
             var existingProduct = await FindProductOrThrowAsync(id);
 
-            var oldName = existingProduct.Name;
+            var oldTitle = existingProduct.Title!;
             var oldCategory = existingProduct.Category;
 
             var product = await UpdateProductAsync(existingProduct, request);
@@ -116,12 +126,12 @@ public class ProductService : IProductService
 
             await _repository.UpdateAsync(product);
 
-            if (!oldName.Equals(product.Name) || oldCategory != product.Category)
-                await _branchProductRepository.UpdateByProductIdAsync(product.Id, product.Name, product.Category);
+            if (!oldTitle.Equals(product.Title) || oldCategory != product.Category)
+                await _branchProductRepository.UpdateByProductIdAsync(product.Id, product.Title!, product.Category);
 
             return product;
         }
-        catch (Exception ex) when (ex is ValidationException || ex is NotFoundException)
+        catch (Exception ex) when (ex is ValidationException || ex is BaseException)
         {
             throw;
         }
@@ -133,25 +143,40 @@ public class ProductService : IProductService
 
     private async Task<Product> UpdateProductAsync(Product existingProduct, Product request)
     {
-        existingProduct.Name = request.Name;
+        existingProduct.Title = request.Title;
         existingProduct.Description = request.Description;
+        existingProduct.Image = request.Image;
+        existingProduct.Rating = request.Rating;
+        existingProduct.RateCount = request.RateCount;
         existingProduct.Category = request.Category;
-        existingProduct.BasePrice = request.BasePrice;
+        existingProduct.Price = request.Price;
         existingProduct.IsActive = request.IsActive;
 
-        return existingProduct;
+        return await Task.FromResult(existingProduct);
     }
 
     private Expression<Func<Product, bool>> BuildCriteria(int? id,
-                                                         bool? isActive,
-                                                         string? name,
-                                                         DateTime? startDate,
-                                                         DateTime? endDate)
+                                                          bool? isActive,
+                                                          string? title,
+                                                          string? category,
+                                                          decimal? minPrice,
+                                                          decimal? maxPrice,
+                                                          DateTime? startDate,
+                                                          DateTime? endDate)
     {
+        ProductCategory? categoryFilter = default;
+
+        if (!string.IsNullOrWhiteSpace(category))
+            if (Enum.TryParse<ProductCategory>(category, true, out var categoryEnum))
+                categoryFilter = categoryEnum;
+
         return b =>
             (!id.HasValue || b.Id == id.Value) &&
             (!isActive.HasValue || b.IsActive == isActive.Value) &&
-            (string.IsNullOrEmpty(name) || b.Name.Contains(name)) &&
+            (string.IsNullOrEmpty(title) || b.Title!.Contains(title)) &&
+            (!categoryFilter.HasValue || b.Category == categoryFilter.Value) &&
+            (!minPrice.HasValue || b.Price >= minPrice.Value) &&
+            (!maxPrice.HasValue || b.Price <= maxPrice.Value) &&
             (!startDate.HasValue || b.CreatedAt >= startDate.Value) &&
             (!endDate.HasValue || b.CreatedAt <= endDate.Value);
     }

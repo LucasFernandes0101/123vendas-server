@@ -2,17 +2,17 @@
 
 namespace _123vendas.Application.DTOs.Sales;
 
-public class SaleGetDetailResponseDTO
+public record SaleGetDetailResponseDTO
 {
-    public int Id { get; set; }
-    public DateTime CreatedAt { get; set; }
-    public DateTime UpdatedAt { get; set; }
-    public SaleStatus Status { get; set; }
-    public DateTime Date { get; set; }
-    public int CustomerId { get; set; }
-    public int BranchId { get; set; }
-    public decimal TotalAmount { get; set; }
-    public DateTime? CancelledAt { get; set; }
+    public int Id { get; init; }
+    public DateTime CreatedAt { get; init; }
+    public DateTime UpdatedAt { get; init; }
+    public SaleStatus Status { get; init; }
+    public DateTime Date { get; init; }
+    public int CustomerId { get; init; }
+    public int BranchId { get; init; }
+    public decimal TotalAmount { get; init; }
+    public DateTime? CancelledAt { get; init; }
 
-    public List<SaleItemGetDTO>? Items { get; set; }
+    public List<SaleItemGetDTO>? Items { get; init; }
 }

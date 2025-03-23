@@ -2,14 +2,16 @@
 
 namespace _123vendas.Application.DTOs.Products;
 
-public class ProductPutResponseDTO
+public record ProductPutResponseDTO
 {
-    public int Id { get; set; }
-    public DateTime CreatedAt { get; set; }
-    public DateTime UpdatedAt { get; set; }
-    public string? Name { get; set; }
-    public string? Description { get; set; }
-    public ProductCategory Category { get; set; }
-    public decimal BasePrice { get; set; }
-    public bool IsActive { get; set; }
+    public int Id { get; init; }
+    public DateTime CreatedAt { get; init; }
+    public DateTime UpdatedAt { get; init; }
+    public string? Title { get; init; }
+    public string? Description { get; init; }
+    public string? Image { get; init; }
+    public ProductCategory Category { get; init; }
+    public decimal Price { get; init; }
+    public ProductRatingDTO? Rating { get; init; }
+    public bool IsActive { get; init; }
 }

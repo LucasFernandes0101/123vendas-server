@@ -1,4 +1,5 @@
-﻿using _123vendas.Domain.Entities;
+﻿using _123vendas.Domain.Base;
+using _123vendas.Domain.Entities;
 using _123vendas.Domain.Exceptions;
 using _123vendas.Domain.Interfaces.Repositories;
 using _123vendas.Domain.Interfaces.Services;
@@ -45,7 +46,7 @@ public class BranchService : IBranchService
 
             await _repository.DeleteAsync(branch);
         }
-        catch (Exception ex) when (ex is NotFoundException || ex is EntityAlreadyDeletedException)
+        catch (BaseException)
         {
             throw;
         }
@@ -61,7 +62,8 @@ public class BranchService : IBranchService
                                                 DateTime? startDate,
                                                 DateTime? endDate,
                                                 int page = 1,
-                                                int maxResults = 10)
+                                                int maxResults = 10,
+                                                string? orderByClause = default)
     {
         try
         {
@@ -70,11 +72,11 @@ public class BranchService : IBranchService
 
             var criteria = BuildCriteria(id, isActive, name, startDate, endDate);
 
-            var result = await _repository.GetAsync(page, maxResults, criteria);
+            var result = await _repository.GetAsync(page, maxResults, criteria, orderByClause);
 
             return result.Items;
         }
-        catch (Exception ex) when (ex is InvalidPaginationParametersException)
+        catch (BaseException)
         {
             throw;
         }
@@ -108,7 +110,7 @@ public class BranchService : IBranchService
 
             return await _repository.UpdateAsync(branch);
         }
-        catch (Exception ex) when (ex is ValidationException || ex is NotFoundException)
+        catch (Exception ex) when (ex is ValidationException || ex is BaseException)
         {
             throw;
         }
@@ -139,7 +141,7 @@ public class BranchService : IBranchService
         return b =>
             (!id.HasValue || b.Id == id.Value) &&
             (!isActive.HasValue || b.IsActive == isActive.Value) &&
-            (string.IsNullOrEmpty(name) || b.Name.Contains(name)) &&
+            (string.IsNullOrEmpty(name) || b.Name!.Contains(name)) &&
             (!startDate.HasValue || b.CreatedAt >= startDate.Value) &&
             (!endDate.HasValue || b.CreatedAt <= endDate.Value);
     }

@@ -1,15 +1,15 @@
-﻿namespace _123vendas.Application.DTOs.Customers;
+﻿using _123vendas.Application.DTOs.Common;
 
-public class CustomerGetRequestDTO
+namespace _123vendas.Application.DTOs.Customers;
+
+public record CustomerGetRequestDTO : PagedRequestDTO
 {
-    public int? Id { get; set; }
-    public string? Name { get; set; }
-    public string? Document { get; set; }
-    public string? Phone { get; set; }
-    public string? Email { get; set; }
-    public bool? IsActive { get; set; }
-    public DateTime? StartDate { get; set; }
-    public DateTime? EndDate { get; set; }
-    public int Page { get; set; } = 1;
-    public int MaxResults { get; set; } = 10;
+    public int? Id { get; init; }
+    public string? Name { get; init; }
+    public string? Document { get; init; }
+    public string? Phone { get; init; }
+    public string? Email { get; init; }
+    public bool? IsActive { get; init; }
+    public DateTime? StartDate { get; init; }
+    public DateTime? EndDate { get; init; }
 }

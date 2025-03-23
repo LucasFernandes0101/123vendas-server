@@ -1,9 +1,9 @@
 ﻿namespace _123vendas.Application.DTOs.Branches;
 
-public class BranchPostRequestDTO
+public record BranchPostRequestDTO
 {
-    public string? Name { get; set; }
-    public string? Address { get; set; }
-    public string? Phone { get; set; }
-    public bool IsActive { get; set; }
+    public string? Name { get; init; }
+    public string? Address { get; init; }
+    public string? Phone { get; init; }
+    public bool IsActive { get; init; }
 }

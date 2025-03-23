@@ -1,12 +1,18 @@
-﻿namespace _123vendas.Application.DTOs.Products;
+﻿using _123vendas.Application.DTOs.Common;
+using Microsoft.AspNetCore.Mvc;
 
-public class ProductGetRequestDTO
+namespace _123vendas.Application.DTOs.Products;
+
+public record ProductGetRequestDTO : PagedRequestDTO
 {
-    public int? Id { get; set; }
-    public string? Name { get; set; }
-    public bool? IsActive { get; set; }
-    public DateTime? StartDate { get; set; }
-    public DateTime? EndDate { get; set; }
-    public int Page { get; set; } = 1;
-    public int MaxResults { get; set; } = 10;
+    public int? Id { get; init; }
+    public string? Title { get; init; }
+    public string? Category { get; init; }
+    [FromQuery(Name = "_minPrice")]
+    public decimal? MinPrice { get; init; }
+    [FromQuery(Name = "_maxPrice")]
+    public decimal? MaxPrice { get; init; }
+    public bool? IsActive { get; init; }
+    public DateTime? StartDate { get; init; }
+    public DateTime? EndDate { get; init; }
 }

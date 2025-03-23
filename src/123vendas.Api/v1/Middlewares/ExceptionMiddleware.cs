@@ -1,9 +1,8 @@
-﻿using _123vendas.Domain.Base;
+﻿using _123vendas.Application.DTOs.Common;
+using _123vendas.Domain.Base;
 using _123vendas.Domain.Exceptions;
 using FluentValidation;
 using Newtonsoft.Json;
-using System.Buffers.Text;
-using System.Net;
 
 namespace _123vendas_server.v1.Middlewares;
 
@@ -37,45 +36,45 @@ public class ExceptionMiddleware
 
         _logger.LogError(ex, "An error occurred while processing the request at {Url}", context.Request.Path);
 
-        var result = ex switch
+        var errorResponse = ex switch
         {
-            ValidationException validationEx => CreateValidationErrorResponse(validationEx),
-            BaseException baseEx => CreateBaseErrorResponse(baseEx),
-            _ => CreateGenericErrorResponse(ex)
+            ValidationException validationEx => CreateValidationErrorResponseDTO(validationEx),
+            BaseException baseEx => CreateBaseErrorResponseDTO(baseEx),
+            _ => CreateGenericErrorResponseDTO(ex)
         };
+
+        var result = JsonConvert.SerializeObject(errorResponse);
 
         await context.Response.WriteAsync(result);
     }
 
-    private string CreateValidationErrorResponse(ValidationException validationEx)
+    private ErrorResponseDTO CreateValidationErrorResponseDTO(ValidationException validationEx)
+    => new ErrorResponseDTO()
     {
-        var errors = validationEx.Errors.Select(e => new { e.PropertyName, e.ErrorMessage });
-        return JsonConvert.SerializeObject(new
-        {
-            Message = "Validation failed.",
-            Errors = errors
-        });
-    }
+        Type = nameof(validationEx),
+        Error = "Invalid input data",
+        Detail = string.Join(", ", validationEx.Errors.Select(e => e.ErrorMessage))
+    };
 
-    private string CreateBaseErrorResponse(BaseException baseEx)
-    {
-        return JsonConvert.SerializeObject(new
-        {
-            Message = baseEx.Message,
-            Details = IsTestEnvironment ? baseEx.StackTrace : string.Empty
-        });
-    }
+    private ErrorResponseDTO CreateBaseErrorResponseDTO(BaseException baseEx)
+     => new ErrorResponseDTO()
+     {
+         Type = nameof(baseEx),
+         Error = baseEx.Message,
+         Detail = IsTestEnvironment ? baseEx.StackTrace : string.Empty
+     };
 
-    private string CreateGenericErrorResponse(Exception ex)
+    private ErrorResponseDTO CreateGenericErrorResponseDTO(Exception ex)
+    => new ErrorResponseDTO()
     {
-        return JsonConvert.SerializeObject(new
-        {
-            Message = "An unexpected error occurred. Please try again later.",
-            Details = IsTestEnvironment ? ex.StackTrace : string.Empty
-        });
-    }
+        Type = nameof(ex),
+        Error = "An unexpected error occurred. Please try again later.",
+        Detail = IsTestEnvironment ? ex.StackTrace : string.Empty
+    };
 
     private static bool IsTestEnvironment =>
-        (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development" ||
-        Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Homologation");
+        string.Equals(EnvironmentName, "Development", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(EnvironmentName, "Homologation", StringComparison.OrdinalIgnoreCase);
+
+    private static readonly string? EnvironmentName = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
 }

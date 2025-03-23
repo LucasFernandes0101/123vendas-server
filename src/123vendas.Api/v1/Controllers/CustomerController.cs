@@ -29,7 +29,8 @@ public class CustomersController : ControllerBase
                                                         request.StartDate,
                                                         request.EndDate,
                                                         request.Page,
-                                                        request.MaxResults);
+                                                        request.Size,
+                                                        request.OrderByClause);
 
         var response = customers.ToDTO();
 

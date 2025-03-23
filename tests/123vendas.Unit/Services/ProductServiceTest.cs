@@ -75,7 +75,7 @@ public class ProductServiceTest
         // Arrange
         var (productRepository, branchProductRepository, validator, logger, productService) = CreateDependencies();
         var invalidId = 999;
-        productRepository.GetByIdAsync(invalidId).Returns((Product)null);
+        productRepository.GetByIdAsync(invalidId).Returns(default(Product));
 
         // Act & Assert
         Func<Task> act = async () => await productService.DeleteAsync(invalidId);
@@ -93,7 +93,7 @@ public class ProductServiceTest
             .Returns(new PagedResult<Product>(mockProducts.Count, mockProducts));
 
         // Act
-        var result = await productService.GetAllAsync(null, null, null, null, null, 1, 10);
+        var result = await productService.GetAllAsync(null, null, null, null, null, null, null, null, 1, 10);
 
         // Assert
         result.Should().NotBeNull();
@@ -125,7 +125,7 @@ public class ProductServiceTest
         // Arrange
         var (productRepository, branchProductRepository, validator, logger, productService) = CreateDependencies();
         var mockProduct = new ProductMock().Generate();
-        productRepository.GetByIdAsync(mockProduct.Id).Returns((Product)null);
+        productRepository.GetByIdAsync(mockProduct.Id).Returns(default(Product));
 
         // Act & Assert
         Func<Task> act = async () => await productService.UpdateAsync(mockProduct.Id, mockProduct);
@@ -139,15 +139,15 @@ public class ProductServiceTest
         // Arrange
         var (productRepository, branchProductRepository, validator, logger, productService) = CreateDependencies();
         var mockProduct = new ProductMock().Generate();
-        mockProduct.Name = "Amstel";
+        mockProduct.Title = "Amstel";
 
         var updatedProduct = new Product
         {
             Id = mockProduct.Id,
-            Name = "Heineken",
+            Title = "Heineken",
             Description = mockProduct.Description,
             Category = mockProduct.Category,
-            BasePrice = mockProduct.BasePrice,
+            Price = mockProduct.Price,
             IsActive = mockProduct.IsActive
         };
 
@@ -158,7 +158,7 @@ public class ProductServiceTest
         await productService.UpdateAsync(mockProduct.Id, updatedProduct);
 
         // Assert
-        await branchProductRepository.Received(1).UpdateByProductIdAsync(mockProduct.Id, updatedProduct.Name, mockProduct.Category);
+        await branchProductRepository.Received(1).UpdateByProductIdAsync(mockProduct.Id, updatedProduct.Title, mockProduct.Category);
     }
 
     [Fact(DisplayName = "UpdateAsync_Should_Update_BranchProduct_When_Category_Changes")]
@@ -173,10 +173,10 @@ public class ProductServiceTest
         var updatedProduct = new Product
         {
             Id = mockProduct.Id,
-            Name = mockProduct.Name,
+            Title = mockProduct.Title,
             Description = mockProduct.Description,
             Category = ProductCategory.Beer,
-            BasePrice = mockProduct.BasePrice,
+            Price = mockProduct.Price,
             IsActive = mockProduct.IsActive
         };
 
@@ -187,7 +187,7 @@ public class ProductServiceTest
         await productService.UpdateAsync(mockProduct.Id, updatedProduct);
 
         // Assert
-        await branchProductRepository.Received(1).UpdateByProductIdAsync(mockProduct.Id, mockProduct.Name, updatedProduct.Category);
+        await branchProductRepository.Received(1).UpdateByProductIdAsync(mockProduct.Id, mockProduct.Title!, updatedProduct.Category);
     }
 
     private (IProductRepository productRepository, IBranchProductRepository branchProductRepository, IValidator<Product> validator, ILogger<ProductService> logger, ProductService productService) CreateDependencies()

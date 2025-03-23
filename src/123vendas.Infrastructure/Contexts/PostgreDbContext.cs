@@ -8,11 +8,11 @@ using System.Reflection;
 namespace _123vendas.Infrastructure.Contexts;
 
 [ExcludeFromCodeCoverage]
-public class SqlDbContext : DbContext
+public class PostgreDbContext : DbContext
 {
-    public SqlDbContext(DbContextOptions<SqlDbContext> options) : base(options)
+    public PostgreDbContext(DbContextOptions<PostgreDbContext> options) : base(options)
     {
-        // base.Database.EnsureCreated();
+        base.Database.EnsureCreated();
     }
 
     public DbSet<Branch> Branches { get; set; }

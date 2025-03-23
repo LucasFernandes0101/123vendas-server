@@ -5,13 +5,13 @@ VisualStudioVersion = 17.5.33414.496
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "123vendas.Api", "src\123vendas.Api\123vendas.Api.csproj", "{431CAF17-8A88-47EA-B57F-E8F4F9A9498A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "123vendas.Application", "src\123vendas.Application\123vendas.Application.csproj", "{45787293-ADF0-44DB-B76E-03692236E76A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "123vendas.Application", "src\123vendas.Application\123vendas.Application.csproj", "{45787293-ADF0-44DB-B76E-03692236E76A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "123vendas.Domain", "src\123vendas.Domain\123vendas.Domain.csproj", "{78691AFE-8EFD-4131-B25F-4693E4183C19}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "123vendas.Domain", "src\123vendas.Domain\123vendas.Domain.csproj", "{78691AFE-8EFD-4131-B25F-4693E4183C19}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "123vendas.Infrastructure", "src\123vendas.Infrastructure\123vendas.Infrastructure.csproj", "{504E914B-ED99-47CF-B745-0FB769686DB1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "123vendas.Infrastructure", "src\123vendas.Infrastructure\123vendas.Infrastructure.csproj", "{504E914B-ED99-47CF-B745-0FB769686DB1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "123vendas.Tests", "src\123vendas.Tests\123vendas.Tests.csproj", "{C6D4E262-D08B-4AB8-A4B3-F392D1AEA113}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "123vendas.Unit", "tests\123vendas.Unit\123vendas.Unit.csproj", "{C6D4E262-D08B-4AB8-A4B3-F392D1AEA113}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

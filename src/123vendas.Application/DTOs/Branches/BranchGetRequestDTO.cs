@@ -1,12 +1,12 @@
-﻿namespace _123vendas.Application.DTOs.Branches;
+﻿using _123vendas.Application.DTOs.Common;
 
-public class BranchGetRequestDTO
+namespace _123vendas.Application.DTOs.Branches;
+
+public record BranchGetRequestDTO : PagedRequestDTO
 {
-    public int? Id { get; set; }
-    public string? Name { get; set; }
-    public bool? IsActive { get; set; }
-    public DateTime? StartDate { get; set; }
-    public DateTime? EndDate { get; set; }
-    public int Page { get; set; } = 1;
-    public int MaxResults { get; set; } = 10;
+    public int? Id { get; init; }
+    public string? Name { get; init; }
+    public bool? IsActive { get; init; }
+    public DateTime? StartDate { get; init; }
+    public DateTime? EndDate { get; init; }
 }

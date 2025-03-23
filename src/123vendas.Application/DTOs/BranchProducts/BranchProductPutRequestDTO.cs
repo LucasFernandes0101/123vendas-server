@@ -1,9 +1,9 @@
 ﻿namespace _123vendas.Application.DTOs.BranchProducts;
 
-public class BranchProductPutRequestDTO
+public record BranchProductPutRequestDTO
 {
-    public int Id { get; set; }
-    public decimal Price { get; set; }
-    public int StockQuantity { get; set; }
-    public bool IsActive { get; set; }
+    public int Id { get; init; }
+    public decimal Price { get; init; }
+    public int StockQuantity { get; init; }
+    public bool IsActive { get; init; }
 }

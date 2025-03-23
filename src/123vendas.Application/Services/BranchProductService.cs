@@ -1,4 +1,5 @@
-﻿using _123vendas.Domain.Entities;
+﻿using _123vendas.Domain.Base;
+using _123vendas.Domain.Entities;
 using _123vendas.Domain.Exceptions;
 using _123vendas.Domain.Interfaces.Repositories;
 using _123vendas.Domain.Interfaces.Services;
@@ -47,7 +48,7 @@ public class BranchProductService : IBranchProductService
             var branchProduct = await FindBranchProductOrThrowAsync(id);
             await _repository.DeleteAsync(branchProduct);
         }
-        catch (Exception ex) when (ex is NotFoundException || ex is EntityAlreadyDeletedException)
+        catch (BaseException)
         {
             throw;
         }
@@ -65,7 +66,8 @@ public class BranchProductService : IBranchProductService
         DateTime? startDate,
         DateTime? endDate,
         int page = 1,
-        int maxResults = 10)
+        int maxResults = 10,
+        string? orderByClause = default)
     {
         try
         {
@@ -73,10 +75,12 @@ public class BranchProductService : IBranchProductService
                 throw new InvalidPaginationParametersException("Page number and max results must be greater than zero.");
 
             var criteria = BuildCriteria(id, branchId, productId, isActive, startDate, endDate);
-            var result = await _repository.GetAsync(page, maxResults, criteria);
+
+            var result = await _repository.GetAsync(page, maxResults, criteria, orderByClause);
+
             return result.Items;
         }
-        catch (Exception ex) when (ex is InvalidPaginationParametersException)
+        catch (BaseException)
         {
             throw;
         }
@@ -129,7 +133,7 @@ public class BranchProductService : IBranchProductService
 
     private void MapProductDetailsToBranchProduct(BranchProduct branchProduct, Product product)
     {
-        branchProduct.ProductName = product.Name;
+        branchProduct.ProductTitle = product.Title;
         branchProduct.ProductCategory = product.Category;
     }
 

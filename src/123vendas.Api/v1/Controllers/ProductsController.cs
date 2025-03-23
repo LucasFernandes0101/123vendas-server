@@ -22,11 +22,15 @@ namespace _123vendas_server.v1.Controllers
         {
             var products = await _productService.GetAllAsync(request.Id,
                                                             request.IsActive,
-                                                            request.Name,
+                                                            request.Title,
+                                                            request.Category,
+                                                            request.MinPrice,
+                                                            request.MaxPrice,
                                                             request.StartDate,
                                                             request.EndDate,
                                                             request.Page,
-                                                            request.MaxResults);
+                                                            request.Size,
+                                                            request.OrderByClause);
 
             var response = products.ToDTO();
 

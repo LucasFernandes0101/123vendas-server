@@ -14,7 +14,7 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
 
         builder.HasKey(p => p.Id);
 
-        builder.Property(p => p.Name)
+        builder.Property(p => p.Title)
             .IsRequired()
             .HasColumnType("varchar(150)");
 
@@ -25,24 +25,36 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
             .HasConversion<int>()
             .IsRequired();
 
-        builder.Property(p => p.BasePrice)
+        builder.Property(p => p.Price)
             .HasColumnType("decimal(10,2)")
             .IsRequired();
 
+        builder.Property(p => p.Image)
+            .HasColumnType("varchar(512)")
+            .IsRequired();
+
+        builder.Property(p => p.Rating)
+            .HasColumnType("decimal(3, 1)") 
+            .IsRequired(false);
+
+        builder.Property(p => p.RateCount)
+            .HasColumnType("int")
+            .HasDefaultValue(0);
+
         builder.Property(p => p.IsActive)
-            .HasColumnType("bit")
+            .HasColumnType("boolean")
             .IsRequired();
 
         builder.Property(p => p.CreatedAt)
-            .HasColumnType("datetime2")
+            .HasColumnType("timestamp")
             .ValueGeneratedOnAdd();
 
         builder.Property(p => p.UpdatedAt)
-            .HasColumnType("datetime2")
+            .HasColumnType("timestamp")
             .ValueGeneratedOnUpdate();
 
         builder.Property(x => x.IsDeleted)
-            .HasColumnType("bit")
+            .HasColumnType("boolean")
             .HasDefaultValue(false);
     }
 }

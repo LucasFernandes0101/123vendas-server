@@ -9,11 +9,11 @@ namespace _123vendas.Infrastructure.Repositories;
 [ExcludeFromCodeCoverage]
 public class SaleRepository : BaseRepository<Sale>, ISaleRepository
 {
-    public SaleRepository(SqlDbContext dbContext) : base(dbContext)
+    public SaleRepository(PostgreDbContext dbContext) : base(dbContext)
     {
     }
 
-    public new async Task<Sale?> GetWithItemsByIdAsync(int id)
+    public async Task<Sale?> GetWithItemsByIdAsync(int id)
     {
         return await _dbContext.Sales
             .Include(s => s.Items)

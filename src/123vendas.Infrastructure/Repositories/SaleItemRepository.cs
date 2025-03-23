@@ -8,7 +8,7 @@ namespace _123vendas.Infrastructure.Repositories;
 [ExcludeFromCodeCoverage]
 public class SaleItemRepository : BaseRepository<SaleItem>, ISaleItemRepository
 {
-    public SaleItemRepository(SqlDbContext dbContext) : base(dbContext)
+    public SaleItemRepository(PostgreDbContext dbContext) : base(dbContext)
     {
     }
 }
