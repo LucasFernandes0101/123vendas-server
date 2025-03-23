@@ -146,10 +146,10 @@ public class CustomerService : ICustomerService
     {
         return b =>
             (!id.HasValue || b.Id == id.Value) &&
-            (string.IsNullOrEmpty(name) || b.Name.Contains(name)) &&
-            (string.IsNullOrEmpty(document) || b.Document.Contains(document)) &&
-            (string.IsNullOrEmpty(phone) || b.Phone.Contains(phone)) &&
-            (string.IsNullOrEmpty(email) || b.Email.Contains(email)) &&
+            (string.IsNullOrEmpty(name) || b.Name!.Contains(name)) &&
+            (string.IsNullOrEmpty(document) || b.Document!.Contains(document)) &&
+            (string.IsNullOrEmpty(phone) || b.Phone!.Contains(phone)) &&
+            (string.IsNullOrEmpty(email) || b.Email!.Contains(email)) &&
             (!isActive.HasValue || b.IsActive == isActive.Value) &&
             (!startDate.HasValue || b.CreatedAt >= startDate.Value) &&
             (!endDate.HasValue || b.CreatedAt <= endDate.Value);

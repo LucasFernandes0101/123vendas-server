@@ -139,7 +139,7 @@ public class BranchService : IBranchService
         return b =>
             (!id.HasValue || b.Id == id.Value) &&
             (!isActive.HasValue || b.IsActive == isActive.Value) &&
-            (string.IsNullOrEmpty(name) || b.Name.Contains(name)) &&
+            (string.IsNullOrEmpty(name) || b.Name!.Contains(name)) &&
             (!startDate.HasValue || b.CreatedAt >= startDate.Value) &&
             (!endDate.HasValue || b.CreatedAt <= endDate.Value);
     }

@@ -49,13 +49,13 @@ public class SaleService : ISaleService
                 Items = new List<SaleItem>()
             };
 
-            await ProcessItemsAsync(sale, request.Items);
+            await ProcessItemsAsync(sale, request.Items!);
 
             await ValidateSaleAsync(sale);
 
             var savedSale = await _repository.AddAsync(sale);
 
-            await UpdateStockQuantitiesAsync(savedSale.Items, savedSale.BranchId);
+            await UpdateStockQuantitiesAsync(savedSale.Items!, savedSale.BranchId);
 
             await PublishSaleMessageAsync(new SaleCreatedEvent(savedSale));
 
@@ -89,7 +89,7 @@ public class SaleService : ISaleService
 
             CancelItem(saleItem);
 
-            sale.TotalAmount = CalculateTotalAmount(sale.Items);
+            sale!.TotalAmount = CalculateTotalAmount(sale.Items!);
 
             await _repository.UpdateAsync(sale);
 
@@ -246,7 +246,7 @@ public class SaleService : ISaleService
         foreach (var item in items)
         {
             var saleItem = await ProcessItemAsync(sale.BranchId, item, sequence);
-            sale.Items.Add(saleItem);
+            sale.Items!.Add(saleItem);
             sale.TotalAmount += saleItem.Price;
 
             sequence++;

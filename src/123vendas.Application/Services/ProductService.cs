@@ -107,7 +107,7 @@ public class ProductService : IProductService
         {
             var existingProduct = await FindProductOrThrowAsync(id);
 
-            var oldName = existingProduct.Name;
+            var oldName = existingProduct.Name!;
             var oldCategory = existingProduct.Category;
 
             var product = await UpdateProductAsync(existingProduct, request);
@@ -117,7 +117,7 @@ public class ProductService : IProductService
             await _repository.UpdateAsync(product);
 
             if (!oldName.Equals(product.Name) || oldCategory != product.Category)
-                await _branchProductRepository.UpdateByProductIdAsync(product.Id, product.Name, product.Category);
+                await _branchProductRepository.UpdateByProductIdAsync(product.Id, product.Name!, product.Category);
 
             return product;
         }
@@ -139,7 +139,7 @@ public class ProductService : IProductService
         existingProduct.BasePrice = request.BasePrice;
         existingProduct.IsActive = request.IsActive;
 
-        return existingProduct;
+        return await Task.FromResult(existingProduct);
     }
 
     private Expression<Func<Product, bool>> BuildCriteria(int? id,
@@ -151,7 +151,7 @@ public class ProductService : IProductService
         return b =>
             (!id.HasValue || b.Id == id.Value) &&
             (!isActive.HasValue || b.IsActive == isActive.Value) &&
-            (string.IsNullOrEmpty(name) || b.Name.Contains(name)) &&
+            (string.IsNullOrEmpty(name) || b.Name!.Contains(name)) &&
             (!startDate.HasValue || b.CreatedAt >= startDate.Value) &&
             (!endDate.HasValue || b.CreatedAt <= endDate.Value);
     }

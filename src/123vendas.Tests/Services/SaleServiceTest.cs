@@ -82,7 +82,7 @@ public class SaleServiceTest
         var (repository, saleItemRepository, branchProductRepository, validator, rabbitMQIntegration, logger) = CreateDependencies();
         var saleService = new SaleService(repository, saleItemRepository, branchProductRepository, validator, rabbitMQIntegration, logger);
         var saleMock = new SaleMock().Generate();
-        var branchProduct = new BranchProduct { ProductId = saleMock.Items[0].ProductId, Price = 100, StockQuantity = 0 };
+        var branchProduct = new BranchProduct { ProductId = saleMock.Items!.First().ProductId, Price = 100, StockQuantity = 0 };
 
         branchProductRepository.GetAsync(1, 1, Arg.Any<Expression<Func<BranchProduct, bool>>>()).Returns(new PagedResult<BranchProduct>(1, new List<BranchProduct> { branchProduct }));
         validator.ValidateAsync(saleMock).Returns(new ValidationResult());
@@ -179,13 +179,13 @@ public class SaleServiceTest
         var saleService = new SaleService(repository, saleItemRepository, branchProductRepository, validator, rabbitMQIntegration, logger);
         
         // Act
-        var result = await saleService.CancelItemAsync(sale.Id, sale.Items[0].Sequence);
+        var result = await saleService.CancelItemAsync(sale.Id, sale.Items!.First().Sequence);
 
         // Assert
         result.Should().NotBeNull();
         result.Items.Should().Contain(i => i.IsCancelled);
         await repository.Received(1).UpdateAsync(Arg.Is<Sale>(s => oldSaleAmount > s.TotalAmount));
-        await rabbitMQIntegration.Received(1).PublishMessageAsync(Arg.Is<SaleItemCancelledEvent>(e => e.Sequence == sale.Items[0].Sequence));
+        await rabbitMQIntegration.Received(1).PublishMessageAsync(Arg.Is<SaleItemCancelledEvent>(e => e.Sequence == sale.Items!.First().Sequence));
     }
 
     [Fact(DisplayName = "Cancel Sale Item - Sale Already Canceled")]
@@ -202,7 +202,7 @@ public class SaleServiceTest
         var saleService = new SaleService(repository, saleItemRepository, branchProductRepository, validator, rabbitMQIntegration, logger);
 
         // Act
-        Func<Task> act = () => saleService.CancelItemAsync(sale.Id, sale.Items[0].Sequence);
+        Func<Task> act = () => saleService.CancelItemAsync(sale.Id, sale.Items!.First().Sequence);
 
         // Assert
         await act.Should().ThrowAsync<SaleAlreadyCanceledException>()
@@ -218,7 +218,7 @@ public class SaleServiceTest
 
         var sale = new SaleMock().Generate();
         sale.Status = SaleStatus.Created;
-        sale.Items[0].IsCancelled = true;
+        sale.Items![0].IsCancelled = true;
 
         repository.GetWithItemsByIdAsync(sale.Id).Returns(sale);
         var saleService = new SaleService(repository, saleItemRepository, branchProductRepository, validator, rabbitMQIntegration, logger);

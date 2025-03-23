@@ -62,7 +62,7 @@ public class CustomerServiceTest
         var (repository, validator, logger, service) = CreateDependencies();
 
         var customerMock = new CustomerMock().Generate();
-        repository.GetByIdAsync(customerMock.Id).Returns(Task.FromResult(customerMock));
+        repository.GetByIdAsync(customerMock.Id).Returns(customerMock);
 
         // Act
         await service.DeleteAsync(customerMock.Id);
@@ -79,7 +79,7 @@ public class CustomerServiceTest
         var (repository, validator, logger, service) = CreateDependencies();
 
         var invalidId = 999;
-        repository.GetByIdAsync(invalidId).Returns(Task.FromResult<Customer>(null));
+        repository.GetByIdAsync(invalidId).Returns(default(Customer));
 
         // Act
         Func<Task> act = () => service.DeleteAsync(invalidId);
@@ -129,7 +129,7 @@ public class CustomerServiceTest
         var (repository, validator, logger, service) = CreateDependencies();
 
         var customerMock = new CustomerMock().Generate();
-        repository.GetByIdAsync(customerMock.Id).Returns(Task.FromResult(customerMock));
+        repository.GetByIdAsync(customerMock.Id).Returns(customerMock);
 
         // Act
         var result = await service.GetByIdAsync(customerMock.Id);
@@ -146,7 +146,7 @@ public class CustomerServiceTest
         var (repository, validator, logger, service) = CreateDependencies();
 
         var invalidId = 999;
-        repository.GetByIdAsync(invalidId).Returns(Task.FromException<Customer>(new Exception("Database error")));
+        repository.GetByIdAsync(invalidId).Returns(Task.FromException<Customer?>(new Exception("Database error")));
 
         // Act
         Func<Task> act = () => service.GetByIdAsync(invalidId);
@@ -164,7 +164,7 @@ public class CustomerServiceTest
         var existingCustomer = new CustomerMock().Generate();
         var updatedCustomer = new CustomerMock().Generate();
 
-        repository.GetByIdAsync(existingCustomer.Id).Returns(Task.FromResult(existingCustomer));
+        repository.GetByIdAsync(existingCustomer.Id).Returns(existingCustomer);
         validator.ValidateAsync(existingCustomer).Returns(Task.FromResult(new ValidationResult()));
         repository.UpdateAsync(existingCustomer).Returns(Task.FromResult(existingCustomer));
 
@@ -185,7 +185,7 @@ public class CustomerServiceTest
 
         var updatedCustomer = new CustomerMock().Generate();
         var invalidId = 999;
-        repository.GetByIdAsync(invalidId).Returns(Task.FromResult<Customer>(null));
+        repository.GetByIdAsync(invalidId).Returns(default(Customer));
 
         // Act
         Func<Task> act = () => service.UpdateAsync(invalidId, updatedCustomer);
@@ -204,7 +204,7 @@ public class CustomerServiceTest
 
         var existingCustomer = new CustomerMock().Generate();
         var updatedCustomer = new CustomerMock().Generate();
-        repository.GetByIdAsync(existingCustomer.Id).Returns(Task.FromResult(existingCustomer));
+        repository.GetByIdAsync(existingCustomer.Id).Returns(existingCustomer);
         var validationErrors = new List<ValidationFailure> { new ValidationFailure("Name", "Name is required.") };
         validator.ValidateAsync(existingCustomer).Returns(Task.FromResult(new ValidationResult(validationErrors)));
 
