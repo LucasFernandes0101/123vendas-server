@@ -8,7 +8,7 @@ namespace _123vendas.Infrastructure.Repositories;
 [ExcludeFromCodeCoverage]
 public class CustomerRepository : BaseRepository<Customer>, ICustomerRepository
 {
-    public CustomerRepository(SqlDbContext dbContext) : base(dbContext)
+    public CustomerRepository(PostgreDbContext dbContext) : base(dbContext)
     {
     }
 }

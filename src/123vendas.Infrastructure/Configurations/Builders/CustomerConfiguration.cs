@@ -32,21 +32,21 @@ public class CustomerConfiguration : IEntityTypeConfiguration<Customer>
             .HasColumnType("varchar(250)");
 
         builder.Property(c => c.IsActive)
-            .HasColumnType("bit")
+            .HasColumnType("boolean")
             .IsRequired();
 
         builder.Property(c => c.CreatedAt)
-            .HasColumnType("datetime2")
+            .HasColumnType("timestamp")
             .ValueGeneratedOnAdd();
 
         builder.Property(c => c.UpdatedAt)
-            .HasColumnType("datetime2")
+            .HasColumnType("timestamp")
             .ValueGeneratedOnUpdate();
 
         builder.HasIndex(c => c.Document).IsUnique();
 
         builder.Property(x => x.IsDeleted)
-            .HasColumnType("bit")
+            .HasColumnType("boolean")
             .HasDefaultValue(false);
     }
 }

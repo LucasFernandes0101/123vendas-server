@@ -36,7 +36,9 @@ public static class DependencyResolver
 
     private static void ResolveRepositories(this IServiceCollection services)
     {
-        services.AddDbContext<SqlDbContext>(options => options.UseSqlServer(Environment.GetEnvironmentVariable("SQL_CONNECTION_STRING"))
+        services.AddDbContext<PostgreDbContext>(options => 
+            options.UseNpgsql(Environment.GetEnvironmentVariable("POSTGRES_CONNECTION_STRING"), npgsqlOptions =>
+                npgsqlOptions.CommandTimeout(180))
             .EnableSensitiveDataLogging(true));
 
         services.AddScoped<IBranchRepository, BranchRepository>();

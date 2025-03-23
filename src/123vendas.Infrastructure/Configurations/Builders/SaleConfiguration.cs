@@ -20,7 +20,7 @@ public class SaleConfiguration : IEntityTypeConfiguration<Sale>
             .IsRequired();
 
         builder.Property(s => s.Date)
-            .HasColumnType("datetime2")
+            .HasColumnType("timestamp")
             .IsRequired();
 
         builder.Property(s => s.TotalAmount)
@@ -41,15 +41,15 @@ public class SaleConfiguration : IEntityTypeConfiguration<Sale>
             .OnDelete(DeleteBehavior.Restrict);
 
         builder.Property(s => s.CreatedAt)
-            .HasColumnType("datetime2")
+            .HasColumnType("timestamp")
             .ValueGeneratedOnAdd();
 
         builder.Property(s => s.UpdatedAt)
-            .HasColumnType("datetime2")
+            .HasColumnType("timestamp")
             .ValueGeneratedOnUpdate();
 
         builder.Property(x => x.IsDeleted)
-            .HasColumnType("bit")
+            .HasColumnType("boolean")
         .HasDefaultValue(false);
 
         builder.HasMany(s => s.Items)

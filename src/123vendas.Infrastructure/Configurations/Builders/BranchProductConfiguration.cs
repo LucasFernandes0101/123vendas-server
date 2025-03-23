@@ -30,7 +30,7 @@ public class BranchProductConfiguration : IEntityTypeConfiguration<BranchProduct
             .IsRequired();
 
         builder.Property(bp => bp.IsActive)
-            .HasColumnType("bit")
+            .HasColumnType("boolean")
             .IsRequired();
 
         builder.HasOne(bp => bp.Product)
@@ -44,14 +44,14 @@ public class BranchProductConfiguration : IEntityTypeConfiguration<BranchProduct
             .OnDelete(DeleteBehavior.Restrict);
 
         builder.Property(bp => bp.CreatedAt)
-            .HasColumnType("datetime2")
+            .HasColumnType("timestamp")
             .ValueGeneratedOnAdd();
         builder.Property(bp => bp.UpdatedAt)
-            .HasColumnType("datetime2")
+            .HasColumnType("timestamp")
             .ValueGeneratedOnUpdate();
 
         builder.Property(x => x.IsDeleted)
-            .HasColumnType("bit")
+            .HasColumnType("boolean")
             .HasDefaultValue(false);
     }
 }

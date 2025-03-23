@@ -11,9 +11,9 @@ namespace _123vendas.Infrastructure.Repositories;
 [ExcludeFromCodeCoverage]
 public abstract class BaseRepository<T> : IBaseRepository<T> where T : class, IBaseEntity
 {
-    protected readonly SqlDbContext _dbContext;
+    protected readonly PostgreDbContext _dbContext;
 
-    public BaseRepository(SqlDbContext dbContext)
+    public BaseRepository(PostgreDbContext dbContext)
     {
         _dbContext = dbContext;
     }

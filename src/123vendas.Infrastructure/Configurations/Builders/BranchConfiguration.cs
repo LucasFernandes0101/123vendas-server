@@ -28,21 +28,21 @@ public class BranchConfiguration : IEntityTypeConfiguration<Branch>
             .HasColumnType("varchar(20)");
 
         builder.Property(x => x.IsActive)
-            .HasColumnType("bit")
+            .HasColumnType("boolean")
             .IsRequired();
 
         builder.Property(x => x.CreatedAt)
             .IsRequired()
-            .HasColumnType("datetime2")
+            .HasColumnType("timestamp")
             .ValueGeneratedOnAdd();
 
         builder.Property(x => x.UpdatedAt)
             .IsRequired()
-            .HasColumnType("datetime2")
+            .HasColumnType("timestamp")
             .ValueGeneratedOnUpdate();
 
         builder.Property(x => x.IsDeleted)
-            .HasColumnType("bit")
+            .HasColumnType("boolean")
             .HasDefaultValue(false);
     }
 }

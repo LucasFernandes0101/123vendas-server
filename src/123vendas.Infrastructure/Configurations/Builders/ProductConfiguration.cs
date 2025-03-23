@@ -30,19 +30,19 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
             .IsRequired();
 
         builder.Property(p => p.IsActive)
-            .HasColumnType("bit")
+            .HasColumnType("boolean")
             .IsRequired();
 
         builder.Property(p => p.CreatedAt)
-            .HasColumnType("datetime2")
+            .HasColumnType("timestamp")
             .ValueGeneratedOnAdd();
 
         builder.Property(p => p.UpdatedAt)
-            .HasColumnType("datetime2")
+            .HasColumnType("timestamp")
             .ValueGeneratedOnUpdate();
 
         builder.Property(x => x.IsDeleted)
-            .HasColumnType("bit")
+            .HasColumnType("boolean")
             .HasDefaultValue(false);
     }
 }

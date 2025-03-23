@@ -8,7 +8,7 @@ namespace _123vendas.Infrastructure.Repositories;
 [ExcludeFromCodeCoverage]
 public class ProductRepository : BaseRepository<Product>, IProductRepository
 {
-    public ProductRepository(SqlDbContext dbContext) : base(dbContext)
+    public ProductRepository(PostgreDbContext dbContext) : base(dbContext)
     {
     }
 }

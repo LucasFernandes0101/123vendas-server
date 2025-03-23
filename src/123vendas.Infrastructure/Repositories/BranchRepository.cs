@@ -8,7 +8,7 @@ namespace _123vendas.Infrastructure.Repositories;
 [ExcludeFromCodeCoverage]
 public class BranchRepository : BaseRepository<Branch>, IBranchRepository
 {
-    public BranchRepository(SqlDbContext dbContext) : base(dbContext)
+    public BranchRepository(PostgreDbContext dbContext) : base(dbContext)
     {
     }
 }
