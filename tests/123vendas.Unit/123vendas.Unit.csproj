@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
-    <RootNamespace>_123vendas.Tests</RootNamespace>
+    <RootNamespace>_123vendas.Unit</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
 
@@ -27,8 +27,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\123vendas.Application\123vendas.Application.csproj" />
-    <ProjectReference Include="..\123vendas.Domain\123vendas.Domain.csproj" />
+    <ProjectReference Include="..\..\src\123vendas.Application\123vendas.Application.csproj" />
+    <ProjectReference Include="..\..\src\123vendas.Domain\123vendas.Domain.csproj" />
   </ItemGroup>
 
 </Project>
