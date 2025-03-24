@@ -56,14 +56,14 @@ public class BranchService : IBranchService
         }
     }
 
-    public async Task<PagedResult<Branch>> GetAllAsync(int? id,
-                                                bool? isActive,
-                                                string? name,
-                                                DateTimeOffset? startDate,
-                                                DateTimeOffset? endDate,
-                                                int page = 1,
-                                                int maxResults = 10,
-                                                string? orderByClause = default)
+    public async Task<PagedResult<Branch>> GetAllAsync(int? id = default,
+                                                       bool? isActive = default,
+                                                       string? name = default,
+                                                       DateTimeOffset? startDate = default,
+                                                       DateTimeOffset? endDate = default,
+                                                       int page = 1,
+                                                       int maxResults = 10,
+                                                       string? orderByClause = default)
     {
         try
         {

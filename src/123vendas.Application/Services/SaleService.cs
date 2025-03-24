@@ -132,15 +132,15 @@ public class SaleService : ISaleService
         }
     }
 
-    public async Task<PagedResult<Sale>> GetAllAsync(int? id,
-                                              int? branchId,
-                                              int? customerId,
-                                              SaleStatus? status,
-                                              DateTimeOffset? startDate,
-                                              DateTimeOffset? endDate,
-                                              int page = 1,
-                                              int maxResults = 10,
-                                              string? orderByClause = default)
+    public async Task<PagedResult<Sale>> GetAllAsync(int? id = default,
+                                                     int? branchId = default,
+                                                     int? customerId = default,
+                                                     SaleStatus? status = default,
+                                                     DateTimeOffset? startDate = default,
+                                                     DateTimeOffset? endDate = default,
+                                                     int page = 1,
+                                                     int maxResults = 10,
+                                                     string? orderByClause = default)
     {
         try
         {

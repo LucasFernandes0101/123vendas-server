@@ -22,13 +22,13 @@ public class BranchesController : ControllerBase
     public async Task<ActionResult<PagedResponseDTO<BranchGetResponseDTO>>> GetAsync([FromQuery] BranchGetRequestDTO request)
     {
         var pagedResult = await _branchService.GetAllAsync(request.Id,
-                                                        request.IsActive,
-                                                        request.Name,
-                                                        request.StartDate,
-                                                        request.EndDate,
-                                                        request.Page,
-                                                        request.Size,
-                                                        request.OrderByClause);
+                                                           request.IsActive,
+                                                           request.Name,
+                                                           request.StartDate,
+                                                           request.EndDate,
+                                                           request.Page,
+                                                           request.Size,
+                                                           request.OrderByClause);
 
         if (pagedResult?.Items is not null && pagedResult.Items.Any())
             return Ok(new PagedResponseDTO<BranchGetResponseDTO>(pagedResult.Items.ToDTO(), pagedResult.Total, request.Page, request.Size));

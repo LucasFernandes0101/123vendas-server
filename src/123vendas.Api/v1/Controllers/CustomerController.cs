@@ -22,16 +22,16 @@ public class CustomersController : ControllerBase
     public async Task<ActionResult<PagedResponseDTO<CustomerGetResponseDTO>>> GetAsync([FromQuery] CustomerGetRequestDTO request)
     {
         var pagedResult = await _customerService.GetAllAsync(request.Id,
-                                                        request.Name,
-                                                        request.Document,
-                                                        request.Phone,
-                                                        request.Email,
-                                                        request.IsActive,
-                                                        request.StartDate,
-                                                        request.EndDate,
-                                                        request.Page,
-                                                        request.Size,
-                                                        request.OrderByClause);
+                                                             request.Name,
+                                                             request.Document,
+                                                             request.Phone,
+                                                             request.Email,
+                                                             request.IsActive,
+                                                             request.StartDate,
+                                                             request.EndDate,
+                                                             request.Page,
+                                                             request.Size,
+                                                             request.OrderByClause);
 
         if (pagedResult?.Items is not null && pagedResult.Items.Any())
             return Ok(new PagedResponseDTO<CustomerGetResponseDTO>(pagedResult.Items.ToDTO(), pagedResult.Total, request.Page, request.Size));

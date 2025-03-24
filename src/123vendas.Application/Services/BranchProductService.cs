@@ -59,12 +59,12 @@ public class BranchProductService : IBranchProductService
     }
 
     public async Task<PagedResult<BranchProduct>> GetAllAsync(
-        int? id,
-        int? branchId,
-        int? productId,
-        bool? isActive,
-        DateTimeOffset? startDate,
-        DateTimeOffset? endDate,
+        int? id = default,
+        int? branchId = default,
+        int? productId = default,
+        bool? isActive = default,
+        DateTimeOffset? startDate = default,
+        DateTimeOffset? endDate = default,
         int page = 1,
         int maxResults = 10,
         string? orderByClause = default)

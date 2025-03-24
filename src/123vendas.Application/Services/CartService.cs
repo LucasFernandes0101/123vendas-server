@@ -59,10 +59,10 @@ public class CartService : ICartService
         }
     }
 
-    public async Task<PagedResult<Cart>> GetAllAsync(int? id,
-                                                     int? userId,
-                                                     DateTimeOffset? minDate,
-                                                     DateTimeOffset? maxDate,
+    public async Task<PagedResult<Cart>> GetAllAsync(int? id = default,
+                                                     int? userId = default,
+                                                     DateTimeOffset? minDate = default,
+                                                     DateTimeOffset? maxDate = default,
                                                      int page = 1,
                                                      int maxResults = 10,
                                                      string? orderByClause = default)

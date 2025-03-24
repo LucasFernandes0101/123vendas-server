@@ -60,14 +60,14 @@ public class CustomerService : ICustomerService
         }
     }
 
-    public async Task<PagedResult<Customer>> GetAllAsync(int? id,
-                                                  string? name,
-                                                  string? document,
-                                                  string? phone,
-                                                  string? email,
-                                                  bool? isActive,
-                                                  DateTimeOffset? startDate,
-                                                  DateTimeOffset? endDate,
+    public async Task<PagedResult<Customer>> GetAllAsync(int? id = default,
+                                                  string? name = default,
+                                                  string? document = default,
+                                                  string? phone = default,
+                                                  string? email = default,
+                                                  bool? isActive = default,
+                                                  DateTimeOffset? startDate = default,
+                                                  DateTimeOffset? endDate = default,
                                                   int page = 1,
                                                   int maxResults = 10,
                                                   string? orderByClause = default)

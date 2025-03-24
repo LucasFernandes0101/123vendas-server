@@ -5,7 +5,7 @@ namespace _123vendas.Domain.Interfaces.Services;
 
 public interface ICartService
 {
-    Task<PagedResult<Cart>> GetAllAsync(int? id, int? userId, DateTimeOffset? minDate, DateTimeOffset? maxDate, int page = 1, int maxResults = 10, string? orderByClause = default);
+    Task<PagedResult<Cart>> GetAllAsync(int? id = default, int? userId = default, DateTimeOffset? minDate = default, DateTimeOffset? maxDate = default, int page = 1, int maxResults = 10, string? orderByClause = default);
     Task<Cart?> GetByIdAsync(int id);
     Task<Cart> CreateAsync(Cart request);
     Task<Cart> UpdateAsync(int id, Cart request);
