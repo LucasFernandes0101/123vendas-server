@@ -1,6 +1,7 @@
-﻿using FluentValidation;
+﻿using _123vendas.Application.Commands.Users;
+using FluentValidation;
 
-namespace _123vendas.Application.Users.GetUser;
+namespace _123vendas.Application.Validators.Users;
 
 public class GetUserCommandValidator : AbstractValidator<GetUserCommand>
 {

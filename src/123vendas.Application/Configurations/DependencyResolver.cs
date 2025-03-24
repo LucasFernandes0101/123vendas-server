@@ -1,12 +1,13 @@
-﻿using _123vendas.Application.Common.Security;
+﻿using _123vendas.Application.Commands.Users;
+using _123vendas.Application.Common.Security;
 using _123vendas.Application.Mappers.Branches;
 using _123vendas.Application.Mappers.BranchProducts;
 using _123vendas.Application.Mappers.Carts;
 using _123vendas.Application.Mappers.Products;
 using _123vendas.Application.Mappers.Sales;
+using _123vendas.Application.Mappers.Users;
 using _123vendas.Application.Services;
-using _123vendas.Application.Users.CreateUser;
-using _123vendas.Application.Users.GetUser;
+using _123vendas.Application.Validators.Users;
 using _123vendas.Domain.Entities;
 using _123vendas.Domain.Interfaces.Integrations;
 using _123vendas.Domain.Interfaces.Repositories;
@@ -73,11 +74,7 @@ public static class DependencyResolver
         services.AddAutoMapper(typeof(BranchProductMapperProfile));
         services.AddAutoMapper(typeof(SaleMapperProfile));
         services.AddAutoMapper(typeof(CartMapperProfile));
-
-        #region Users
-        services.AddAutoMapper(typeof(CreateUserProfile));
-        services.AddAutoMapper(typeof(GetUserProfile));
-        #endregion
+        services.AddAutoMapper(typeof(UserProfile));
     }
 
     private static void ResolveFluentValidators(this IServiceCollection services)

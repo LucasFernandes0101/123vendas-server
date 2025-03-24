@@ -1,6 +1,7 @@
-﻿using MediatR;
+﻿using _123vendas.Application.Results.Users;
+using MediatR;
 
-namespace _123vendas.Application.Users.GetUser;
+namespace _123vendas.Application.Commands.Users;
 
 public record GetUserCommand : IRequest<GetUserResult>
 {

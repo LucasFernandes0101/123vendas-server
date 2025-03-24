@@ -1,8 +1,9 @@
-﻿using _123vendas.Application.Validators;
+﻿using _123vendas.Application.Commands.Users;
+using _123vendas.Application.Validators.Common;
 using _123vendas.Domain.Enums;
 using FluentValidation;
 
-namespace _123vendas.Application.Users.CreateUser;
+namespace _123vendas.Application.Validators.Users;
 
 public class CreateUserCommandValidator : AbstractValidator<CreateUserCommand>
 {

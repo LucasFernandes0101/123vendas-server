@@ -1,10 +1,13 @@
-﻿using _123vendas.Application.Common.Security;
+﻿using _123vendas.Application.Commands.Users;
+using _123vendas.Application.Common.Security;
+using _123vendas.Application.Mappers.Users;
+using _123vendas.Application.Results.Users;
 using _123vendas.Domain.Exceptions;
 using _123vendas.Domain.Interfaces.Repositories;
 using FluentValidation;
 using MediatR;
 
-namespace _123vendas.Application.Users.CreateUser;
+namespace _123vendas.Application.Handlers.Users;
 
 public class CreateUserHandler : IRequestHandler<CreateUserCommand, CreateUserResult>
 {
@@ -24,7 +27,7 @@ public class CreateUserHandler : IRequestHandler<CreateUserCommand, CreateUserRe
     {
         await ValidateUserAsync(command, cancellationToken);
 
-        var result = await _userRepository.GetAsync(criteria: x => x.Email == command.Email && 
+        var result = await _userRepository.GetAsync(criteria: x => x.Email == command.Email &&
                                                               x.IsActive);
 
         if (result?.Items is not null && result.Items.Any())
@@ -35,7 +38,7 @@ public class CreateUserHandler : IRequestHandler<CreateUserCommand, CreateUserRe
 
         var createdUser = await _userRepository.AddAsync(user);
 
-        return createdUser.ToResult();
+        return createdUser.ToCreateResult();
     }
 
     private async Task ValidateUserAsync(CreateUserCommand command, CancellationToken cancellationToken)

@@ -1,5 +1,5 @@
-﻿using _123vendas.Application.Users.CreateUser;
-using _123vendas.Application.Users.GetUser;
+﻿using _123vendas.Application.Commands.Users;
+using _123vendas.Application.Results.Users;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 

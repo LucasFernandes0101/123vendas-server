@@ -1,4 +1,4 @@
-﻿namespace _123vendas.Application.Users.CreateUser;
+﻿namespace _123vendas.Application.Results.Users;
 
 public record CreateUserResult
 {

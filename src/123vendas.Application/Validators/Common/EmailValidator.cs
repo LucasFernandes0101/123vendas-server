@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using System.Text.RegularExpressions;
 
-namespace _123vendas.Application.Validators;
+namespace _123vendas.Application.Validators.Common;
 
 public class EmailValidator : AbstractValidator<string>
 {

@@ -1,7 +1,8 @@
-﻿using _123vendas.Domain.Enums;
+﻿using _123vendas.Application.Results.Users;
+using _123vendas.Domain.Enums;
 using MediatR;
 
-namespace _123vendas.Application.Users.CreateUser;
+namespace _123vendas.Application.Commands.Users;
 
 public record CreateUserCommand : IRequest<CreateUserResult>
 {

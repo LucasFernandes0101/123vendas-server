@@ -1,9 +1,12 @@
-﻿using _123vendas.Domain.Exceptions;
+﻿using _123vendas.Application.Commands.Users;
+using _123vendas.Application.Mappers.Users;
+using _123vendas.Application.Results.Users;
+using _123vendas.Domain.Exceptions;
 using _123vendas.Domain.Interfaces.Repositories;
 using FluentValidation;
 using MediatR;
 
-namespace _123vendas.Application.Users.GetUser;
+namespace _123vendas.Application.Handlers.Users;
 
 public class GetUserHandler : IRequestHandler<GetUserCommand, GetUserResult>
 {
@@ -20,11 +23,11 @@ public class GetUserHandler : IRequestHandler<GetUserCommand, GetUserResult>
         await ValidateRequestAsync(request, cancellationToken);
 
         var user = await _userRepository.GetByIdAsync(request.Id);
-        
+
         if (user is null)
             throw new EntityNotFoundException($"User with ID {request.Id} not found");
 
-        return user.ToResult();
+        return user.ToGetResult();
     }
 
     private async Task ValidateRequestAsync(GetUserCommand request, CancellationToken cancellationToken)

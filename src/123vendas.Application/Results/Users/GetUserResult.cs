@@ -1,6 +1,6 @@
 ﻿using _123vendas.Domain.Enums;
 
-namespace _123vendas.Application.Users.GetUser;
+namespace _123vendas.Application.Results.Users;
 
 public record GetUserResult
 {
