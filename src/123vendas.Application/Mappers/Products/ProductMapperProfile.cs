@@ -10,24 +10,18 @@ public class ProductMapperProfile : Profile
 {
     public ProductMapperProfile()
     {
-        CreateMap<Product, ProductGetDetailResponseDTO>()
-            .ForMember(dest => dest.Rating, opt => opt.MapFrom(src => new ProductRatingDTO() { Rate = src.Rating, Count = src.RateCount }))
-            .ReverseMap();
+        CreateMap<Product, ProductGetDetailResponseDTO>().ReverseMap();
 
-        CreateMap<Product, ProductGetResponseDTO>()
-            .ForMember(dest => dest.Rating, opt => opt.MapFrom(src => new ProductRatingDTO() { Rate = src.Rating, Count = src.RateCount}))
-            .ReverseMap();
+        CreateMap<Product, ProductGetResponseDTO>().ReverseMap();
 
-        CreateMap<Product, ProductPutResponseDTO>()
-            .ForMember(dest => dest.Rating, opt => opt.MapFrom(src => new ProductRatingDTO() { Rate = src.Rating, Count = src.RateCount }))
-            .ReverseMap();
+        CreateMap<Product, ProductPutResponseDTO>().ReverseMap();
 
-        CreateMap<Product, ProductPostResponseDTO>()
-            .ForMember(dest => dest.Rating, opt => opt.MapFrom(src => new ProductRatingDTO() { Rate = src.Rating, Count = src.RateCount }))
-            .ReverseMap();
+        CreateMap<Product, ProductPostResponseDTO>().ReverseMap();
 
         CreateMap<ProductPostRequestDTO, Product>().ReverseMap();
 
         CreateMap<ProductPutRequestDTO, Product>().ReverseMap();
+
+        CreateMap<ProductRatingDTO, ProductRating>().ReverseMap();
     }
 }

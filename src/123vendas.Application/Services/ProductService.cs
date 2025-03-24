@@ -32,6 +32,8 @@ public class ProductService : IProductService
     {
         try
         {
+            request.Rating ??= new ProductRating();
+
             await ValidateProductAsync(request);
 
             return await _repository.AddAsync(request);
@@ -155,11 +157,12 @@ public class ProductService : IProductService
         existingProduct.Title = request.Title;
         existingProduct.Description = request.Description;
         existingProduct.Image = request.Image;
-        existingProduct.Rating = request.Rating;
-        existingProduct.RateCount = request.RateCount;
         existingProduct.Category = request.Category;
         existingProduct.Price = request.Price;
         existingProduct.IsActive = request.IsActive;
+
+        if(request.Rating is not null)
+            existingProduct.Rating = request.Rating;
 
         return await Task.FromResult(existingProduct);
     }

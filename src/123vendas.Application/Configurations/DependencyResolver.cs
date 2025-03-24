@@ -77,6 +77,7 @@ public static class DependencyResolver
         services.AddScoped<IValidator<Branch>, BranchValidator>();
         services.AddScoped<IValidator<BranchProduct>, BranchProductValidator>();
         services.AddScoped<IValidator<Product>, ProductValidator>();
+        services.AddScoped<IValidator<ProductRating>, ProductRatingValidator>();
         services.AddScoped<IValidator<Customer>, CustomerValidator>();
         services.AddScoped<IValidator<Sale>, SaleValidator>();
         services.AddScoped<IValidator<SaleItem>, SaleItemValidator>();

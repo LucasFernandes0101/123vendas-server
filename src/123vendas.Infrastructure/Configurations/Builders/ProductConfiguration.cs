@@ -33,13 +33,16 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
             .HasColumnType("varchar(512)")
             .IsRequired();
 
-        builder.Property(p => p.Rating)
-            .HasColumnType("decimal(3, 1)") 
-            .IsRequired(false);
+        builder.OwnsOne(p => p.Rating, rating =>
+        {
+            rating.Property(r => r.Rate)
+                  .HasColumnType("decimal(3, 1)")
+                  .IsRequired(false);
 
-        builder.Property(p => p.RateCount)
-            .HasColumnType("int")
-            .HasDefaultValue(0);
+            rating.Property(r => r.Count)
+                  .HasColumnType("int")
+                  .HasDefaultValue(0);
+        });
 
         builder.Property(p => p.IsActive)
             .HasColumnType("boolean")
