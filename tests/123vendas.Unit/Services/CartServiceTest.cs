@@ -171,15 +171,20 @@ public class CartServiceTest
     {
         // Arrange
         var (repository, cartProductRepository, validator, logger, service) = CreateDependencies();
+
         var existingCart = new CartMock().Generate();
 
-        var existingProduct = existingCart.Products?.FirstOrDefault();
+        var product = new CartProduct()
+        {
+            Id = 1,
+            Quantity = 5
+        };
 
-        if (existingProduct is not null)
-            existingProduct.Quantity = 5;
+        existingCart.Products = new List<CartProduct> { product };
 
         var updatedCart = new CartMock().Generate();
 
+        updatedCart.Products = new List<CartProduct>() { product };
         updatedCart.Products!.First().Quantity = 10;
 
         repository.GetWithProductsByIdAsync(existingCart.Id).Returns(existingCart);
