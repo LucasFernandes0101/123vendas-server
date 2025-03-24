@@ -17,7 +17,8 @@ public static class ExceptionStatusCodes
             {typeof(ItemOutOfStockException), HttpStatusCode.Conflict},
             {typeof(ItemQuantityLimitExceededException), HttpStatusCode.Conflict},
             {typeof(UserAlreadyExistsException), HttpStatusCode.Conflict},
-            {typeof(BadRequestException), HttpStatusCode.BadRequest}
+            {typeof(BadRequestException), HttpStatusCode.BadRequest},
+            {typeof(EntityNotFoundException), HttpStatusCode.NoContent}
         };
 
     public static HttpStatusCode GetExceptionStatusCode(Exception exception)

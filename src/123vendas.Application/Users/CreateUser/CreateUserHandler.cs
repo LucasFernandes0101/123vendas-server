@@ -22,7 +22,7 @@ public class CreateUserHandler : IRequestHandler<CreateUserCommand, CreateUserRe
 
     public async Task<CreateUserResult> Handle(CreateUserCommand command, CancellationToken cancellationToken)
     {
-        await ValidateUser(command, cancellationToken);
+        await ValidateUserAsync(command, cancellationToken);
 
         var result = await _userRepository.GetAsync(criteria: x => x.Email == command.Email && 
                                                               x.IsActive);
@@ -38,7 +38,7 @@ public class CreateUserHandler : IRequestHandler<CreateUserCommand, CreateUserRe
         return createdUser.ToResult();
     }
 
-    private async Task ValidateUser(CreateUserCommand command, CancellationToken cancellationToken)
+    private async Task ValidateUserAsync(CreateUserCommand command, CancellationToken cancellationToken)
     {
         var validation = await _validator.ValidateAsync(command, cancellationToken);
 

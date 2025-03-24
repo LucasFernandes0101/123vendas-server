@@ -6,6 +6,7 @@ using _123vendas.Application.Mappers.Products;
 using _123vendas.Application.Mappers.Sales;
 using _123vendas.Application.Services;
 using _123vendas.Application.Users.CreateUser;
+using _123vendas.Application.Users.GetUser;
 using _123vendas.Domain.Entities;
 using _123vendas.Domain.Interfaces.Integrations;
 using _123vendas.Domain.Interfaces.Repositories;
@@ -75,6 +76,7 @@ public static class DependencyResolver
 
         #region Users
         services.AddAutoMapper(typeof(CreateUserProfile));
+        services.AddAutoMapper(typeof(GetUserProfile));
         #endregion
     }
 
@@ -92,6 +94,7 @@ public static class DependencyResolver
         #region Users
         services.AddScoped<IValidator<User>, UserValidator>();
         services.AddScoped<IValidator<CreateUserCommand>, CreateUserCommandValidator>();
+        services.AddScoped<IValidator<GetUserCommand>, GetUserCommandValidator>();
         #endregion
     }
 

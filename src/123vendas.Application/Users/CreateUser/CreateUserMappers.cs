@@ -1,5 +1,4 @@
-﻿using _123vendas.Application.DTOs.Sales;
-using _123vendas.Domain.Entities;
+﻿using _123vendas.Domain.Entities;
 using AutoMapper;
 
 namespace _123vendas.Application.Users.CreateUser;
