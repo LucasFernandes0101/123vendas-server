@@ -56,7 +56,7 @@ public class BranchService : IBranchService
         }
     }
 
-    public async Task<List<Branch>> GetAllAsync(int? id,
+    public async Task<PagedResult<Branch>> GetAllAsync(int? id,
                                                 bool? isActive,
                                                 string? name,
                                                 DateTime? startDate,
@@ -74,7 +74,7 @@ public class BranchService : IBranchService
 
             var result = await _repository.GetAsync(page, maxResults, criteria, orderByClause);
 
-            return result.Items;
+            return result;
         }
         catch (BaseException)
         {

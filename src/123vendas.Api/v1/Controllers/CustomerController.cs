@@ -1,5 +1,6 @@
 ﻿using _123vendas.Application.DTOs.Customers;
 using _123vendas.Application.Mappers.Customers;
+using _123vendas.Domain.Base;
 using _123vendas.Domain.Interfaces.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,9 +19,9 @@ public class CustomersController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<CustomerGetResponseDTO>>> GetAsync([FromQuery] CustomerGetRequestDTO request)
+    public async Task<ActionResult<PagedResponseDTO<CustomerGetResponseDTO>>> GetAsync([FromQuery] CustomerGetRequestDTO request)
     {
-        var customers = await _customerService.GetAllAsync(request.Id,
+        var pagedResult = await _customerService.GetAllAsync(request.Id,
                                                         request.Name,
                                                         request.Document,
                                                         request.Phone,
@@ -32,10 +33,8 @@ public class CustomersController : ControllerBase
                                                         request.Size,
                                                         request.OrderByClause);
 
-        var response = customers.ToDTO();
-
-        if (response is not null && response.Any())
-            return Ok(response);
+        if (pagedResult?.Items is not null && pagedResult.Items.Any())
+            return Ok(new PagedResponseDTO<CustomerGetResponseDTO>(pagedResult.Items.ToDTO(), pagedResult.Total, request.Page, request.Size));
 
         return NoContent();
     }

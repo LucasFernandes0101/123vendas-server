@@ -132,7 +132,7 @@ public class SaleService : ISaleService
         }
     }
 
-    public async Task<List<Sale>> GetAllAsync(int? id,
+    public async Task<PagedResult<Sale>> GetAllAsync(int? id,
                                               int? branchId,
                                               int? customerId,
                                               SaleStatus? status,
@@ -151,7 +151,7 @@ public class SaleService : ISaleService
 
             var result = await _repository.GetAsync(page, maxResults, criteria, orderByClause);
 
-            return result.Items;
+            return result;
         }
         catch (BaseException ex)
         {

@@ -58,7 +58,7 @@ public class BranchProductService : IBranchProductService
         }
     }
 
-    public async Task<List<BranchProduct>> GetAllAsync(
+    public async Task<PagedResult<BranchProduct>> GetAllAsync(
         int? id,
         int? branchId,
         int? productId,
@@ -78,7 +78,7 @@ public class BranchProductService : IBranchProductService
 
             var result = await _repository.GetAsync(page, maxResults, criteria, orderByClause);
 
-            return result.Items;
+            return result;
         }
         catch (BaseException)
         {

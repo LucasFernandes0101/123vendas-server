@@ -1,5 +1,6 @@
 ﻿using _123vendas.Application.DTOs.BranchProducts;
 using _123vendas.Application.Mappers.BranchProducts;
+using _123vendas.Domain.Base;
 using _123vendas.Domain.Interfaces.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,22 +19,20 @@ namespace _123vendas_server.v1.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<BranchProductGetResponseDTO>>> GetAsync([FromQuery] BranchProductGetRequestDTO request)
+        public async Task<ActionResult<PagedResponseDTO<BranchProductGetResponseDTO>>> GetAsync([FromQuery] BranchProductGetRequestDTO request)
         {
-            var branchProducts = await _branchProductService.GetAllAsync(request.Id,
-                                                            request.BranchId,
-                                                            request.ProductId,
-                                                            request.IsActive,
-                                                            request.StartDate,
-                                                            request.EndDate,
-                                                            request.Page,
-                                                            request.Size,
-                                                            request.OrderByClause);
+            var pagedResult = await _branchProductService.GetAllAsync(request.Id,
+                                                                      request.BranchId,
+                                                                      request.ProductId,
+                                                                      request.IsActive,
+                                                                      request.StartDate,
+                                                                      request.EndDate,
+                                                                      request.Page,
+                                                                      request.Size,
+                                                                      request.OrderByClause);
 
-            var response = branchProducts.ToDTO();
-
-            if (response is not null && response.Any())
-                return Ok(response);
+            if (pagedResult?.Items is not null && pagedResult.Items.Any())
+                return Ok(new PagedResponseDTO<BranchProductGetResponseDTO>(pagedResult.Items.ToDTO(), pagedResult.Total, request.Page, request.Size));
 
             return NoContent();
         }

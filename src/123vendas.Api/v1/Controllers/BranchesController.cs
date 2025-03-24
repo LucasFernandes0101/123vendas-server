@@ -1,5 +1,6 @@
 ﻿using _123vendas.Application.DTOs.Branches;
 using _123vendas.Application.Mappers.Branches;
+using _123vendas.Domain.Base;
 using _123vendas.Domain.Interfaces.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,9 +19,9 @@ namespace _123vendas_server.v1.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<BranchGetResponseDTO>>> GetAsync([FromQuery] BranchGetRequestDTO request)
+        public async Task<ActionResult<PagedResponseDTO<BranchGetResponseDTO>>> GetAsync([FromQuery] BranchGetRequestDTO request)
         {
-            var branches = await _branchService.GetAllAsync(request.Id,
+            var pagedResult = await _branchService.GetAllAsync(request.Id,
                                                             request.IsActive,
                                                             request.Name,
                                                             request.StartDate,
@@ -29,11 +30,9 @@ namespace _123vendas_server.v1.Controllers
                                                             request.Size,
                                                             request.OrderByClause);
 
-            var response = branches.ToDTO();
-
-            if (response is not null && response.Any())
-                return Ok(response);
-
+            if (pagedResult?.Items is not null && pagedResult.Items.Any())
+                return Ok(new PagedResponseDTO<BranchGetResponseDTO>(pagedResult.Items.ToDTO(), pagedResult.Total, request.Page, request.Size));
+            
             return NoContent();
         }
 

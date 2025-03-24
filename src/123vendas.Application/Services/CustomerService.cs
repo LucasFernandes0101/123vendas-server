@@ -60,7 +60,7 @@ public class CustomerService : ICustomerService
         }
     }
 
-    public async Task<List<Customer>> GetAllAsync(int? id,
+    public async Task<PagedResult<Customer>> GetAllAsync(int? id,
                                                   string? name,
                                                   string? document,
                                                   string? phone,
@@ -81,7 +81,7 @@ public class CustomerService : ICustomerService
 
             var result = await _repository.GetAsync(page, maxResults, criteria, orderByClause);
 
-            return result.Items;
+            return result;
         }
         catch (BaseException)
         {

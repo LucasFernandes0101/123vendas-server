@@ -1,5 +1,6 @@
 ﻿using _123vendas.Application.DTOs.Products;
 using _123vendas.Application.Mappers.Products;
+using _123vendas.Domain.Base;
 using _123vendas.Domain.Interfaces.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,9 +19,9 @@ namespace _123vendas_server.v1.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ProductGetResponseDTO>>> GetAsync([FromQuery] ProductGetRequestDTO request)
+        public async Task<ActionResult<PagedResponseDTO<ProductGetResponseDTO>>> GetAsync([FromQuery] ProductGetRequestDTO request)
         {
-            var products = await _productService.GetAllAsync(request.Id,
+            var pagedResult = await _productService.GetAllAsync(request.Id,
                                                             request.IsActive,
                                                             request.Title,
                                                             request.Category,
@@ -32,10 +33,8 @@ namespace _123vendas_server.v1.Controllers
                                                             request.Size,
                                                             request.OrderByClause);
 
-            var response = products.ToDTO();
-
-            if (response is not null && response.Any())
-                return Ok(response);
+            if (pagedResult?.Items is not null && pagedResult.Items.Any())
+                return Ok(new PagedResponseDTO<ProductGetResponseDTO>(pagedResult.Items.ToDTO(), pagedResult.Total, request.Page, request.Size));
 
             return NoContent();
         }

@@ -99,7 +99,7 @@ public class BranchServiceTest
         var result = await service.GetAllAsync(null, true, null, null, null, 1, 10);
 
         // Assert
-        result.Should().BeEquivalentTo(branches);
+        result.Items.Should().BeEquivalentTo(branches);
     }
 
     [Fact(DisplayName = "GetByIdAsync should return the branch if exists")]

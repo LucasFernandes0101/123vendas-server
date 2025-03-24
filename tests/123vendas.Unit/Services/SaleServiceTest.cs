@@ -398,9 +398,9 @@ public class SaleServiceTest
         var result = await saleService.GetAllAsync(null, null, null, null, null, null);
 
         // Assert
-        result.Should().NotBeNull();
-        result.Should().HaveCount(1);
-        result.First().Should().BeEquivalentTo(sales.First());
+        result.Items.Should().NotBeNull();
+        result.Items.Should().HaveCount(1);
+        result.Items.First().Should().BeEquivalentTo(sales.First());
     }
 
     [Fact(DisplayName = "Update Sale - Valid Request")]

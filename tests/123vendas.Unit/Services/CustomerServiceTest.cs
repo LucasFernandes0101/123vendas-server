@@ -103,8 +103,8 @@ public class CustomerServiceTest
         var result = await service.GetAllAsync(null, null, null, null, null, null, null, null, 1, 10);
 
         // Assert
-        result.Should().HaveCount(2);
-        result.Should().BeEquivalentTo(customers);
+        result.Items.Should().HaveCount(2);
+        result.Items.Should().BeEquivalentTo(customers);
     }
 
     [Fact(DisplayName = "Should throw InvalidPaginationParametersException when page is less than 1")]

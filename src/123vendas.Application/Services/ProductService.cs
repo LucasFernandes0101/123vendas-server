@@ -64,7 +64,7 @@ public class ProductService : IProductService
         }
     }
 
-    public async Task<List<Product>> GetAllAsync(int? id,
+    public async Task<PagedResult<Product>> GetAllAsync(int? id,
                                                 bool? isActive,
                                                 string? title,
                                                 string? category,
@@ -85,7 +85,7 @@ public class ProductService : IProductService
 
             var result = await _repository.GetAsync(page, maxResults, criteria, orderByClause);
 
-            return result.Items;
+            return result;
         }
         catch (BaseException)
         {
