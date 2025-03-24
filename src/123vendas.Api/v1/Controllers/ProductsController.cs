@@ -89,7 +89,7 @@ public class ProductsController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutAsync([FromRoute] int id, [FromBody] ProductPutRequestDTO request)
+    public async Task<ActionResult<ProductPutResponseDTO>> PutAsync([FromRoute] int id, [FromBody] ProductPutRequestDTO request)
     {
         var product = await _productService.UpdateAsync(id, request.ToEntity());
 

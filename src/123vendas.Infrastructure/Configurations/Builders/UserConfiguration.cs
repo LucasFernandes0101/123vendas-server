@@ -100,8 +100,6 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             .HasColumnType("timestamptz")
             .ValueGeneratedOnUpdate();
 
-        builder.HasIndex(u => u.Email).IsUnique();
-
         builder.Property(x => x.IsDeleted)
             .HasColumnType("boolean")
             .HasDefaultValue(false);

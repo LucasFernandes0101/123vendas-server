@@ -59,7 +59,7 @@ public class CartsController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutAsync([FromRoute] int id, [FromBody] CartPutRequestDTO request)
+    public async Task<ActionResult<CartPutResponseDTO>> PutAsync([FromRoute] int id, [FromBody] CartPutRequestDTO request)
     {
         var cart = await _cartService.UpdateAsync(id, request.ToEntity());
 

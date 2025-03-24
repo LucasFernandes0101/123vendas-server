@@ -61,7 +61,7 @@ public class SalesController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutAsync([FromRoute] int id, [FromBody] SalePutRequestDTO request)
+    public async Task<ActionResult<SalePutResponseDTO>> PutAsync([FromRoute] int id, [FromBody] SalePutRequestDTO request)
     {
         var sale = await _saleService.UpdateAsync(id, request.ToEntity());
 
@@ -85,7 +85,7 @@ public class SalesController : ControllerBase
     }
 
     [HttpPut("{id}/Items/{sequence}/cancel")]
-    public async Task<IActionResult> CancelItemAsync([FromRoute] int id, [FromRoute] int sequence)
+    public async Task<ActionResult<SaleGetDetailResponseDTO>> CancelItemAsync([FromRoute] int id, [FromRoute] int sequence)
     {
         var sale = await _saleService.CancelItemAsync(id, sequence);
 
@@ -93,7 +93,7 @@ public class SalesController : ControllerBase
     }
 
     [HttpGet("{id}/Items/{sequence}")]
-    public async Task<IActionResult> GetItemAsync([FromRoute] int id, [FromRoute] int sequence)
+    public async Task<ActionResult<SaleItemGetDetailDTO>> GetItemAsync([FromRoute] int id, [FromRoute] int sequence)
     {
         var saleItem = await _saleService.GetItemAsync(id, sequence);
 

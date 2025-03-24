@@ -9,5 +9,5 @@ public record DeleteUserCommand : IRequest
         Id = id;
     }
 
-    public int Id { get; set; }
+    public int Id { get; init; }
 }

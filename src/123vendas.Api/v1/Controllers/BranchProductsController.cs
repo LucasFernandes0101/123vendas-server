@@ -61,7 +61,7 @@ public class BranchProductsController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutAsync([FromRoute] int id, [FromBody] BranchProductPutRequestDTO request)
+    public async Task<ActionResult<BranchProductPutResponseDTO>> PutAsync([FromRoute] int id, [FromBody] BranchProductPutRequestDTO request)
     {
         var branchProduct = await _branchProductService.UpdateAsync(id, request.ToEntity());
 

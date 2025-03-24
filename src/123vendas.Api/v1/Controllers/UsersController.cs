@@ -20,23 +20,27 @@ public class UsersController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<CreateUserResult>> PostAsync([FromBody] UserPostRequestDTO dto)
+    public async Task<ActionResult<UserPostResponseDTO>> PostAsync([FromBody] UserPostRequestDTO dto)
     {
         var command = dto.ToCommand();
 
         var result = await _mediator.Send(command);
 
-        return Created(string.Empty, result);
+        var response = result?.ToPostResponse();
+
+        return Created(string.Empty, response);
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<GetUserResult>> GetByIdAsync(int id)
+    public async Task<ActionResult<UserGetResponseDTO>> GetByIdAsync(int id)
     {
         var command = new GetUserCommand(id);
 
         var result = await _mediator.Send(command);
 
-        return Created(string.Empty, result);
+        var response = result?.ToGetResponse();
+
+        return Created(string.Empty, response);
     }
 
     [HttpDelete("{id}")]

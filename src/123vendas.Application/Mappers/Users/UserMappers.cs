@@ -20,6 +20,12 @@ public static class UserMappers
     public static GetUserResult ToGetResult(this User entity)
         => _mapper.Map<GetUserResult>(entity);
 
+    public static UserGetResponseDTO ToGetResponse(this GetUserResult entity)
+        => _mapper.Map<UserGetResponseDTO>(entity);
+
+    public static UserPostResponseDTO ToPostResponse(this CreateUserResult entity)
+        => _mapper.Map<UserPostResponseDTO>(entity);
+
     public static CreateUserResult ToCreateResult(this User entity)
         => _mapper.Map<CreateUserResult>(entity);
 
