@@ -182,7 +182,11 @@ public class ProductService : IProductService
         return b =>
             (!id.HasValue || b.Id == id.Value) &&
             (!isActive.HasValue || b.IsActive == isActive.Value) &&
-            (string.IsNullOrEmpty(title) || b.Title!.Contains(title)) &&
+            (string.IsNullOrEmpty(title) ||
+            (title.StartsWith("*") && title.EndsWith("*") ? b.Title!.Contains(title.Trim('*')) :
+            title.StartsWith("*") ? b.Title!.EndsWith(title.TrimStart('*')) :
+            title.EndsWith("*") ? b.Title!.StartsWith(title.TrimEnd('*')) :
+            b.Title == title)) &&
             (!categoryFilter.HasValue || b.Category == categoryFilter.Value) &&
             (!minPrice.HasValue || b.Price >= minPrice.Value) &&
             (!maxPrice.HasValue || b.Price <= maxPrice.Value) &&
