@@ -1,4 +1,6 @@
 ﻿using _123vendas.Application.Commands.Users;
+using _123vendas.Application.Mappers.Users;
+using _123vendas.Application.DTOs.Users;
 using _123vendas.Application.Results.Users;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -18,8 +20,10 @@ public class UsersController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<CreateUserResult>> PostAsync([FromBody] CreateUserCommand command)
+    public async Task<ActionResult<CreateUserResult>> PostAsync([FromBody] UserPostRequestDTO dto)
     {
+        var command = dto.ToCommand();
+
         var result = await _mediator.Send(command);
 
         return Created(string.Empty, result);
@@ -33,5 +37,15 @@ public class UsersController : ControllerBase
         var result = await _mediator.Send(command);
 
         return Created(string.Empty, result);
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<ActionResult> DeleteByIdAsync(int id)
+    {
+        var command = new DeleteUserCommand(id);
+
+        await _mediator.Send(command);
+
+        return NoContent();
     }
 }

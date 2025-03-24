@@ -1,4 +1,5 @@
 ﻿using _123vendas.Application.Commands.Users;
+using _123vendas.Application.DTOs.Users;
 using _123vendas.Application.Results.Users;
 using _123vendas.Domain.Entities;
 using AutoMapper;
@@ -21,4 +22,7 @@ public static class UserMappers
 
     public static CreateUserResult ToCreateResult(this User entity)
         => _mapper.Map<CreateUserResult>(entity);
+
+    public static CreateUserCommand ToCommand(this UserPostRequestDTO dto)
+        => _mapper.Map<CreateUserCommand>(dto);
 }

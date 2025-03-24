@@ -92,6 +92,7 @@ public static class DependencyResolver
         services.AddScoped<IValidator<User>, UserValidator>();
         services.AddScoped<IValidator<CreateUserCommand>, CreateUserCommandValidator>();
         services.AddScoped<IValidator<GetUserCommand>, GetUserCommandValidator>();
+        services.AddScoped<IValidator<DeleteUserCommand>, DeleteUserCommandValidator>();
         #endregion
     }
 
