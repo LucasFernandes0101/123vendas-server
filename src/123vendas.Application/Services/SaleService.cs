@@ -46,7 +46,7 @@ public class SaleService : ISaleService
             {
                 BranchId = request.BranchId,
                 CustomerId = request.CustomerId,
-                Date = DateTime.Now,
+                Date = DateTime.UtcNow,
                 Status = SaleStatus.Created,
                 Items = new List<SaleItem>()
             };
@@ -136,8 +136,8 @@ public class SaleService : ISaleService
                                               int? branchId,
                                               int? customerId,
                                               SaleStatus? status,
-                                              DateTime? startDate,
-                                              DateTime? endDate,
+                                              DateTimeOffset? startDate,
+                                              DateTimeOffset? endDate,
                                               int page = 1,
                                               int maxResults = 10,
                                               string? orderByClause = default)
@@ -220,7 +220,7 @@ public class SaleService : ISaleService
                 throw new SaleAlreadyCanceledException($"This sale is already canceled.");
 
             sale.Status = SaleStatus.Canceled;
-            sale.CancelledAt = DateTime.Now;
+            sale.CancelledAt = DateTimeOffset.Now;
 
             await _repository.UpdateAsync(sale);
 
@@ -359,7 +359,7 @@ public class SaleService : ISaleService
     private void CancelItem(SaleItem saleItem)
     {
         saleItem.IsCancelled = true;
-        saleItem.CancelledAt = DateTime.Now;
+        saleItem.CancelledAt = DateTimeOffset.Now;
     }
 
     private decimal CalculateTotalAmount(List<SaleItem> items)
@@ -422,8 +422,8 @@ public class SaleService : ISaleService
                                                           int? branchId,
                                                           int? customerId,
                                                           SaleStatus? status,
-                                                          DateTime? startDate,
-                                                          DateTime? endDate)
+                                                          DateTimeOffset? startDate,
+                                                          DateTimeOffset? endDate)
     {
         return b =>
             (!id.HasValue || b.Id == id.Value) &&

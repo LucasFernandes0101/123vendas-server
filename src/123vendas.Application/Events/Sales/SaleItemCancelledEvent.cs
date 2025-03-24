@@ -10,11 +10,11 @@ public class SaleItemCancelledEvent : BaseEvent
         SaleId = saleItem.SaleId;
         SaleItemId = saleItem.Id;
         Sequence = saleItem.Sequence;
-        CancelledAt = saleItem.CancelledAt ?? DateTime.Now;
+        CancelledAt = saleItem.CancelledAt ?? DateTimeOffset.Now;
     }
 
     public int SaleId { get; set; }
     public int SaleItemId { get; set; }
     public short Sequence { get; set; }
-    public DateTime CancelledAt { get; set; }
+    public DateTimeOffset CancelledAt { get; set; }
 }

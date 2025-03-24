@@ -36,11 +36,11 @@ public class CustomerConfiguration : IEntityTypeConfiguration<Customer>
             .IsRequired();
 
         builder.Property(c => c.CreatedAt)
-            .HasColumnType("timestamp")
+            .HasColumnType("timestamptz")
             .ValueGeneratedOnAdd();
 
         builder.Property(c => c.UpdatedAt)
-            .HasColumnType("timestamp")
+            .HasColumnType("timestamptz")
             .ValueGeneratedOnUpdate();
 
         builder.HasIndex(c => c.Document).IsUnique();

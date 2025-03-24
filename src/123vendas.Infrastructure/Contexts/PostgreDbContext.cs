@@ -21,6 +21,8 @@ public class PostgreDbContext : DbContext
     public DbSet<Product> Products { get; set; }
     public DbSet<Sale> Sales { get; set; }
     public DbSet<SaleItem> SaleItems { get; set; }
+    public DbSet<Cart> Carts { get; set; }
+    public DbSet<CartProduct> CartProducts { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -67,11 +69,11 @@ public class PostgreDbContext : DbContext
         {
             if (entry.State == EntityState.Added)
             {
-                entry.Entity.CreatedAt = DateTime.Now;
-                entry.Entity.UpdatedAt = DateTime.Now;
+                entry.Entity.CreatedAt = DateTime.UtcNow;
+                entry.Entity.UpdatedAt = DateTime.UtcNow;
             }
             else if (entry.State == EntityState.Modified)
-                entry.Entity.UpdatedAt = DateTime.Now;
+                entry.Entity.UpdatedAt = DateTime.UtcNow;
         }
     }
 }

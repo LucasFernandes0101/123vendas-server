@@ -46,6 +46,7 @@ public class SalesController : ControllerBase
             return NoContent();
 
         var response = sale.ToDetailDTO();
+
         return Ok(response);
     }
 
@@ -53,7 +54,9 @@ public class SalesController : ControllerBase
     public async Task<ActionResult<SalePostResponseDTO>> PostAsync([FromBody] SalePostRequestDTO request)
     {
         var createdSale = await _saleService.CreateAsync(request.ToEntity());
+
         var response = createdSale.ToPostResponseDTO();
+
         return Created(string.Empty, response);
     }
 
@@ -61,6 +64,7 @@ public class SalesController : ControllerBase
     public async Task<IActionResult> PutAsync([FromRoute] int id, [FromBody] SalePutRequestDTO request)
     {
         var sale = await _saleService.UpdateAsync(id, request.ToEntity());
+
         return Ok(sale.ToPutResponseDTO());
     }
 
@@ -68,6 +72,7 @@ public class SalesController : ControllerBase
     public async Task<IActionResult> DeleteAsync(int id)
     {
         await _saleService.DeleteAsync(id);
+
         return NoContent();
     }
 

@@ -63,8 +63,8 @@ public class BranchProductService : IBranchProductService
         int? branchId,
         int? productId,
         bool? isActive,
-        DateTime? startDate,
-        DateTime? endDate,
+        DateTimeOffset? startDate,
+        DateTimeOffset? endDate,
         int page = 1,
         int maxResults = 10,
         string? orderByClause = default)
@@ -142,8 +142,8 @@ public class BranchProductService : IBranchProductService
         int? branchId,
         int? productId,
         bool? isActive,
-        DateTime? startDate,
-        DateTime? endDate)
+        DateTimeOffset? startDate,
+        DateTimeOffset? endDate)
     {
         return b =>
             (!id.HasValue || b.Id == id.Value) &&

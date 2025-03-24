@@ -4,70 +4,74 @@ using _123vendas.Domain.Base;
 using _123vendas.Domain.Interfaces.Services;
 using Microsoft.AspNetCore.Mvc;
 
-namespace _123vendas_server.v1.Controllers
+namespace _123vendas_server.v1.Controllers;
+
+[ApiController]
+[Route("api/v{version:apiVersion}/[controller]")]
+[ApiVersion("1.0")]
+public class BranchesController : ControllerBase
 {
-    [ApiController]
-    [Route("api/v{version:apiVersion}/[controller]")]
-    [ApiVersion("1.0")]
-    public class BranchesController : ControllerBase
+    private readonly IBranchService _branchService;
+
+    public BranchesController(IBranchService branchService)
     {
-        private readonly IBranchService _branchService;
+        _branchService = branchService;
+    }
 
-        public BranchesController(IBranchService branchService)
-        {
-            _branchService = branchService;
-        }
+    [HttpGet]
+    public async Task<ActionResult<PagedResponseDTO<BranchGetResponseDTO>>> GetAsync([FromQuery] BranchGetRequestDTO request)
+    {
+        var pagedResult = await _branchService.GetAllAsync(request.Id,
+                                                        request.IsActive,
+                                                        request.Name,
+                                                        request.StartDate,
+                                                        request.EndDate,
+                                                        request.Page,
+                                                        request.Size,
+                                                        request.OrderByClause);
 
-        [HttpGet]
-        public async Task<ActionResult<PagedResponseDTO<BranchGetResponseDTO>>> GetAsync([FromQuery] BranchGetRequestDTO request)
-        {
-            var pagedResult = await _branchService.GetAllAsync(request.Id,
-                                                            request.IsActive,
-                                                            request.Name,
-                                                            request.StartDate,
-                                                            request.EndDate,
-                                                            request.Page,
-                                                            request.Size,
-                                                            request.OrderByClause);
+        if (pagedResult?.Items is not null && pagedResult.Items.Any())
+            return Ok(new PagedResponseDTO<BranchGetResponseDTO>(pagedResult.Items.ToDTO(), pagedResult.Total, request.Page, request.Size));
+        
+        return NoContent();
+    }
 
-            if (pagedResult?.Items is not null && pagedResult.Items.Any())
-                return Ok(new PagedResponseDTO<BranchGetResponseDTO>(pagedResult.Items.ToDTO(), pagedResult.Total, request.Page, request.Size));
-            
+    [HttpGet("{id}")]
+    public async Task<ActionResult<BranchGetDetailResponseDTO>> GetAsync([FromRoute] int id)
+    {
+        var branch = await _branchService.GetByIdAsync(id);
+
+        if (branch is null)
             return NoContent();
-        }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<BranchGetDetailResponseDTO>> GetAsync([FromRoute] int id)
-        {
-            var branch = await _branchService.GetByIdAsync(id);
+        var response = branch.ToDetailDTO();
 
-            if (branch is null)
-                return NoContent();
+        return Ok(response);
+    }
 
-            var response = branch.ToDetailDTO();
-            return Ok(response);
-        }
+    [HttpPost]
+    public async Task<ActionResult<BranchPostResponseDTO>> PostAsync([FromBody] BranchPostRequestDTO request)
+    {
+        var createdBranch = await _branchService.CreateAsync(request.ToEntity());
 
-        [HttpPost]
-        public async Task<ActionResult<BranchPostResponseDTO>> PostAsync([FromBody] BranchPostRequestDTO request)
-        {
-            var createdBranch = await _branchService.CreateAsync(request.ToEntity());
-            var response = createdBranch.ToPostResponseDTO(); 
-            return Created(string.Empty, response);
-        }
+        var response = createdBranch.ToPostResponseDTO(); 
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutAsync([FromRoute] int id, [FromBody] BranchPutRequestDTO request)
-        {
-            var branch = await _branchService.UpdateAsync(id, request.ToEntity());
-            return Ok(branch.ToPutResponseDTO());
-        }
+        return Created(string.Empty, response);
+    }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteAsync(int id)
-        {
-            await _branchService.DeleteAsync(id);
-            return NoContent();
-        }
+    [HttpPut("{id}")]
+    public async Task<IActionResult> PutAsync([FromRoute] int id, [FromBody] BranchPutRequestDTO request)
+    {
+        var branch = await _branchService.UpdateAsync(id, request.ToEntity());
+
+        return Ok(branch.ToPutResponseDTO());
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteAsync(int id)
+    {
+        await _branchService.DeleteAsync(id);
+
+        return NoContent();
     }
 }

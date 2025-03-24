@@ -12,5 +12,5 @@ public record SaleItemGetDetailDTO
     public decimal Price { get; init; }
     public decimal? Discount { get; init; }
     public bool IsCancelled { get; init; }
-    public DateTime? CancelledAt { get; init; }
+    public DateTimeOffset? CancelledAt { get; init; }
 }

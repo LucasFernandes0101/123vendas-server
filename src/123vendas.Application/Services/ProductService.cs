@@ -70,8 +70,8 @@ public class ProductService : IProductService
                                                 string? category,
                                                 decimal? minPrice,
                                                 decimal? maxPrice,
-                                                DateTime? startDate,
-                                                DateTime? endDate,
+                                                DateTimeOffset? startDate,
+                                                DateTimeOffset? endDate,
                                                 int page = 1,
                                                 int maxResults = 10,
                                                 string? orderByClause = default)
@@ -161,8 +161,8 @@ public class ProductService : IProductService
                                                           string? category,
                                                           decimal? minPrice,
                                                           decimal? maxPrice,
-                                                          DateTime? startDate,
-                                                          DateTime? endDate)
+                                                          DateTimeOffset? startDate,
+                                                          DateTimeOffset? endDate)
     {
         ProductCategory? categoryFilter = default;
 

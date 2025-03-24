@@ -55,7 +55,9 @@ public class CustomersController : ControllerBase
     public async Task<ActionResult<CustomerPostResponseDTO>> PostAsync([FromBody] CustomerPostRequestDTO request)
     {
         var createdCustomer = await _customerService.CreateAsync(request.ToEntity());
+
         var response = createdCustomer.ToPostResponseDTO();
+
         return Created(string.Empty, response);
     }
 
@@ -63,6 +65,7 @@ public class CustomersController : ControllerBase
     public async Task<IActionResult> PutAsync([FromRoute] int id, [FromBody] CustomerPutRequestDTO request)
     {
         var customer = await _customerService.UpdateAsync(id, request.ToEntity());
+
         return Ok(customer.ToPutResponseDTO());
     }
 
@@ -70,6 +73,7 @@ public class CustomersController : ControllerBase
     public async Task<IActionResult> DeleteAsync(int id)
     {
         await _customerService.DeleteAsync(id);
+
         return NoContent();
     }
 }

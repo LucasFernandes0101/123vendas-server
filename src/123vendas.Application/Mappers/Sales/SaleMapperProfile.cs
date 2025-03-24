@@ -13,12 +13,12 @@ public class SaleMapperProfile : Profile
         CreateMap<SaleItemGetDTO, SaleItem>().ReverseMap();
         CreateMap<SaleItemGetDetailDTO, SaleItem>().ReverseMap();
         CreateMap<SaleItemPostDTO, SaleItem>().ReverseMap();
-
         CreateMap<SaleGetDetailResponseDTO, Sale>().ReverseMap();
         CreateMap<SaleGetResponseDTO, Sale>().ReverseMap();
         CreateMap<SalePutRequestDTO, Sale>().ReverseMap();
         CreateMap<SalePutResponseDTO, Sale>().ReverseMap();
         CreateMap<SalePostRequestDTO, Sale>().ReverseMap();
         CreateMap<SalePostResponseDTO, Sale>().ReverseMap();
+        CreateMap<SaleItemPostDTO, SaleItem>().ReverseMap();
     }
 }

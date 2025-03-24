@@ -46,11 +46,11 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
             .IsRequired();
 
         builder.Property(p => p.CreatedAt)
-            .HasColumnType("timestamp")
+            .HasColumnType("timestamptz")
             .ValueGeneratedOnAdd();
 
         builder.Property(p => p.UpdatedAt)
-            .HasColumnType("timestamp")
+            .HasColumnType("timestamptz")
             .ValueGeneratedOnUpdate();
 
         builder.Property(x => x.IsDeleted)

@@ -18,7 +18,7 @@ public class SaleValidator : AbstractValidator<Sale>
             .WithMessage("CustomerId must be greater than zero.");
 
         RuleFor(sale => sale.Date)
-            .GreaterThan(DateTime.Now)
+            .GreaterThan(DateTimeOffset.Now)
             .WithMessage("Sale date cannot be in the future.");
 
         RuleFor(sale => sale.TotalAmount)

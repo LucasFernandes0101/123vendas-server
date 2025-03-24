@@ -96,7 +96,7 @@ public class CustomerServiceTest
         // Arrange
         var (repository, validator, logger, service) = CreateDependencies();
 
-        var customers = new List<Customer> { new CustomerMock().Generate(), new CustomerMock().Generate() };
+        var customers = new CustomerMock().Generate(2);
         repository.GetAsync(1, 10, Arg.Any<Expression<Func<Customer, bool>>>()).Returns(Task.FromResult(new PagedResult<Customer>(customers.Count(), customers)));
 
         // Act

@@ -1,5 +1,6 @@
 ﻿using _123vendas.Application.Mappers.Branches;
 using _123vendas.Application.Mappers.BranchProducts;
+using _123vendas.Application.Mappers.Carts;
 using _123vendas.Application.Mappers.Customers;
 using _123vendas.Application.Mappers.Products;
 using _123vendas.Application.Mappers.Sales;
@@ -47,6 +48,8 @@ public static class DependencyResolver
         services.AddScoped<IProductRepository, ProductRepository>();
         services.AddScoped<ISaleRepository, SaleRepository>();
         services.AddScoped<ISaleItemRepository, SaleItemRepository>();
+        services.AddScoped<ICartRepository, CartRepository>();
+        services.AddScoped<ICartProductRepository, CartProductRepository>();
     }
 
     private static void ResolveServices(this IServiceCollection services)
@@ -56,6 +59,7 @@ public static class DependencyResolver
         services.AddScoped<IProductService, ProductService>();
         services.AddScoped<ICustomerService, CustomerService>();
         services.AddScoped<ISaleService, SaleService>();
+        services.AddScoped<ICartService, CartService>();
     }
 
     private static void ResolveAutoMapper(this IServiceCollection services)
@@ -65,6 +69,7 @@ public static class DependencyResolver
         services.AddAutoMapper(typeof(BranchProductMapperProfile));
         services.AddAutoMapper(typeof(CustomerMapperProfile));
         services.AddAutoMapper(typeof(SaleMapperProfile));
+        services.AddAutoMapper(typeof(CartMapperProfile));
     }
 
     private static void ResolveFluentValidators(this IServiceCollection services)
@@ -75,5 +80,7 @@ public static class DependencyResolver
         services.AddScoped<IValidator<Customer>, CustomerValidator>();
         services.AddScoped<IValidator<Sale>, SaleValidator>();
         services.AddScoped<IValidator<SaleItem>, SaleItemValidator>();
+        services.AddScoped<IValidator<Cart>, CartValidator>();
+        services.AddScoped<IValidator<CartProduct>, CartProductValidator>();
     }
 }

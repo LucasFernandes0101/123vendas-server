@@ -59,8 +59,8 @@ public class BranchService : IBranchService
     public async Task<PagedResult<Branch>> GetAllAsync(int? id,
                                                 bool? isActive,
                                                 string? name,
-                                                DateTime? startDate,
-                                                DateTime? endDate,
+                                                DateTimeOffset? startDate,
+                                                DateTimeOffset? endDate,
                                                 int page = 1,
                                                 int maxResults = 10,
                                                 string? orderByClause = default)
@@ -135,8 +135,8 @@ public class BranchService : IBranchService
     private Expression<Func<Branch, bool>> BuildCriteria(int? id,
                                                          bool? isActive,
                                                          string? name,
-                                                         DateTime? startDate,
-                                                         DateTime? endDate)
+                                                         DateTimeOffset? startDate,
+                                                         DateTimeOffset? endDate)
     {
         return b =>
             (!id.HasValue || b.Id == id.Value) &&

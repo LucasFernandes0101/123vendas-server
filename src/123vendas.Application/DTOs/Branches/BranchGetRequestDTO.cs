@@ -7,6 +7,6 @@ public record BranchGetRequestDTO : PagedRequestDTO
     public int? Id { get; init; }
     public string? Name { get; init; }
     public bool? IsActive { get; init; }
-    public DateTime? StartDate { get; init; }
-    public DateTime? EndDate { get; init; }
+    public DateTimeOffset? StartDate { get; init; }
+    public DateTimeOffset? EndDate { get; init; }
 }

@@ -66,8 +66,8 @@ public class CustomerService : ICustomerService
                                                   string? phone,
                                                   string? email,
                                                   bool? isActive,
-                                                  DateTime? startDate,
-                                                  DateTime? endDate,
+                                                  DateTimeOffset? startDate,
+                                                  DateTimeOffset? endDate,
                                                   int page = 1,
                                                   int maxResults = 10,
                                                   string? orderByClause = default)
@@ -147,8 +147,8 @@ public class CustomerService : ICustomerService
                                                            string? phone,
                                                            string? email,
                                                            bool? isActive,
-                                                           DateTime? startDate,
-                                                           DateTime? endDate)
+                                                           DateTimeOffset? startDate,
+                                                           DateTimeOffset? endDate)
     {
         return b =>
             (!id.HasValue || b.Id == id.Value) &&

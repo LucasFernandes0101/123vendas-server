@@ -12,5 +12,5 @@ public class SaleUpdatedEvent : BaseEvent
     }
 
     public int Id { get; set; }
-    public DateTime UpdatedAt { get; set; }
+    public DateTimeOffset UpdatedAt { get; set; }
 }
