@@ -46,6 +46,15 @@ public class ProductService : IProductService
         }
     }
 
+    public async Task<IEnumerable<string>> GetAllCategoriesAsync()
+    {
+        var categories = Enum.GetValues(typeof(ProductCategory))
+                              .Cast<ProductCategory>()
+                              .Select(c => c.ToString());
+
+        return await Task.FromResult(categories);
+    }
+
     public async Task DeleteAsync(int id)
     {
         try

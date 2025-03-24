@@ -39,6 +39,17 @@ public class ProductsController : ControllerBase
         return NoContent();
     }
 
+    [HttpGet("categories")]
+    public async Task<ActionResult<IEnumerable<string>>> GetAllCategoriesAsync()
+    {
+        var categories = await _productService.GetAllCategoriesAsync();
+
+        if (categories is not null && categories.Any())
+            return Ok(categories);
+
+        return NoContent();
+    }
+
     [HttpGet("{id}")]
     public async Task<ActionResult<ProductGetDetailResponseDTO>> GetAsync([FromRoute] int id)
     {
