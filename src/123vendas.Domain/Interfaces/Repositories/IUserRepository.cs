@@ -3,6 +3,6 @@ using _123vendas.Domain.Entities;
 
 namespace _123vendas.Domain.Interfaces.Repositories;
 
-public interface ICustomerRepository : IBaseRepository<Customer>
+public interface IUserRepository : IBaseRepository<User>
 {
 }

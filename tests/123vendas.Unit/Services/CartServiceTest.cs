@@ -58,7 +58,7 @@ public class CartServiceTest
 
     [Fact(DisplayName = "Should delete cart successfully")]
     [Trait("Cart", "Service")]
-    public async Task DeleteAsync_ShouldDeleteCustomer()
+    public async Task DeleteAsync_ShouldDeleteCart()
     {
         // Arrange
         var (repository, cartProductRepository, validator, logger, service) = CreateDependencies();
@@ -75,7 +75,7 @@ public class CartServiceTest
 
     [Fact(DisplayName = "Should throw NotFoundException when cart not found on delete")]
     [Trait("Cart", "Service")]
-    public async Task DeleteAsync_ShouldThrowNotFoundException_WhenCustomerNotFound()
+    public async Task DeleteAsync_ShouldThrowNotFoundException_WhenCartNotFound()
     {
         // Arrange
         var (repository, cartProductRepository, validator, logger, service) = CreateDependencies();
@@ -202,7 +202,7 @@ public class CartServiceTest
 
     [Fact(DisplayName = "Should throw NotFoundException when cart not found on update")]
     [Trait("Cart", "Service")]
-    public async Task UpdateAsync_ShouldThrowNotFoundException_WhenCustomerNotFound()
+    public async Task UpdateAsync_ShouldThrowNotFoundException_CartNotFound()
     {
         // Arrange
         var (repository, cartProductRepository, validator, logger, service) = CreateDependencies();

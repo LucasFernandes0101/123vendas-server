@@ -1,10 +1,11 @@
-﻿using _123vendas.Application.Mappers.Branches;
+﻿using _123vendas.Application.Common.Security;
+using _123vendas.Application.Mappers.Branches;
 using _123vendas.Application.Mappers.BranchProducts;
 using _123vendas.Application.Mappers.Carts;
-using _123vendas.Application.Mappers.Customers;
 using _123vendas.Application.Mappers.Products;
 using _123vendas.Application.Mappers.Sales;
 using _123vendas.Application.Services;
+using _123vendas.Application.Users.CreateUser;
 using _123vendas.Domain.Entities;
 using _123vendas.Domain.Interfaces.Integrations;
 using _123vendas.Domain.Interfaces.Repositories;
@@ -17,6 +18,7 @@ using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
 
 namespace _123vendas.Application.Configurations;
 
@@ -29,6 +31,8 @@ public static class DependencyResolver
         services.ResolveFluentValidators();
         services.ResolveRepositories();
         services.ResolveServices();
+        services.ResolveMediatR();
+        services.ResolveCommons();
 
         services.AddSingleton<IRabbitMQIntegration, RabbitMQIntegration>();
 
@@ -44,7 +48,7 @@ public static class DependencyResolver
 
         services.AddScoped<IBranchRepository, BranchRepository>();
         services.AddScoped<IBranchProductRepository, BranchProductRepository>();
-        services.AddScoped<ICustomerRepository, CustomerRepository>();
+        services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IProductRepository, ProductRepository>();
         services.AddScoped<ISaleRepository, SaleRepository>();
         services.AddScoped<ISaleItemRepository, SaleItemRepository>();
@@ -57,7 +61,6 @@ public static class DependencyResolver
         services.AddScoped<IBranchService, BranchService>();
         services.AddScoped<IBranchProductService, BranchProductService>();
         services.AddScoped<IProductService, ProductService>();
-        services.AddScoped<ICustomerService, CustomerService>();
         services.AddScoped<ISaleService, SaleService>();
         services.AddScoped<ICartService, CartService>();
     }
@@ -67,9 +70,12 @@ public static class DependencyResolver
         services.AddAutoMapper(typeof(BranchMapperProfile));
         services.AddAutoMapper(typeof(ProductMapperProfile));
         services.AddAutoMapper(typeof(BranchProductMapperProfile));
-        services.AddAutoMapper(typeof(CustomerMapperProfile));
         services.AddAutoMapper(typeof(SaleMapperProfile));
         services.AddAutoMapper(typeof(CartMapperProfile));
+
+        #region Users
+        services.AddAutoMapper(typeof(CreateUserProfile));
+        #endregion
     }
 
     private static void ResolveFluentValidators(this IServiceCollection services)
@@ -78,10 +84,22 @@ public static class DependencyResolver
         services.AddScoped<IValidator<BranchProduct>, BranchProductValidator>();
         services.AddScoped<IValidator<Product>, ProductValidator>();
         services.AddScoped<IValidator<ProductRating>, ProductRatingValidator>();
-        services.AddScoped<IValidator<Customer>, CustomerValidator>();
         services.AddScoped<IValidator<Sale>, SaleValidator>();
         services.AddScoped<IValidator<SaleItem>, SaleItemValidator>();
         services.AddScoped<IValidator<Cart>, CartValidator>();
         services.AddScoped<IValidator<CartProduct>, CartProductValidator>();
+
+        #region Users
+        services.AddScoped<IValidator<User>, UserValidator>();
+        services.AddScoped<IValidator<CreateUserCommand>, CreateUserCommandValidator>();
+        #endregion
     }
+
+    private static void ResolveCommons(this IServiceCollection services)
+    {
+        services.AddScoped<IPasswordHasher, BCryptPasswordHasher>();
+    }
+
+    private static void ResolveMediatR(this IServiceCollection services)
+     => services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
 }

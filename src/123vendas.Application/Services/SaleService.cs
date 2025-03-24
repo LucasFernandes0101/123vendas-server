@@ -45,7 +45,7 @@ public class SaleService : ISaleService
             var sale = new Sale
             {
                 BranchId = request.BranchId,
-                CustomerId = request.CustomerId,
+                UserId = request.UserId,
                 Date = DateTime.UtcNow,
                 Status = SaleStatus.Created,
                 Items = new List<SaleItem>()
@@ -134,7 +134,7 @@ public class SaleService : ISaleService
 
     public async Task<PagedResult<Sale>> GetAllAsync(int? id = default,
                                                      int? branchId = default,
-                                                     int? customerId = default,
+                                                     int? userId = default,
                                                      SaleStatus? status = default,
                                                      DateTimeOffset? startDate = default,
                                                      DateTimeOffset? endDate = default,
@@ -147,7 +147,7 @@ public class SaleService : ISaleService
             if (page <= 0 || maxResults <= 0)
                 throw new InvalidPaginationParametersException("Page number and max results must be greater than zero.");
 
-            var criteria = BuildCriteria(id, branchId, customerId, status, startDate, endDate);
+            var criteria = BuildCriteria(id, branchId, userId, status, startDate, endDate);
 
             var result = await _repository.GetAsync(page, maxResults, criteria, orderByClause);
 
@@ -343,7 +343,7 @@ public class SaleService : ISaleService
 
         updatedSale.Status = request.Status;
         updatedSale.Date = request.Date;
-        updatedSale.CustomerId = request.CustomerId;
+        updatedSale.UserId = request.UserId;
         updatedSale.BranchId = request.BranchId;
         updatedSale.TotalAmount = request.TotalAmount;
 
@@ -419,16 +419,16 @@ public class SaleService : ISaleService
     }
 
     private Expression<Func<Sale, bool>> BuildCriteria(int? id,
-                                                          int? branchId,
-                                                          int? customerId,
-                                                          SaleStatus? status,
-                                                          DateTimeOffset? startDate,
-                                                          DateTimeOffset? endDate)
+                                                       int? branchId,
+                                                       int? userId,
+                                                       SaleStatus? status,
+                                                       DateTimeOffset? startDate,
+                                                       DateTimeOffset? endDate)
     {
         return b =>
             (!id.HasValue || b.Id == id.Value) &&
             (!branchId.HasValue || b.BranchId == branchId.Value) &&
-            (!customerId.HasValue || b.CustomerId == customerId.Value) &&
+            (!userId.HasValue || b.UserId == userId.Value) &&
             (!status.HasValue || b.Status == status.Value) &&
             (!startDate.HasValue || b.CreatedAt >= startDate.Value) &&
             (!endDate.HasValue || b.CreatedAt <= endDate.Value);

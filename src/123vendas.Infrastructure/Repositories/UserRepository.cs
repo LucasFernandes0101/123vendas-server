@@ -6,9 +6,9 @@ using System.Diagnostics.CodeAnalysis;
 namespace _123vendas.Infrastructure.Repositories;
 
 [ExcludeFromCodeCoverage]
-public class CustomerRepository : BaseRepository<Customer>, ICustomerRepository
+public class UserRepository : BaseRepository<User>, IUserRepository
 {
-    public CustomerRepository(PostgreDbContext dbContext) : base(dbContext)
+    public UserRepository(PostgreDbContext dbContext) : base(dbContext)
     {
     }
 }

@@ -13,9 +13,9 @@ public class SaleValidator : AbstractValidator<Sale>
             .GreaterThan(0)
             .WithMessage("BranchId must be greater than zero.");
 
-        RuleFor(sale => sale.CustomerId)
+        RuleFor(sale => sale.UserId)
             .GreaterThan(0)
-            .WithMessage("CustomerId must be greater than zero.");
+            .WithMessage("UserId must be greater than zero.");
 
         RuleFor(sale => sale.Date)
             .GreaterThan(DateTimeOffset.Now)

@@ -17,7 +17,7 @@ public class PostgreDbContext : DbContext
 
     public DbSet<Branch> Branches { get; set; }
     public DbSet<BranchProduct> BranchProducts { get; set; }
-    public DbSet<Customer> Customers { get; set; }
+    public DbSet<User> Users { get; set; }
     public DbSet<Product> Products { get; set; }
     public DbSet<Sale> Sales { get; set; }
     public DbSet<SaleItem> SaleItems { get; set; }

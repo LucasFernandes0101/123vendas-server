@@ -12,7 +12,7 @@ public class CartConfiguration : IEntityTypeConfiguration<Cart>
 
         builder.HasKey(s => s.Id);
 
-        builder.HasOne(s => s.Customer)
+        builder.HasOne(s => s.User)
             .WithMany()
             .HasForeignKey(s => s.UserId)
             .OnDelete(DeleteBehavior.Cascade);

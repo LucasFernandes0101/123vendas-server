@@ -29,9 +29,9 @@ public class SaleConfiguration : IEntityTypeConfiguration<Sale>
         builder.Property(s => s.CancelledAt)
             .IsRequired(false);
 
-        builder.HasOne(s => s.Customer)
+        builder.HasOne(s => s.User)
             .WithMany()
-            .HasForeignKey(s => s.CustomerId)
+            .HasForeignKey(s => s.UserId)
             .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasOne(s => s.Branch)

@@ -23,7 +23,7 @@ public class SalesController : ControllerBase
     {
         var pagedResult = await _saleService.GetAllAsync(request.Id,
                                                          request.BranchId,
-                                                         request.CustomerId,
+                                                         request.UserId,
                                                          request.Status,
                                                          request.StartDate,
                                                          request.EndDate,

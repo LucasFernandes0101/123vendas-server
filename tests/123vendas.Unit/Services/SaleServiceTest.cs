@@ -47,7 +47,7 @@ public class SaleServiceTest
         saleMock.Items.Count.Should().Be(1, "a sale should have exactly 1 item");
         saleMock.Items[0].Quantity.Should().Be(1, "the item quantity should be 1");
 
-        await repository.Received(1).AddAsync(Arg.Is<Sale>(s => s.CustomerId == saleMock.CustomerId));
+        await repository.Received(1).AddAsync(Arg.Is<Sale>(s => s.UserId == saleMock.UserId));
         await branchProductRepository.Received(1).UpdateAsync(Arg.Is<BranchProduct>(bp => bp.StockQuantity == 9));
         await rabbitMQIntegration.Received(1).PublishMessageAsync(Arg.Is<SaleCreatedEvent>(e => e.Id == result.Id));
     }
@@ -63,7 +63,7 @@ public class SaleServiceTest
 
         branchProductRepository.GetAsync(1, 1, Arg.Any<Expression<Func<BranchProduct, bool>>>()).Returns(Task.FromResult(new PagedResult<BranchProduct>(1, branchProducts)));
         validator.ValidateAsync(Arg.Any<Sale>()).Returns(new ValidationResult(new List<ValidationFailure> {
-            new ValidationFailure("CustomerId", "Customer is required") }));
+            new ValidationFailure("UserId", "User is required") }));
 
         var saleService = new SaleService(repository, saleItemRepository, branchProductRepository, validator, rabbitMQIntegration, logger);
 
