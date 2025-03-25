@@ -80,9 +80,6 @@ public class UserValidator : AbstractValidator<User>
         RuleFor(u => u.Role)
                 .IsInEnum().WithMessage("Invalid role.");
 
-        RuleFor(u => u.IsActive)
-            .NotNull().WithMessage("IsActive flag is required.");
-
         RuleFor(u => u.CreatedAt)
             .NotNull().WithMessage("CreatedAt is required.");
 

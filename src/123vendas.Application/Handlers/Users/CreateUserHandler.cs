@@ -1,8 +1,8 @@
 ﻿using _123vendas.Application.Commands.Users;
-using _123vendas.Application.Common.Security;
 using _123vendas.Application.Mappers.Users;
 using _123vendas.Application.Results.Users;
 using _123vendas.Domain.Exceptions;
+using _123vendas.Domain.Interfaces.Common;
 using _123vendas.Domain.Interfaces.Repositories;
 using FluentValidation;
 using MediatR;
@@ -27,13 +27,13 @@ public class CreateUserHandler : IRequestHandler<CreateUserCommand, CreateUserRe
     {
         await ValidateUserAsync(command, cancellationToken);
 
-        var result = await _userRepository.GetAsync(criteria: x => x.Email == command.Email &&
-                                                              x.IsActive);
+        var result = await _userRepository.GetActiveByEmailAsync(command.Email!);
 
-        if (result?.Items is not null && result.Items.Any())
+        if (result is not null)
             throw new UserAlreadyExistsException($"User with email {command.Email} already exists");
 
         var user = command.ToEntity();
+
         user.Password = _passwordHasher.HashPassword(command.Password!);
 
         var createdUser = await _userRepository.AddAsync(user);

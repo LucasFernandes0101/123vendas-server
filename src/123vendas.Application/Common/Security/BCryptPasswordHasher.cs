@@ -1,4 +1,6 @@
-﻿namespace _123vendas.Application.Common.Security;
+﻿using _123vendas.Domain.Interfaces.Common;
+
+namespace _123vendas.Application.Common.Security;
 
 public class BCryptPasswordHasher : IPasswordHasher
 {

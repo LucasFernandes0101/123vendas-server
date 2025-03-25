@@ -87,11 +87,6 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             .HasColumnType("varchar(50)")
             .IsRequired();
 
-        builder.Property(u => u.IsActive)
-            .HasColumnType("boolean")
-            .IsRequired()
-            .HasDefaultValue(true);
-
         builder.Property(u => u.CreatedAt)
             .HasColumnType("timestamptz")
             .ValueGeneratedOnAdd();

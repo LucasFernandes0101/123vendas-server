@@ -13,7 +13,6 @@ public class User : BaseEntity
     public string? Phone { get; set; }
     public UserStatus Status { get; set; }
     public UserRole Role { get; set; }
-    public bool IsActive { get; set; }
 }
 
 public class UserName

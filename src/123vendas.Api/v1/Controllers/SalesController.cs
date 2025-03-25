@@ -2,6 +2,7 @@
 using _123vendas.Application.Mappers.Sales;
 using _123vendas.Domain.Base;
 using _123vendas.Domain.Interfaces.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace _123vendas_server.v1.Controllers;
@@ -50,6 +51,7 @@ public class SalesController : ControllerBase
         return Ok(response);
     }
 
+    [Authorize(Policy = "ManagerOnly")]
     [HttpPost]
     public async Task<ActionResult<SalePostResponseDTO>> PostAsync([FromBody] SalePostRequestDTO request)
     {
@@ -60,6 +62,7 @@ public class SalesController : ControllerBase
         return Created(string.Empty, response);
     }
 
+    [Authorize(Policy = "ManagerOnly")]
     [HttpPut("{id}")]
     public async Task<ActionResult<SalePutResponseDTO>> PutAsync([FromRoute] int id, [FromBody] SalePutRequestDTO request)
     {
@@ -68,6 +71,7 @@ public class SalesController : ControllerBase
         return Ok(sale.ToPutResponseDTO());
     }
 
+    [Authorize(Policy = "ManagerOnly")]
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteAsync(int id)
     {

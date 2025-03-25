@@ -18,7 +18,8 @@ public static class ExceptionStatusCodes
             {typeof(ItemQuantityLimitExceededException), HttpStatusCode.Conflict},
             {typeof(UserAlreadyExistsException), HttpStatusCode.Conflict},
             {typeof(BadRequestException), HttpStatusCode.BadRequest},
-            {typeof(EntityNotFoundException), HttpStatusCode.NoContent}
+            {typeof(EntityNotFoundException), HttpStatusCode.NoContent},
+            {typeof(UnauthorizedUserException), HttpStatusCode.Unauthorized}
         };
 
     public static HttpStatusCode GetExceptionStatusCode(Exception exception)

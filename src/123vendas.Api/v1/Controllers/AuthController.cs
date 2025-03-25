@@ -1,10 +1,14 @@
-﻿using _123vendas.Application.Commands.Auth;
+﻿using _123vendas.Application.DTOs.Auth;
+using _123vendas.Application.Mappers.Auth;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace _123vendas_server.v1.Controllers;
 
-public class AuthController
+[ApiController]
+[Route("api/v{version:apiVersion}/[controller]")]
+[ApiVersion("1.0")]
+public class AuthController : ControllerBase
 {
     private readonly IMediator _mediator;
     public AuthController(IMediator mediator)
@@ -12,25 +16,15 @@ public class AuthController
         _mediator = mediator;
     }
 
-    /*
     [HttpPost]
-    public async Task<IActionResult> AuthenticateUser([FromBody] AuthenticateUserRequest request, CancellationToken cancellationToken)
+    public async Task<ActionResult<AuthenticateUserResponseDTO>> AuthenticateUser([FromBody] AuthenticateUserRequestDTO request)
     {
-        var validator = new AuthenticateUserRequestValidator();
-        var validationResult = await validator.ValidateAsync(request, cancellationToken);
+        var command = request.ToCommand();
 
-        if (!validationResult.IsValid)
-            return BadRequest(validationResult.Errors);
+        var result = await _mediator.Send(command);
 
-        var command = _mapper.Map<AuthenticateUserCommand>(request);
-        var response = await _mediator.Send(command, cancellationToken);
+        var response = result.ToResponseDTO();
 
-        return Ok(new ApiResponseWithData<AuthenticateUserResponse>
-        {
-            Success = true,
-            Message = "User authenticated successfully",
-            Data = _mapper.Map<AuthenticateUserResponse>(response)
-        });
+        return Ok(response);
     }
-    */
 }

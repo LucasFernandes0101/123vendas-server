@@ -3,6 +3,7 @@ using _123vendas.Application.DTOs.Products;
 using _123vendas.Application.Mappers.Products;
 using _123vendas.Domain.Base;
 using _123vendas.Domain.Interfaces.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace _123vendas_server.v1.Controllers;
@@ -78,6 +79,7 @@ public class ProductsController : ControllerBase
         return NoContent();
     }
 
+    [Authorize(Policy = "ManagerOnly")]
     [HttpPost]
     public async Task<ActionResult<ProductPostResponseDTO>> PostAsync([FromBody] ProductPostRequestDTO request)
     {
@@ -88,6 +90,7 @@ public class ProductsController : ControllerBase
         return Created(string.Empty, response);
     }
 
+    [Authorize(Policy = "ManagerOnly")]
     [HttpPut("{id}")]
     public async Task<ActionResult<ProductPutResponseDTO>> PutAsync([FromRoute] int id, [FromBody] ProductPutRequestDTO request)
     {
@@ -96,6 +99,7 @@ public class ProductsController : ControllerBase
         return Ok(product.ToPutResponseDTO());
     }
 
+    [Authorize(Policy = "ManagerOnly")]
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteAsync(int id)
     {

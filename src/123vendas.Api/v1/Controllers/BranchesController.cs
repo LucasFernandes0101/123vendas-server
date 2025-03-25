@@ -2,6 +2,7 @@
 using _123vendas.Application.Mappers.Branches;
 using _123vendas.Domain.Base;
 using _123vendas.Domain.Interfaces.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace _123vendas_server.v1.Controllers;
@@ -49,6 +50,7 @@ public class BranchesController : ControllerBase
         return Ok(response);
     }
 
+    [Authorize(Policy = "ManagerOnly")]
     [HttpPost]
     public async Task<ActionResult<BranchPostResponseDTO>> PostAsync([FromBody] BranchPostRequestDTO request)
     {
@@ -59,6 +61,7 @@ public class BranchesController : ControllerBase
         return Created(string.Empty, response);
     }
 
+    [Authorize(Policy = "ManagerOnly")]
     [HttpPut("{id}")]
     public async Task<IActionResult> PutAsync([FromRoute] int id, [FromBody] BranchPutRequestDTO request)
     {
@@ -67,6 +70,7 @@ public class BranchesController : ControllerBase
         return Ok(branch.ToPutResponseDTO());
     }
 
+    [Authorize(Policy = "ManagerOnly")]
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteAsync(int id)
     {

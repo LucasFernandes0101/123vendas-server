@@ -10,6 +10,10 @@ public class UserProfile : Profile
 {
     public UserProfile()
     {
+        CreateMap<UserAddressGeolocationDTO, UserAddressGeolocation>().ReverseMap();
+        CreateMap<UserAddressDTO, UserAddress>().ReverseMap();
+        CreateMap<UserNameDTO, UserName>().ReverseMap();
+
         CreateMap<UserPostRequestDTO, CreateUserCommand>().ReverseMap();
 
         CreateMap<CreateUserCommand, User>().ReverseMap();

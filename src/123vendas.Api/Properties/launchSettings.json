@@ -9,6 +9,7 @@
       "applicationUrl": "https://localhost:7067;http://localhost:5215",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
+        "JWT_SECRETKEY": "dR8!v9Kp@zL3xWq#N5gT7mYb$FcJ2sV0",
         "POSTGRES_CONNECTION_STRING": "",
         "RABBITMQ_HOSTNAME": "",
         "RABBITMQ_USERNAME": "",

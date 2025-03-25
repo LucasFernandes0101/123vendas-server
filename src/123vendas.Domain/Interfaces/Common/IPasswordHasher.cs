@@ -1,4 +1,4 @@
-﻿namespace _123vendas.Application.Common.Security;
+﻿namespace _123vendas.Domain.Interfaces.Common;
 
 public interface IPasswordHasher
 {

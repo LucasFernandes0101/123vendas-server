@@ -1,4 +1,5 @@
-﻿using _123vendas.Application.Commands.Users;
+﻿using _123vendas.Application.Commands.Auth;
+using _123vendas.Application.Commands.Users;
 using _123vendas.Application.Common.Security;
 using _123vendas.Application.Mappers.Branches;
 using _123vendas.Application.Mappers.BranchProducts;
@@ -7,8 +8,10 @@ using _123vendas.Application.Mappers.Products;
 using _123vendas.Application.Mappers.Sales;
 using _123vendas.Application.Mappers.Users;
 using _123vendas.Application.Services;
+using _123vendas.Application.Validators.Auth;
 using _123vendas.Application.Validators.Users;
 using _123vendas.Domain.Entities;
+using _123vendas.Domain.Interfaces.Common;
 using _123vendas.Domain.Interfaces.Integrations;
 using _123vendas.Domain.Interfaces.Repositories;
 using _123vendas.Domain.Interfaces.Services;
@@ -93,12 +96,14 @@ public static class DependencyResolver
         services.AddScoped<IValidator<CreateUserCommand>, CreateUserCommandValidator>();
         services.AddScoped<IValidator<GetUserCommand>, GetUserCommandValidator>();
         services.AddScoped<IValidator<DeleteUserCommand>, DeleteUserCommandValidator>();
+        services.AddScoped<IValidator<AuthenticateUserCommand>, AuthenticateUserCommandValidator>();
         #endregion
     }
 
     private static void ResolveCommons(this IServiceCollection services)
     {
         services.AddScoped<IPasswordHasher, BCryptPasswordHasher>();
+        services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
     }
 
     private static void ResolveMediatR(this IServiceCollection services)

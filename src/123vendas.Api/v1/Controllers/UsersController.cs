@@ -1,8 +1,8 @@
 ﻿using _123vendas.Application.Commands.Users;
-using _123vendas.Application.Mappers.Users;
 using _123vendas.Application.DTOs.Users;
-using _123vendas.Application.Results.Users;
+using _123vendas.Application.Mappers.Users;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace _123vendas_server.v1.Controllers;
@@ -40,9 +40,10 @@ public class UsersController : ControllerBase
 
         var response = result?.ToGetResponse();
 
-        return Created(string.Empty, response);
+        return Ok(response);
     }
 
+    [Authorize(Policy = "ManagerOnly")]
     [HttpDelete("{id}")]
     public async Task<ActionResult> DeleteByIdAsync(int id)
     {
