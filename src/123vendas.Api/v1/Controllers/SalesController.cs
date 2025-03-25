@@ -1,4 +1,5 @@
-﻿using _123vendas.Application.DTOs.Sales;
+﻿using _123vendas.Application.DTOs.Common;
+using _123vendas.Application.DTOs.Sales;
 using _123vendas.Application.Mappers.Sales;
 using _123vendas.Domain.Base;
 using _123vendas.Domain.Interfaces.Services;
@@ -19,7 +20,14 @@ public class SalesController : ControllerBase
         _saleService = saleService;
     }
 
+    /// <summary>
+    /// Retrieves a paginated list of sales based on query parameters.
+    /// </summary>
+    /// <param name="request">The request containing query parameters for filtering and pagination.</param>
+    /// <returns>A paginated response containing the list of sales.</returns>
     [HttpGet]
+    [ProducesResponseType(typeof(PagedResponseDTO<SaleGetResponseDTO>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<ActionResult<PagedResponseDTO<SaleGetResponseDTO>>> GetAsync([FromQuery] SaleGetRequestDTO request)
     {
         var pagedResult = await _saleService.GetAllAsync(request.Id,
@@ -38,7 +46,14 @@ public class SalesController : ControllerBase
         return NoContent();
     }
 
+    /// <summary>
+    /// Retrieves the details of a specific sale by its ID.
+    /// </summary>
+    /// <param name="id">The ID of the sale to retrieve.</param>
+    /// <returns>The details of the specified sale.</returns>
     [HttpGet("{id}")]
+    [ProducesResponseType(typeof(SaleGetDetailResponseDTO), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<ActionResult<SaleGetDetailResponseDTO>> GetAsync([FromRoute] int id)
     {
         var sale = await _saleService.GetByIdAsync(id);
@@ -51,8 +66,15 @@ public class SalesController : ControllerBase
         return Ok(response);
     }
 
+    /// <summary>
+    /// Creates a new sale. Only accessible to users with "Manager" policy.
+    /// </summary>
+    /// <param name="request">The request containing the sale data to be created.</param>
+    /// <returns>The response containing the details of the created sale.</returns>
     [Authorize(Policy = "ManagerOnly")]
     [HttpPost]
+    [ProducesResponseType(typeof(SalePostResponseDTO), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(ErrorResponseDTO), StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<SalePostResponseDTO>> PostAsync([FromBody] SalePostRequestDTO request)
     {
         var createdSale = await _saleService.CreateAsync(request.ToEntity());
@@ -62,8 +84,16 @@ public class SalesController : ControllerBase
         return Created(string.Empty, response);
     }
 
+    /// <summary>
+    /// Updates an existing sale. Only accessible to users with "Manager" policy.
+    /// </summary>
+    /// <param name="id">The ID of the sale to update.</param>
+    /// <param name="request">The request containing the updated sale data.</param>
+    /// <returns>The response containing the updated sale details.</returns>
     [Authorize(Policy = "ManagerOnly")]
     [HttpPut("{id}")]
+    [ProducesResponseType(typeof(SalePutResponseDTO), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<SalePutResponseDTO>> PutAsync([FromRoute] int id, [FromBody] SalePutRequestDTO request)
     {
         var sale = await _saleService.UpdateAsync(id, request.ToEntity());
@@ -71,8 +101,15 @@ public class SalesController : ControllerBase
         return Ok(sale.ToPutResponseDTO());
     }
 
+    /// <summary>
+    /// Deletes a sale by its ID. Only accessible to users with "Manager" policy.
+    /// </summary>
+    /// <param name="id">The ID of the sale to delete.</param>
+    /// <returns>No content response if the deletion is successful.</returns>
     [Authorize(Policy = "ManagerOnly")]
     [HttpDelete("{id}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> DeleteAsync(int id)
     {
         await _saleService.DeleteAsync(id);
@@ -80,7 +117,13 @@ public class SalesController : ControllerBase
         return NoContent();
     }
 
+    /// <summary>
+    /// Cancels an entire sale by its ID.
+    /// </summary>
+    /// <param name="id">The ID of the sale to cancel.</param>
+    /// <returns>No content response if the cancellation is successful.</returns>
     [HttpPut("{id}/cancel")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> CancelAsync([FromRoute] int id)
     {
         await _saleService.CancelAsync(id);
@@ -88,7 +131,14 @@ public class SalesController : ControllerBase
         return NoContent();
     }
 
+    /// <summary>
+    /// Cancels a specific item within a sale by its sequence number.
+    /// </summary>
+    /// <param name="id">The ID of the sale to which the item belongs.</param>
+    /// <param name="sequence">The sequence number of the item to cancel.</param>
+    /// <returns>The details of the sale after the item cancellation.</returns>
     [HttpPut("{id}/Items/{sequence}/cancel")]
+    [ProducesResponseType(typeof(SaleGetDetailResponseDTO), StatusCodes.Status200OK)]
     public async Task<ActionResult<SaleGetDetailResponseDTO>> CancelItemAsync([FromRoute] int id, [FromRoute] int sequence)
     {
         var sale = await _saleService.CancelItemAsync(id, sequence);
@@ -96,7 +146,14 @@ public class SalesController : ControllerBase
         return Ok(sale.ToDetailDTO());
     }
 
+    /// <summary>
+    /// Retrieves the details of a specific item within a sale by its sequence number.
+    /// </summary>
+    /// <param name="id">The ID of the sale to which the item belongs.</param>
+    /// <param name="sequence">The sequence number of the item to retrieve.</param>
+    /// <returns>The details of the specified item.</returns>
     [HttpGet("{id}/Items/{sequence}")]
+    [ProducesResponseType(typeof(SaleItemGetDetailDTO), StatusCodes.Status200OK)]
     public async Task<ActionResult<SaleItemGetDetailDTO>> GetItemAsync([FromRoute] int id, [FromRoute] int sequence)
     {
         var saleItem = await _saleService.GetItemAsync(id, sequence);

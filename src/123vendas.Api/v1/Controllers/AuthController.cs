@@ -1,4 +1,5 @@
 ﻿using _123vendas.Application.DTOs.Auth;
+using _123vendas.Application.DTOs.Common;
 using _123vendas.Application.Mappers.Auth;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -16,7 +17,15 @@ public class AuthController : ControllerBase
         _mediator = mediator;
     }
 
+    /// <summary>
+    /// Authenticates a user with their credentials.
+    /// </summary>
+    /// <param name="request">The authentication request.</param>
+    /// <returns>Authentication token if successful.</returns>
     [HttpPost]
+    [ProducesResponseType(typeof(AuthenticateUserResponseDTO), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ErrorResponseDTO), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ErrorResponseDTO), StatusCodes.Status401Unauthorized)]
     public async Task<ActionResult<AuthenticateUserResponseDTO>> AuthenticateUser([FromBody] AuthenticateUserRequestDTO request)
     {
         var command = request.ToCommand();

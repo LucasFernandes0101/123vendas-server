@@ -8,7 +8,7 @@ using MediatR;
 
 namespace _123vendas.Application.Handlers.Users;
 
-public class GetUserHandler : IRequestHandler<GetUserCommand, GetUserResult>
+public class GetUserHandler : IRequestHandler<GetUserCommand, GetUserResult?>
 {
     private readonly IUserRepository _userRepository;
     private readonly IValidator<GetUserCommand> _validator;
@@ -18,16 +18,13 @@ public class GetUserHandler : IRequestHandler<GetUserCommand, GetUserResult>
         _validator = validator;
     }
 
-    public async Task<GetUserResult> Handle(GetUserCommand request, CancellationToken cancellationToken)
+    public async Task<GetUserResult?> Handle(GetUserCommand request, CancellationToken cancellationToken)
     {
         await ValidateRequestAsync(request, cancellationToken);
 
         var user = await _userRepository.GetByIdAsync(request.Id);
 
-        if (user is null)
-            throw new EntityNotFoundException($"User with ID {request.Id} not found");
-
-        return user.ToGetResult();
+        return user?.ToGetResult();
     }
 
     private async Task ValidateRequestAsync(GetUserCommand request, CancellationToken cancellationToken)
