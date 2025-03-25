@@ -5,8 +5,8 @@ namespace _123vendas.Application.DTOs.Products;
 public record ProductPutResponseDTO
 {
     public int Id { get; init; }
-    public DateTime CreatedAt { get; init; }
-    public DateTime UpdatedAt { get; init; }
+    public DateTimeOffset CreatedAt { get; init; }
+    public DateTimeOffset UpdatedAt { get; init; }
     public string? Title { get; init; }
     public string? Description { get; init; }
     public string? Image { get; init; }

@@ -3,7 +3,7 @@
 public record BranchGetResponseDTO
 {
     public int Id { get; init; }
-    public DateTime CreatedAt { get; init; }
+    public DateTimeOffset CreatedAt { get; init; }
     public string? Name { get; init; }
     public string? Address { get; init; }
     public string? Phone { get; init; }

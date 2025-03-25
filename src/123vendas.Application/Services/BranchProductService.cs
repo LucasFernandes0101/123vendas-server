@@ -58,13 +58,13 @@ public class BranchProductService : IBranchProductService
         }
     }
 
-    public async Task<List<BranchProduct>> GetAllAsync(
-        int? id,
-        int? branchId,
-        int? productId,
-        bool? isActive,
-        DateTime? startDate,
-        DateTime? endDate,
+    public async Task<PagedResult<BranchProduct>> GetAllAsync(
+        int? id = default,
+        int? branchId = default,
+        int? productId = default,
+        bool? isActive = default,
+        DateTimeOffset? startDate = default,
+        DateTimeOffset? endDate = default,
         int page = 1,
         int maxResults = 10,
         string? orderByClause = default)
@@ -78,7 +78,7 @@ public class BranchProductService : IBranchProductService
 
             var result = await _repository.GetAsync(page, maxResults, criteria, orderByClause);
 
-            return result.Items;
+            return result;
         }
         catch (BaseException)
         {
@@ -142,8 +142,8 @@ public class BranchProductService : IBranchProductService
         int? branchId,
         int? productId,
         bool? isActive,
-        DateTime? startDate,
-        DateTime? endDate)
+        DateTimeOffset? startDate,
+        DateTimeOffset? endDate)
     {
         return b =>
             (!id.HasValue || b.Id == id.Value) &&

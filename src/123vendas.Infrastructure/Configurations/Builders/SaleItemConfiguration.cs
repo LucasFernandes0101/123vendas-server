@@ -37,18 +37,18 @@ public class SaleItemConfiguration : IEntityTypeConfiguration<SaleItem>
             .IsRequired();
 
         builder.Property(si => si.CancelledAt)
-            .HasColumnType("timestamp")
+            .HasColumnType("timestamptz")
             .IsRequired(false);
 
         builder.Property(si => si.Sequence)
                 .IsRequired();
 
         builder.Property(si => si.CreatedAt)
-            .HasColumnType("timestamp")
+            .HasColumnType("timestamptz")
             .ValueGeneratedOnAdd();
 
         builder.Property(si => si.UpdatedAt)
-            .HasColumnType("timestamp")
+            .HasColumnType("timestamptz")
             .ValueGeneratedOnUpdate();
 
         builder.Property(si => si.IsDeleted)

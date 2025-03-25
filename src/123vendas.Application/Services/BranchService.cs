@@ -56,14 +56,14 @@ public class BranchService : IBranchService
         }
     }
 
-    public async Task<List<Branch>> GetAllAsync(int? id,
-                                                bool? isActive,
-                                                string? name,
-                                                DateTime? startDate,
-                                                DateTime? endDate,
-                                                int page = 1,
-                                                int maxResults = 10,
-                                                string? orderByClause = default)
+    public async Task<PagedResult<Branch>> GetAllAsync(int? id = default,
+                                                       bool? isActive = default,
+                                                       string? name = default,
+                                                       DateTimeOffset? startDate = default,
+                                                       DateTimeOffset? endDate = default,
+                                                       int page = 1,
+                                                       int maxResults = 10,
+                                                       string? orderByClause = default)
     {
         try
         {
@@ -74,7 +74,7 @@ public class BranchService : IBranchService
 
             var result = await _repository.GetAsync(page, maxResults, criteria, orderByClause);
 
-            return result.Items;
+            return result;
         }
         catch (BaseException)
         {
@@ -135,8 +135,8 @@ public class BranchService : IBranchService
     private Expression<Func<Branch, bool>> BuildCriteria(int? id,
                                                          bool? isActive,
                                                          string? name,
-                                                         DateTime? startDate,
-                                                         DateTime? endDate)
+                                                         DateTimeOffset? startDate,
+                                                         DateTimeOffset? endDate)
     {
         return b =>
             (!id.HasValue || b.Id == id.Value) &&

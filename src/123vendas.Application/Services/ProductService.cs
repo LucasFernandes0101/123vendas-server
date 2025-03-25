@@ -32,6 +32,8 @@ public class ProductService : IProductService
     {
         try
         {
+            request.Rating ??= new ProductRating();
+
             await ValidateProductAsync(request);
 
             return await _repository.AddAsync(request);
@@ -44,6 +46,15 @@ public class ProductService : IProductService
         {
             throw new ServiceException("An error occurred while creating a product.", ex);
         }
+    }
+
+    public async Task<IEnumerable<string>> GetAllCategoriesAsync()
+    {
+        var categories = Enum.GetValues(typeof(ProductCategory))
+                              .Cast<ProductCategory>()
+                              .Select(c => c.ToString());
+
+        return await Task.FromResult(categories);
     }
 
     public async Task DeleteAsync(int id)
@@ -64,17 +75,17 @@ public class ProductService : IProductService
         }
     }
 
-    public async Task<List<Product>> GetAllAsync(int? id,
-                                                bool? isActive,
-                                                string? title,
-                                                string? category,
-                                                decimal? minPrice,
-                                                decimal? maxPrice,
-                                                DateTime? startDate,
-                                                DateTime? endDate,
-                                                int page = 1,
-                                                int maxResults = 10,
-                                                string? orderByClause = default)
+    public async Task<PagedResult<Product>> GetAllAsync(int? id = default,
+                                                        bool? isActive = default,
+                                                        string? title = default,
+                                                        string? category = default,
+                                                        decimal? minPrice = default,
+                                                        decimal? maxPrice = default,
+                                                        DateTimeOffset? startDate = default,
+                                                        DateTimeOffset? endDate = default,
+                                                        int page = 1,
+                                                        int maxResults = 10,
+                                                        string? orderByClause = default)
     {
         try
         {
@@ -85,7 +96,7 @@ public class ProductService : IProductService
 
             var result = await _repository.GetAsync(page, maxResults, criteria, orderByClause);
 
-            return result.Items;
+            return result;
         }
         catch (BaseException)
         {
@@ -146,11 +157,12 @@ public class ProductService : IProductService
         existingProduct.Title = request.Title;
         existingProduct.Description = request.Description;
         existingProduct.Image = request.Image;
-        existingProduct.Rating = request.Rating;
-        existingProduct.RateCount = request.RateCount;
         existingProduct.Category = request.Category;
         existingProduct.Price = request.Price;
         existingProduct.IsActive = request.IsActive;
+
+        if(request.Rating is not null)
+            existingProduct.Rating = request.Rating;
 
         return await Task.FromResult(existingProduct);
     }
@@ -161,8 +173,8 @@ public class ProductService : IProductService
                                                           string? category,
                                                           decimal? minPrice,
                                                           decimal? maxPrice,
-                                                          DateTime? startDate,
-                                                          DateTime? endDate)
+                                                          DateTimeOffset? startDate,
+                                                          DateTimeOffset? endDate)
     {
         ProductCategory? categoryFilter = default;
 
@@ -173,7 +185,11 @@ public class ProductService : IProductService
         return b =>
             (!id.HasValue || b.Id == id.Value) &&
             (!isActive.HasValue || b.IsActive == isActive.Value) &&
-            (string.IsNullOrEmpty(title) || b.Title!.Contains(title)) &&
+            (string.IsNullOrEmpty(title) ||
+            (title.StartsWith("*") && title.EndsWith("*") ? b.Title!.Contains(title.Trim('*')) :
+            title.StartsWith("*") ? b.Title!.EndsWith(title.TrimStart('*')) :
+            title.EndsWith("*") ? b.Title!.StartsWith(title.TrimEnd('*')) :
+            b.Title == title)) &&
             (!categoryFilter.HasValue || b.Category == categoryFilter.Value) &&
             (!minPrice.HasValue || b.Price >= minPrice.Value) &&
             (!maxPrice.HasValue || b.Price <= maxPrice.Value) &&

@@ -44,10 +44,10 @@ public class BranchProductConfiguration : IEntityTypeConfiguration<BranchProduct
             .OnDelete(DeleteBehavior.Restrict);
 
         builder.Property(bp => bp.CreatedAt)
-            .HasColumnType("timestamp")
+            .HasColumnType("timestamptz")
             .ValueGeneratedOnAdd();
         builder.Property(bp => bp.UpdatedAt)
-            .HasColumnType("timestamp")
+            .HasColumnType("timestamptz")
             .ValueGeneratedOnUpdate();
 
         builder.Property(x => x.IsDeleted)

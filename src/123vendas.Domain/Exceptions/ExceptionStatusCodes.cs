@@ -15,7 +15,11 @@ public static class ExceptionStatusCodes
             {typeof(SaleAlreadyCanceledException), HttpStatusCode.Conflict},
             {typeof(SaleItemAlreadyCanceledException), HttpStatusCode.Conflict},
             {typeof(ItemOutOfStockException), HttpStatusCode.Conflict},
-            {typeof(ItemQuantityLimitExceededException), HttpStatusCode.Conflict}
+            {typeof(ItemQuantityLimitExceededException), HttpStatusCode.Conflict},
+            {typeof(UserAlreadyExistsException), HttpStatusCode.Conflict},
+            {typeof(BadRequestException), HttpStatusCode.BadRequest},
+            {typeof(EntityNotFoundException), HttpStatusCode.NoContent},
+            {typeof(UnauthorizedUserException), HttpStatusCode.Unauthorized}
         };
 
     public static HttpStatusCode GetExceptionStatusCode(Exception exception)

@@ -13,6 +13,6 @@ public record ProductGetRequestDTO : PagedRequestDTO
     [FromQuery(Name = "_maxPrice")]
     public decimal? MaxPrice { get; init; }
     public bool? IsActive { get; init; }
-    public DateTime? StartDate { get; init; }
-    public DateTime? EndDate { get; init; }
+    public DateTimeOffset? StartDate { get; init; }
+    public DateTimeOffset? EndDate { get; init; }
 }

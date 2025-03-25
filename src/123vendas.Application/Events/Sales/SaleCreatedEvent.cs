@@ -12,6 +12,6 @@ namespace _123vendas.Application.Events.Sales
         }
 
         public int Id { get; set; }
-        public DateTime Date { get; set; }
+        public DateTimeOffset Date { get; set; }
     }
 }

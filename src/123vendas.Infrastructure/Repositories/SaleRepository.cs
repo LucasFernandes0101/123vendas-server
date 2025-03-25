@@ -14,9 +14,6 @@ public class SaleRepository : BaseRepository<Sale>, ISaleRepository
     }
 
     public async Task<Sale?> GetWithItemsByIdAsync(int id)
-    {
-        return await _dbContext.Sales
-            .Include(s => s.Items)
-            .FirstOrDefaultAsync(s => s.Id == id);
-    }
+        => await _dbContext.Sales.Include(s => s.Items)
+                                 .FirstOrDefaultAsync(s => s.Id == id);
 }

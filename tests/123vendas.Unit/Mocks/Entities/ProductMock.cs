@@ -14,8 +14,11 @@ public class ProductMock : Faker<Product>
         .RuleFor(p => p.Category, f => f.PickRandom<ProductCategory>())
         .RuleFor(p => p.Price, f => f.Random.Decimal(1, 1000))
         .RuleFor(p => p.Image, f => f.Internet.Url())
-        .RuleFor(p => p.RateCount, f => f.Random.Int(1, 1000))
-        .RuleFor(p => p.Rating, f => f.Random.Double(1, 1000))
-        .RuleFor(p => p.IsActive, f => f.Random.Bool());
+        .RuleFor(p => p.IsActive, f => f.Random.Bool())
+        .RuleFor(p => p.Rating, f => new ProductRating
+        {
+            Rate = f.Random.Double(0, 10),
+            Count = f.Random.Int(0, 1000)
+        });
     }
 }

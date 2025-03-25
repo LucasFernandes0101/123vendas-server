@@ -17,10 +17,12 @@ public class PostgreDbContext : DbContext
 
     public DbSet<Branch> Branches { get; set; }
     public DbSet<BranchProduct> BranchProducts { get; set; }
-    public DbSet<Customer> Customers { get; set; }
+    public DbSet<User> Users { get; set; }
     public DbSet<Product> Products { get; set; }
     public DbSet<Sale> Sales { get; set; }
     public DbSet<SaleItem> SaleItems { get; set; }
+    public DbSet<Cart> Carts { get; set; }
+    public DbSet<CartProduct> CartProducts { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -67,11 +69,11 @@ public class PostgreDbContext : DbContext
         {
             if (entry.State == EntityState.Added)
             {
-                entry.Entity.CreatedAt = DateTime.Now;
-                entry.Entity.UpdatedAt = DateTime.Now;
+                entry.Entity.CreatedAt = DateTime.UtcNow;
+                entry.Entity.UpdatedAt = DateTime.UtcNow;
             }
             else if (entry.State == EntityState.Modified)
-                entry.Entity.UpdatedAt = DateTime.Now;
+                entry.Entity.UpdatedAt = DateTime.UtcNow;
         }
     }
 }

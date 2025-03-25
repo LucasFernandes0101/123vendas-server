@@ -11,7 +11,7 @@ public class SaleMock : Faker<Sale>
         RuleFor(s => s.Id, f => f.Random.Int(1, 1000))
         .RuleFor(s => s.Status, f => f.PickRandom<SaleStatus>())
         .RuleFor(s => s.Date, f => f.Date.Past(1))
-        .RuleFor(s => s.CustomerId, f => f.Random.Int(1, 100))
+        .RuleFor(s => s.UserId, f => f.Random.Int(1, 100))
         .RuleFor(s => s.BranchId, f => f.Random.Int(1, 10))
         .RuleFor(s => s.CancelledAt, f => f.Date.Recent())
         .RuleFor(s => s.Items, f => new Faker<SaleItem>()

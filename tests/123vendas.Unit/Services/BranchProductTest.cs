@@ -101,8 +101,8 @@ public class BranchProductServiceTest
         var result = await service.GetAllAsync(default, default, default, default, default, default);
 
         // Assert
-        result.Should().HaveCount(1);
-        result.Should().BeEquivalentTo(branchProducts);
+        result.Items.Should().HaveCount(1);
+        result.Items.Should().BeEquivalentTo(branchProducts);
     }
 
     [Fact(DisplayName = "GetByIdAsync should return the branch product if found")]

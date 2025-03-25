@@ -1,11 +1,12 @@
-﻿using _123vendas.Domain.Entities;
+﻿using _123vendas.Domain.Base;
+using _123vendas.Domain.Entities;
 using _123vendas.Domain.Enums;
 
 namespace _123vendas.Domain.Interfaces.Services;
 
 public interface ISaleService
 {
-    Task<List<Sale>> GetAllAsync(int? id, int? branchId, int? customerId, SaleStatus? status, DateTime? startDate, DateTime? endDate, int page = 1, int maxResults = 10, string? orderByClause = default);
+    Task<PagedResult<Sale>> GetAllAsync(int? id = default, int? branchId = default, int? userId = default, SaleStatus? status = default, DateTimeOffset? startDate = default, DateTimeOffset? endDate = default, int page = 1, int maxResults = 10, string? orderByClause = default);
     Task<Sale?> GetByIdAsync(int id);
     Task<Sale> CreateAsync(Sale request);
     Task<Sale> UpdateAsync(int saleId, Sale request);

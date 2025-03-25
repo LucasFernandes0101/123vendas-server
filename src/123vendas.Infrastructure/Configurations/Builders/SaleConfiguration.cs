@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System.Diagnostics.CodeAnalysis;
-using System.Reflection.Emit;
 
 namespace _123vendas.Infrastructure.Configurations.Builders;
 
@@ -20,7 +19,7 @@ public class SaleConfiguration : IEntityTypeConfiguration<Sale>
             .IsRequired();
 
         builder.Property(s => s.Date)
-            .HasColumnType("timestamp")
+            .HasColumnType("timestamptz")
             .IsRequired();
 
         builder.Property(s => s.TotalAmount)
@@ -30,9 +29,9 @@ public class SaleConfiguration : IEntityTypeConfiguration<Sale>
         builder.Property(s => s.CancelledAt)
             .IsRequired(false);
 
-        builder.HasOne(s => s.Customer)
+        builder.HasOne(s => s.User)
             .WithMany()
-            .HasForeignKey(s => s.CustomerId)
+            .HasForeignKey(s => s.UserId)
             .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasOne(s => s.Branch)
@@ -41,11 +40,11 @@ public class SaleConfiguration : IEntityTypeConfiguration<Sale>
             .OnDelete(DeleteBehavior.Restrict);
 
         builder.Property(s => s.CreatedAt)
-            .HasColumnType("timestamp")
+            .HasColumnType("timestamptz")
             .ValueGeneratedOnAdd();
 
         builder.Property(s => s.UpdatedAt)
-            .HasColumnType("timestamp")
+            .HasColumnType("timestamptz")
             .ValueGeneratedOnUpdate();
 
         builder.Property(x => x.IsDeleted)

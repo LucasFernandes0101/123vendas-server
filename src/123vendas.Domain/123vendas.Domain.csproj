@@ -8,12 +8,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Entities\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="AspNetCore.IQueryable.Extensions" Version="8.0.0" />
     <PackageReference Include="FluentValidation" Version="11.10.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="9.0.3" />
   </ItemGroup>
 
 </Project>

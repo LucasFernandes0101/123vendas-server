@@ -96,8 +96,8 @@ public class ProductServiceTest
         var result = await productService.GetAllAsync(null, null, null, null, null, null, null, null, 1, 10);
 
         // Assert
-        result.Should().NotBeNull();
-        result.Should().HaveCount(2);
+        result.Items.Should().NotBeNull();
+        result.Items.Should().HaveCount(2);
     }
 
     [Fact(DisplayName = "UpdateAsync_Should_Update_Product_Successfully")]

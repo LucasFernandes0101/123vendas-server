@@ -30,18 +30,30 @@ public class ProductValidator : AbstractValidator<Product>
             .WithMessage("Price must be greater than zero.");
 
         RuleFor(p => p.Rating)
-            .GreaterThanOrEqualTo(0)
-            .WithMessage("Rating must be greater than or equal to 0.")
-            .LessThanOrEqualTo(10)
-            .WithMessage("Rating must be less than or equal to 10.");
+            .NotNull()
+            .WithMessage("Rating cant be null.");
 
-        RuleFor(p => p.RateCount)
-            .GreaterThanOrEqualTo(0)
-            .WithMessage("Rate count must be greater than or equal to 0.");
+        RuleFor(p => p.Rating!).SetValidator(new ProductRatingValidator());
 
         RuleFor(p => p.Image)
             .NotNull()
             .NotEmpty()
             .WithMessage("Product image is required.");
+    }
+}
+
+public class ProductRatingValidator : AbstractValidator<ProductRating>
+{
+    public ProductRatingValidator()
+    {
+        RuleFor(r => r.Rate)
+            .GreaterThanOrEqualTo(0)
+            .WithMessage("Rating must be greater than or equal to 0.")
+            .LessThanOrEqualTo(10)
+            .WithMessage("Rating must be less than or equal to 10.");
+
+        RuleFor(r => r.Count)
+            .GreaterThanOrEqualTo(0)
+            .WithMessage("Rate count must be greater than or equal to 0.");
     }
 }
