@@ -32,7 +32,6 @@ public class UserMock : Faker<User>
         RuleFor(u => u.Phone, f => f.Phone.PhoneNumber());
         RuleFor(u => u.Status, f => f.PickRandom<UserStatus>());
         RuleFor(u => u.Role, f => f.PickRandom<UserRole>());
-        RuleFor(u => u.IsActive, f => f.Random.Bool());
         RuleFor(u => u.CreatedAt, f => f.Date.Past(1));
         RuleFor(u => u.UpdatedAt, f => f.Date.Recent(0));
     }
