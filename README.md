@@ -16,7 +16,7 @@ Este projeto demonstra o uso de tecnologias e padrões modernos, evidenciando a 
 
 ## Tecnologias e Padrões Utilizados
 - **.NET 8**: Base para desenvolvimento de aplicações escaláveis e robustas.
-- **MediatR**: Implementação do padrão CQRS para promover uma comunicação desacoplada.
+- **MediatR**: Utilizado para promover comunicação desacoplada. O padrão foi aplicado especificamente na parte de usuários e autenticação.
 - **Fluent Validations**: Validação de dados de forma fluida e intuitiva.
 - **BCrypt**: Criptografia segura para senhas.
 - **Middleware de Exception**: Gerenciamento centralizado de exceções com respostas HTTP apropriadas.
