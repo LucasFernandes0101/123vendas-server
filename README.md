@@ -30,6 +30,13 @@ Este projeto demonstra o uso de tecnologias e padrões modernos, evidenciando a 
 - **IQueryable**: Consultas dinâmicas e otimizadas.
 - **RabbitMQ.Client**: Integração com RabbitMQ para comunicação via eventos.
 
+### Testes Unitários
+- **xUnit**: Framework de testes para .NET, garantindo modularidade e facilidade na escrita de testes.
+- **FluentAssertions**: Sintaxe fluida para asserções, tornando os testes mais legíveis.
+- **Shouldly**: Melhor legibilidade para mensagens de erro em testes.
+- **Bogus**: Geração de dados fake para testes unitários.
+- **NSubstitute**: Mocking de dependências para facilitar testes isolados.
+
 ## Entidades de Negócio
 O projeto foi concebido com os princípios do Domain-Driven Design, onde as entidades representam componentes essenciais do domínio de vendas e gestão. Em vez de expor os detalhes das classes, destacam-se os seguintes aspectos:
 
