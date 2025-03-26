@@ -10,7 +10,7 @@
 - [Pontos de Melhoria](#pontos-de-melhoria)
 
 ## Objetivo do Projeto
-O **123vendas** é uma plataforma inovadora que facilita o gerenciamento de vendas, produtos e clientes para empresas com múltiplas filiais. A solução centraliza a gestão de produtos e clientes, permitindo personalizar estoque e preços de acordo com cada filial. Com uma interface robusta, o sistema suporta todo o ciclo de vendas — desde a criação e atualização de pedidos até o cancelamento e a administração do estoque.
+O **123vendas** é uma plataforma inovadora que facilita o gerenciamento de vendas, produtos e clientes para empresas com múltiplas filiais. A solução centraliza a gestão de produtos e clientes, permitindo personalizar estoque e preços de acordo com cada filial. Com uma interface robusta, o sistema suporta todo o ciclo de vendas, desde a criação e atualização de pedidos até o cancelamento e a administração do estoque.
 
 Este projeto demonstra o uso de tecnologias e padrões modernos, evidenciando a aplicação de DDD, autenticação e autorização com JWT, integração com RabbitMQ para eventos de vendas e uma arquitetura de software escalável e de fácil manutenção.
 
