@@ -1,5 +1,6 @@
 ﻿using _123vendas.Domain.Entities;
 using _123vendas.Domain.Enums;
+using _123vendas.Domain.Interfaces.Common;
 using _123vendas.Domain.Interfaces.Seeds;
 using _123vendas.Infrastructure.Contexts;
 using Microsoft.EntityFrameworkCore;
@@ -11,7 +12,13 @@ namespace _123vendas.Infrastructure.Seeds;
 public class UserSeeder : IDataSeeder
 {
     private readonly PostgreDbContext _dbContext;
-    public UserSeeder(PostgreDbContext dbContext) => _dbContext = dbContext;
+    private readonly IPasswordHasher _passwordHasher;
+
+    public UserSeeder(PostgreDbContext dbContext, IPasswordHasher passwordHasher)
+    {
+        _dbContext = dbContext;
+        _passwordHasher = passwordHasher;
+    }
 
     public async Task SeedAsync(CancellationToken cancellationToken = default)
     {
@@ -24,7 +31,7 @@ public class UserSeeder : IDataSeeder
             {
                 Email = "admin@123vendas.com",
                 Username = "admin",
-                Password = "hashedpassword",
+                Password = _passwordHasher.HashPassword("admin123"),
                 Name = new UserName
                 {
                     Firstname = "Admin",
@@ -46,7 +53,7 @@ public class UserSeeder : IDataSeeder
             {
                 Email = "vendedor@123vendas.com",
                 Username = "seller",
-                Password = "hashedpassword",
+                Password = _passwordHasher.HashPassword("seller123"),
                 Name = new UserName
                 {
                     Firstname = "Vendedor",
