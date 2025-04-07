@@ -11,13 +11,13 @@ public static class SwaggerExtension
             c.CustomSchemaIds(type => type.FullName);
             c.SwaggerDoc("v1", new OpenApiInfo
             {
-                Title = "API de Vendas 123Vendas",
-                Description = "API para gerenciar vendas na 123Vendas, incluindo CRUD completo e registro de eventos de venda.",
+                Title = "123Vendas - API de Vendas",
+                Description = "Esta API permite o gerenciamento completo de vendas na plataforma 123Vendas, incluindo operações de cadastro, edição, consulta, exclusão e registro de eventos relacionados às vendas.",
                 Version = "v1"
             });
             c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
             {
-                Description = "Insira o token JWT assim: Bearer {seu_token}",
+                Description = "Autenticação via JWT. Insira o token no campo abaixo **sem** o prefixo `Bearer `.",
                 Name = "Authorization",
                 In = ParameterLocation.Header,
                 Type = SecuritySchemeType.Http,
