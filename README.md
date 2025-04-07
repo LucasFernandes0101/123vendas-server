@@ -56,7 +56,18 @@ Abaixo está o diagrama do banco de dados utilizado neste projeto:
 ![Diagrama_DB_123Vendas](https://github.com/user-attachments/assets/2bbb0886-3591-4ead-bed4-2d9dc7111b71)
 > **Nota:** Este diagrama representa a estrutura do banco e pode ser atualizado conforme necessário.
 
-No arquivo **PostgreDbContext**, o construtor garante que o banco seja criado automaticamente se não existir:
+O projeto possui um sistema de seed controlado por uma **feature flag** chamada:
+
+```
+SEED_DATABASE_FLAG
+```
+
+Essa flag está configurada no arquivo `launchSettings.json`, dentro da seção `environmentVariables`, com valor padrão `"false"`. Para ativar a seed, basta alterar o valor para `"true"`. A aplicação irá popular automaticamente o banco de dados com dados iniciais, desde que as tabelas estejam vazias.
+
+---
+
+No arquivo **PostgreDbContext**, o construtor garante que o banco de dados será criado automaticamente se ainda não existir:
+
 ```csharp
 public PostgreDbContext(DbContextOptions<PostgreDbContext> options) : base(options)
 {
@@ -132,7 +143,8 @@ Para executar o projeto, é necessário configurar as seguintes variáveis de am
   "RABBITMQ_HOSTNAME": "",
   "RABBITMQ_USERNAME": "",
   "RABBITMQ_VIRTUALHOST": "",
-  "RABBITMQ_PASSWORD": ""
+  "RABBITMQ_PASSWORD": "",
+  "SEED_DATABASE_FLAG": "false"
 }
 ```
 
@@ -145,6 +157,7 @@ Para executar o projeto, é necessário configurar as seguintes variáveis de am
 - **RABBITMQ_USERNAME**: Nome de usuário para autenticação no servidor RabbitMQ.
 - **RABBITMQ_VIRTUALHOST**: Virtual host no RabbitMQ, permitindo a separação lógica de ambientes ou aplicações no mesmo servidor.
 - **RABBITMQ_PASSWORD**: Senha correspondente ao usuário definido para acessar o RabbitMQ.
+- **SEED_DATABASE_FLAG**: Flag utilizada para controlar a execução de seeds de dados iniciais no banco, útil para ambientes de desenvolvimento e testes.
 
 > **Observações:**
 > - **Postgres**: Certifique-se de ter o Postgres instalado e devidamente configurado na sua máquina.
