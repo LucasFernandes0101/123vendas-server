@@ -14,7 +14,8 @@
         "RABBITMQ_HOSTNAME": "",
         "RABBITMQ_USERNAME": "",
         "RABBITMQ_VIRTUALHOST": "",
-        "RABBITMQ_PASSWORD": ""
+        "RABBITMQ_PASSWORD": "",
+        "SEED_DATABASE_FLAG": "false"
       }
     }
   }

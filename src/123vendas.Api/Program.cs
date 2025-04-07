@@ -1,4 +1,5 @@
 using _123vendas.Application.Configurations;
+using _123vendas.Domain.Interfaces.Seeds;
 using _123vendas_server.v1.Configurations;
 using _123vendas_server.v1.Middlewares;
 using Serilog;
@@ -27,6 +28,13 @@ builder.Services.ResolveDependencies();
 builder.Services.AddAuthenticationConfiguration();
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var seedManager = scope.ServiceProvider.GetRequiredService<ISeedManager>();
+
+    await seedManager.SeedAsync();
+}
 
 if (app.Environment.IsDevelopment())
 {
