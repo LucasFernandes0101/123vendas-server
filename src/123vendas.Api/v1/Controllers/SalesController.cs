@@ -53,13 +53,13 @@ public class SalesController : ControllerBase
     /// <returns>The details of the specified sale.</returns>
     [HttpGet("{id}")]
     [ProducesResponseType(typeof(SaleGetDetailResponseDTO), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<SaleGetDetailResponseDTO>> GetAsync([FromRoute] int id)
     {
         var sale = await _saleService.GetByIdAsync(id);
 
         if (sale is null)
-            return NoContent();
+            return NotFound();
 
         var response = sale.ToDetailDTO();
 

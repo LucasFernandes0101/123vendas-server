@@ -167,11 +167,9 @@ public class SaleService : ISaleService
     {
         try
         {
-            return await GetSaleWithItemsOrThrowAsync(id);
-        }
-        catch (BaseException)
-        {
-            throw;
+            var sale = await _repository.GetWithItemsByIdAsync(id);
+
+            return sale;
         }
         catch (Exception ex)
         {

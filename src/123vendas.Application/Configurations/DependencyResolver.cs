@@ -14,11 +14,13 @@ using _123vendas.Domain.Entities;
 using _123vendas.Domain.Interfaces.Common;
 using _123vendas.Domain.Interfaces.Integrations;
 using _123vendas.Domain.Interfaces.Repositories;
+using _123vendas.Domain.Interfaces.Seeds;
 using _123vendas.Domain.Interfaces.Services;
 using _123vendas.Domain.Validators;
 using _123vendas.Infrastructure.Contexts;
 using _123vendas.Infrastructure.Integrations;
 using _123vendas.Infrastructure.Repositories;
+using _123vendas.Infrastructure.Seeds;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -38,6 +40,7 @@ public static class DependencyResolver
         services.ResolveServices();
         services.ResolveMediatR();
         services.ResolveCommons();
+        services.ResolveSeeds();
 
         services.AddSingleton<IRabbitMQIntegration, RabbitMQIntegration>();
 
@@ -46,7 +49,7 @@ public static class DependencyResolver
 
     private static void ResolveRepositories(this IServiceCollection services)
     {
-        services.AddDbContext<PostgreDbContext>(options => 
+        services.AddDbContext<PostgreDbContext>(options =>
             options.UseNpgsql(Environment.GetEnvironmentVariable("POSTGRES_CONNECTION_STRING"), npgsqlOptions =>
                 npgsqlOptions.CommandTimeout(180))
             .EnableSensitiveDataLogging(true));
@@ -98,6 +101,20 @@ public static class DependencyResolver
         services.AddScoped<IValidator<DeleteUserCommand>, DeleteUserCommandValidator>();
         services.AddScoped<IValidator<AuthenticateUserCommand>, AuthenticateUserCommandValidator>();
         #endregion
+    }
+
+    private static void ResolveSeeds(this IServiceCollection services)
+    {
+        services.AddScoped<IDataSeeder, UserSeeder>();
+        services.AddScoped<IDataSeeder, BranchSeeder>();
+        services.AddScoped<IDataSeeder, ProductSeeder>();
+        services.AddScoped<IDataSeeder, BranchProductSeeder>();
+        services.AddScoped<IDataSeeder, CartSeeder>();
+        services.AddScoped<IDataSeeder, CartProductSeeder>();
+        services.AddScoped<IDataSeeder, SaleSeeder>();
+        services.AddScoped<IDataSeeder, SaleItemSeeder>();
+
+        services.AddScoped<ISeedManager, SeedManager>();
     }
 
     private static void ResolveCommons(this IServiceCollection services)

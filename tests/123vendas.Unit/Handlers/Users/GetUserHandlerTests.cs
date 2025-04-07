@@ -76,9 +76,9 @@ public class GetUserHandlerTests
         });
     }
 
-    [Fact(DisplayName = "Handle_Should_Throw_EntityNotFoundException_When_User_Not_Found")]
+    [Fact(DisplayName = "Handle_Should_Not_Throw_When_User_Not_Found")]
     [Trait("User", "Handler")]
-    public async Task Handle_Should_Throw_EntityNotFoundException_When_User_Not_Found()
+    public async Task Handle_Should_Not_Throw_When_User_Not_Found()
     {
         // Arrange
         int userId = 1;
@@ -89,10 +89,10 @@ public class GetUserHandlerTests
 
         _userRepository.GetByIdAsync(command.Id).Returns(Task.FromResult<User?>(default));
 
-        // Act & Assert
-        await Should.ThrowAsync<EntityNotFoundException>(async () =>
-        {
-            await _handler.Handle(command, CancellationToken.None);
-        });
+        // Act
+        var result = await _handler.Handle(command, CancellationToken.None);
+
+        // Assert
+        result.ShouldBeNull();
     }
 }

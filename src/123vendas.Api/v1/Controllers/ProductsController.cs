@@ -72,13 +72,13 @@ public class ProductsController : ControllerBase
     /// <returns>The detailed information of the product.</returns>
     [HttpGet("{id}")]
     [ProducesResponseType(typeof(ProductGetDetailResponseDTO), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<ProductGetDetailResponseDTO>> GetAsync([FromRoute] int id)
     {
         var product = await _productService.GetByIdAsync(id);
 
         if (product is null)
-            return NoContent();
+            return NotFound();
 
         var response = product.ToDetailDTO();
 
