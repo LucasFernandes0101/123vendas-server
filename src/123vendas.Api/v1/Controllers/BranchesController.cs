@@ -52,13 +52,13 @@ public class BranchesController : ControllerBase
     /// <returns>The details of the branch.</returns>
     [HttpGet("{id}")]
     [ProducesResponseType(typeof(BranchGetDetailResponseDTO), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<BranchGetDetailResponseDTO>> GetAsync([FromRoute] int id)
     {
         var branch = await _branchService.GetByIdAsync(id);
 
         if (branch is null)
-            return NoContent();
+            return NotFound();
 
         var response = branch.ToDetailDTO();
 

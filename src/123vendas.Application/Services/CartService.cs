@@ -92,13 +92,9 @@ public class CartService : ICartService
     {
         try
         {
-            var cart = await FindCartWithProductsOrThrowAsync(id);
+            var cart = await _repository.GetWithProductsByIdAsync(id);
 
             return cart;
-        }
-        catch (BaseException ex)
-        {
-            throw;
         }
         catch (Exception ex)
         {

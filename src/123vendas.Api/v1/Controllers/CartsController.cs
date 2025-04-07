@@ -57,7 +57,7 @@ public class CartsController : ControllerBase
         var cart = await _cartService.GetByIdAsync(id);
 
         if (cart is null)
-            return NoContent();
+            return NotFound();
 
         var response = cart.ToDetailDTO();
 

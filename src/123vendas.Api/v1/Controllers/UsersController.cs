@@ -47,17 +47,18 @@ public class UsersController : ControllerBase
     /// <returns>The user data.</returns>
     [HttpGet("{id}")]
     [ProducesResponseType(typeof(UserGetResponseDTO), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ErrorResponseDTO), StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(ErrorResponseDTO), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<UserGetResponseDTO>> GetByIdAsync(int id)
     {
         var command = new GetUserCommand(id);
 
         var result = await _mediator.Send(command);
 
-        var response = result?.ToGetResponse();
-
         if (result is null)
-            return NoContent();
+            return NotFound();
+
+        var response = result.ToGetResponse();
+
 
         return Ok(response);
     }
